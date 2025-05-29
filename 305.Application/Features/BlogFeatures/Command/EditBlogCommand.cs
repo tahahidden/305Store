@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace _305.Application.Features.BlogFeatures.Command;
 
-public class EditBlogCommand : EditCommand
+public class EditBlogCommand : EditCommand<string>
 {
 	[Display(Name = "توضیحات")]
 	public string? description { get; set; }

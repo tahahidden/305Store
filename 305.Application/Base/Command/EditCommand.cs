@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations;
 namespace _305.Application.Base.Command;
 /// <summary>
 /// فرمان ویرایش (EditCommand) برای به‌روزرسانی اطلاعات یک موجودیت.
-/// این فرمان با استفاده از MediatR پردازش شده و نتیجه عملیات ویرایش را در قالب <see cref="ResponseDto{T}"/> بازمی‌گرداند.
+/// این فرمان با استفاده از MediatR پردازش شده و نتیجه عملیات ویرایش را در قالب <see cref="ResponseDto{TResponse}"/> بازمی‌گرداند.
 /// </summary>
 /// <remarks>
 /// این کلاس برای سناریوهایی طراحی شده که نیاز به به‌روزرسانی یک رکورد بر اساس شناسه یکتا دارند.
 /// اطلاعاتی نظیر نامک (slug)، نام و تاریخ به‌روزرسانی از ورودی دریافت می‌شوند.
 /// </remarks>
-public class EditCommand : IRequest<ResponseDto<string>>
+public class EditCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 {
 	/// <summary>
 	/// شناسه یکتای موجودیتی که باید ویرایش شود.
@@ -40,6 +40,6 @@ public class EditCommand : IRequest<ResponseDto<string>>
 	/// به صورت پیش‌فرض برابر با زمان فعلی تنظیم می‌شود.
 	/// </summary>
 	[Display(Name = "زمان ویرایش")]
-	public DateTime updated_at { get; set; } = DateTime.Now;
+	public DateTime updated_at { get; init; } = DateTime.Now;
 }
 

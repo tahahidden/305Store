@@ -2,6 +2,6 @@
 
 namespace _305.Application.Features.BlogFeatures.Command;
 
-public class DeleteBlogCommand : DeleteCommand
+public class DeleteBlogCommand : DeleteCommand<string>
 {
 }

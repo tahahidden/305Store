@@ -10,7 +10,7 @@ namespace _305.Application.Base.Command;
 /// <remarks>
 /// از این فرمان می‌توان به عنوان پایه برای حذف هر نوع موجودیتی استفاده کرد که با شناسه یکتا (id) مشخص می‌شود.
 /// </remarks>
-public class DeleteCommand : IRequest<ResponseDto<string>>
+public class DeleteCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 {
 	/// <summary>
 	/// شناسه یکتای موجودیتی که باید حذف شود.
@@ -18,5 +18,5 @@ public class DeleteCommand : IRequest<ResponseDto<string>>
 	/// </summary>
 	[Display(Name = "آیدی")]
 	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public long id { get; set; }
+	public required long id { get; set; }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace _305.Application.Features.BlogFeatures.Command;
 
-public class CreateBlogCommand : CreateCommand
+public class CreateBlogCommand : CreateCommand<string>
 {
 	[Display(Name = "توضیحات")]
 	public string? description { get; set; }
