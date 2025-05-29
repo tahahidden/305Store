@@ -10,14 +10,16 @@ namespace _305.Application.Base.Handler;
 public class GetBySlugHandler
 {
 	private readonly IUnitOfWork _unitOfWork;
-
+	private readonly ILogger _logger;
 	/// <summary>
 	/// سازنده کلاس که وابستگی به <see cref="IUnitOfWork"/> را تزریق می‌کند.
 	/// </summary>
 	/// <param name="unitOfWork">واحد کاری برای دسترسی به منابع داده</param>
-	public GetBySlugHandler(IUnitOfWork unitOfWork)
+	public GetBySlugHandler(IUnitOfWork unitOfWork, ILogger? logger = null)
 	{
 		_unitOfWork = unitOfWork;
+		// ستفاده از Log.ForContext<T>() برای مشخص شدن منبع لاگ در Serilog
+		_logger = logger ?? Log.ForContext<CreateHandler>(); // Contextual logging
 	}
 
 	/// <summary>
@@ -49,10 +51,15 @@ public class GetBySlugHandler
 			var dto = Mapper.Mapper.Map<TEntity, TDto>(entity);
 			return Responses.Data(dto);
 		}
+		catch (OperationCanceledException)
+		{
+			_logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
+			return Responses.Fail<TDto>(default, "عملیات لغو شد", 499);
+		}
 		catch (Exception ex)
 		{
 			// ثبت خطا با استفاده از Serilog
-			Log.Error(ex, "خطا در زمان دریافت موجودیت بر اساس Slug: {Message}", ex.Message);
+			_logger.Error(ex, "خطا در زمان دریافت موجودیت بر اساس Slug: {Message}", ex.Message);
 			return Responses.ExceptionFail<TDto>(default, null);
 		}
 	}

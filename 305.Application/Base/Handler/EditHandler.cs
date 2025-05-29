@@ -17,16 +17,19 @@ public class EditHandler<TCommand, TEntity>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IRepository<TEntity> _repository;
+	private readonly ILogger _logger;
 
 	/// <summary>
 	/// سازنده کلاس با تزریق وابستگی‌ها
 	/// </summary>
 	/// <param name="unitOfWork">واحد کاری برای مدیریت تراکنش‌ها</param>
 	/// <param name="repository">مخزن داده برای یافتن موجودیت</param>
-	public EditHandler(IUnitOfWork unitOfWork, IRepository<TEntity> repository)
+	public EditHandler(IUnitOfWork unitOfWork, IRepository<TEntity> repository, ILogger? logger = null)
 	{
 		_unitOfWork = unitOfWork;
 		_repository = repository;
+		// ستفاده از Log.ForContext<T>() برای مشخص شدن منبع لاگ در Serilog
+		_logger = logger ?? Log.ForContext<CreateHandler>(); // Contextual logging
 	}
 
 	/// <summary>
@@ -87,10 +90,15 @@ public class EditHandler<TCommand, TEntity>
 
 			return Responses.Success<string>(result, "ویرایش با موفقیت انجام شد", 200);
 		}
+		catch (OperationCanceledException)
+		{
+			_logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
+			return Responses.Fail<string>(default, "عملیات لغو شد", 499);
+		}
 		catch (Exception ex)
 		{
 			// ثبت خطای احتمالی با Serilog
-			Log.Error(ex, "خطا در زمان ویرایش موجودیت: {Message}", ex.Message);
+			_logger.Error(ex, "خطا در زمان ویرایش موجودیت: {Message}", ex.Message);
 			return Responses.ExceptionFail<string>(default, null);
 		}
 	}
