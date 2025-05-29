@@ -12,11 +12,11 @@ namespace _305.Application.Base.Command;
 /// </remarks>
 public class DeleteCommand : IRequest<ResponseDto<string>>
 {
-    /// <summary>
-    /// شناسه یکتای موجودیتی که باید حذف شود.
-    /// این فیلد الزامی است و در صورت عدم مقداردهی، خطای اعتبارسنجی برگردانده می‌شود.
-    /// </summary>
-    [Display(Name = "آیدی")]
-    [Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-    public long id { get; set; }
+	/// <summary>
+	/// شناسه یکتای موجودیتی که باید حذف شود.
+	/// این فیلد الزامی است و در صورت عدم مقداردهی، خطای اعتبارسنجی برگردانده می‌شود.
+	/// </summary>
+	[Display(Name = "آیدی")]
+	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
+	public long id { get; set; }
 }

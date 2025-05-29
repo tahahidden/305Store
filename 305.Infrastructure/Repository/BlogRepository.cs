@@ -6,10 +6,10 @@ using _305.Infrastructure.Persistence;
 namespace _305.Infrastructure.Repository;
 public class BlogRepository : Repository<Blog>, IBlogRepository
 {
-    private readonly IQueryable<Blog> _queryable;
+	private readonly IQueryable<Blog> _queryable;
 
-    public BlogRepository(ApplicationDbContext context) : base(context)
-    {
-        _queryable = DbContext.Set<Blog>();
-    }
+	public BlogRepository(ApplicationDbContext context) : base(context)
+	{
+		_queryable = DbContext.Set<Blog>();
+	}
 }

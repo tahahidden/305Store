@@ -16,54 +16,54 @@ namespace _305.Application.Base.Handler;
 /// </remarks>
 public class CreateHandler
 {
-    private readonly IUnitOfWork _unitOfWork;
+	private readonly IUnitOfWork _unitOfWork;
 
-    /// <summary>
-    /// سازنده کلاس با تزریق UnitOfWork.
-    /// </summary>
-    public CreateHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+	/// <summary>
+	/// سازنده کلاس با تزریق UnitOfWork.
+	/// </summary>
+	public CreateHandler(IUnitOfWork unitOfWork)
+	{
+		_unitOfWork = unitOfWork;
+	}
 
-    /// <summary>
-    /// اجرای عملیات ایجاد موجودیت با اعتبارسنجی و مدیریت تراکنش.
-    /// </summary>
-    /// <typeparam name="TResult">نوع نتیجه خروجی</typeparam>
-    /// <param name="validations">لیست قوانین اعتبارسنجی برای بررسی تکراری بودن یا شرایط خاص</param>
-    /// <param name="onCreate">تابع حاوی منطق ایجاد موجودیت</param>
-    /// <param name="createMessage">پیام موفقیت در صورت موفق بودن عملیات</param>
-    /// <param name="cancellationToken">توکن کنسل کردن عملیات</param>
-    /// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
-    public async Task<ResponseDto<TResult>> HandleAsync<TResult>(
-        List<ValidationItem>? validations,
-        Func<Task<TResult>> onCreate,
-        string? createMessage = "عملیات موفق بود",
-        CancellationToken cancellationToken = default)
-    {
-        if (validations != null)
-        {
-            foreach (var validation in validations)
-            {
-                var isValid = await validation.Rule();
-                if (isValid)
-                {
-                    return Responses.Exist<TResult>(default, null, validation.Value);
-                }
-            }
-        }
+	/// <summary>
+	/// اجرای عملیات ایجاد موجودیت با اعتبارسنجی و مدیریت تراکنش.
+	/// </summary>
+	/// <typeparam name="TResult">نوع نتیجه خروجی</typeparam>
+	/// <param name="validations">لیست قوانین اعتبارسنجی برای بررسی تکراری بودن یا شرایط خاص</param>
+	/// <param name="onCreate">تابع حاوی منطق ایجاد موجودیت</param>
+	/// <param name="createMessage">پیام موفقیت در صورت موفق بودن عملیات</param>
+	/// <param name="cancellationToken">توکن کنسل کردن عملیات</param>
+	/// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
+	public async Task<ResponseDto<TResult>> HandleAsync<TResult>(
+		List<ValidationItem>? validations,
+		Func<Task<TResult>> onCreate,
+		string? createMessage = "عملیات موفق بود",
+		CancellationToken cancellationToken = default)
+	{
+		if (validations != null)
+		{
+			foreach (var validation in validations)
+			{
+				var isValid = await validation.Rule();
+				if (isValid)
+				{
+					return Responses.Exist<TResult>(default, null, validation.Value);
+				}
+			}
+		}
 
-        try
-        {
-            var result = await onCreate();
-            await _unitOfWork.CommitAsync(cancellationToken);
-            return Responses.Success(result, createMessage, 201);
-        }
-        catch (Exception ex)
-        {
-            // لاگ‌گیری با Serilog برای ثبت خطاهای غیرمنتظره
-            Log.Error(ex, "خطا در زمان ایجاد موجودیت: {Message}", ex.Message);
-            return Responses.ExceptionFail<TResult>(default, null);
-        }
-    }
+		try
+		{
+			var result = await onCreate();
+			await _unitOfWork.CommitAsync(cancellationToken);
+			return Responses.Success(result, createMessage, 201);
+		}
+		catch (Exception ex)
+		{
+			// لاگ‌گیری با Serilog برای ثبت خطاهای غیرمنتظره
+			Log.Error(ex, "خطا در زمان ایجاد موجودیت: {Message}", ex.Message);
+			return Responses.ExceptionFail<TResult>(default, null);
+		}
+	}
 }

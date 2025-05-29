@@ -3,13 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _305.Domain.EntityConfiguration;
-public class BlogCategoryConfiguration : IEntityTypeConfiguration<BlogCategory>
+public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
 {
-	public void Configure(EntityTypeBuilder<BlogCategory> builder)
+	public void Configure(EntityTypeBuilder<Permission> builder)
 	{
 		builder.HasKey(x => x.id);
 		builder.Property(x => x.name).IsRequired();
 		builder.Property(x => x.slug).IsRequired();
 		builder.HasIndex(x => x.slug).IsUnique();
+		builder
+			.HasMany(x => x.role_permissions)
+			.WithOne(x => x.permission)
+			.HasForeignKey(x => x.permission_id)
+			.OnDelete(DeleteBehavior.Cascade);
 	}
 }

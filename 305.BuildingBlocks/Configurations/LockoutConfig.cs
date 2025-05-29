@@ -6,18 +6,18 @@
 /// </summary>
 public class LockoutConfig
 {
-    /// <summary>
-    /// نام بخشی که تنظیمات Lockout در appsettings.json باید داخل آن تعریف شود
-    /// </summary>
-    public const string SectionName = "Lockout";
+	/// <summary>
+	/// نام بخشی که تنظیمات Lockout در appsettings.json باید داخل آن تعریف شود
+	/// </summary>
+	public const string SectionName = "Lockout";
 
-    /// <summary>
-    /// حداکثر تعداد تلاش ناموفق ورود قبل از قفل شدن حساب
-    /// </summary>
-    public int FailedLoginLimit { get; set; } = 4;
+	/// <summary>
+	/// حداکثر تعداد تلاش ناموفق ورود قبل از قفل شدن حساب
+	/// </summary>
+	public int FailedLoginLimit { get; set; } = 4;
 
-    /// <summary>
-    /// مدت‌زمان قفل شدن حساب پس از رسیدن به حد مجاز تلاش‌های ناموفق
-    /// </summary>
-    public TimeSpan Duration { get; set; } = TimeSpan.FromMinutes(1);
+	/// <summary>
+	/// مدت‌زمان قفل شدن حساب پس از رسیدن به حد مجاز تلاش‌های ناموفق
+	/// </summary>
+	public TimeSpan Duration { get; set; } = TimeSpan.FromMinutes(1);
 }

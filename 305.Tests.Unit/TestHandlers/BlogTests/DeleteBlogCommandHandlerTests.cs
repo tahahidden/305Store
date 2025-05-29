@@ -8,37 +8,37 @@ using _305.Tests.Unit.GenericHandlers;
 namespace _305.Tests.Unit.TestHandlers.BlogTests;
 public class DeleteBlogCommandHandlerTests
 {
-    [Fact]
-    public async Task Handle_ShouldDeleteBlog_WhenExists()
-    {
-        var command = BlogDataProvider.Delete();
+	[Fact]
+	public async Task Handle_ShouldDeleteBlog_WhenExists()
+	{
+		var command = BlogDataProvider.Delete();
 
-        await DeleteHandlerTestHelper.TestDelete<
-            DeleteBlogCommand,
-            Blog,
-            IBlogRepository,
-            DeleteBlogCommandHandler>(
-            handlerFactory: uow => new DeleteBlogCommandHandler(uow),
-            execute: (handler, cmd, token) => handler.Handle(cmd, token),
-            command: command,
-            repoSelector: uow => uow.BlogRepository
-        );
-    }
+		await DeleteHandlerTestHelper.TestDelete<
+			DeleteBlogCommand,
+			Blog,
+			IBlogRepository,
+			DeleteBlogCommandHandler>(
+			handlerFactory: uow => new DeleteBlogCommandHandler(uow),
+			execute: (handler, cmd, token) => handler.Handle(cmd, token),
+			command: command,
+			repoSelector: uow => uow.BlogRepository
+		);
+	}
 
-    [Fact]
-    public async Task Handle_ShouldReturnNotFound_WhenBlogDoesNotExist()
-    {
-        var command = BlogDataProvider.Delete(id: 99);
+	[Fact]
+	public async Task Handle_ShouldReturnNotFound_WhenBlogDoesNotExist()
+	{
+		var command = BlogDataProvider.Delete(id: 99);
 
-        await DeleteHandlerTestHelper.TestDeleteNotFound<
-            DeleteBlogCommand,
-            Blog,
-            IBlogRepository,
-            DeleteBlogCommandHandler>(
-            handlerFactory: uow => new DeleteBlogCommandHandler(uow),
-            execute: (handler, cmd, token) => handler.Handle(cmd, token),
-            command: command,
-            repoSelector: uow => uow.BlogRepository
-        );
-    }
+		await DeleteHandlerTestHelper.TestDeleteNotFound<
+			DeleteBlogCommand,
+			Blog,
+			IBlogRepository,
+			DeleteBlogCommandHandler>(
+			handlerFactory: uow => new DeleteBlogCommandHandler(uow),
+			execute: (handler, cmd, token) => handler.Handle(cmd, token),
+			command: command,
+			repoSelector: uow => uow.BlogRepository
+		);
+	}
 }
