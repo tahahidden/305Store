@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using _305.Domain.Entity;
+using _305.Infrastructure.Seed;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace _305.Infrastructure.Persistence;
@@ -36,7 +38,8 @@ public class ApplicationDbContext : DbContext
 	/// </summary>
 	private void SeedData(ModelBuilder modelBuilder)
 	{
-		// مثال:
-		// modelBuilder.Entity<City>().HasData(CitySeed.All);
+		modelBuilder.Entity<Role>().HasData(RoleSeed.All);
+		modelBuilder.Entity<UserRole>().HasData(UserRoleSeed.All);
+		modelBuilder.Entity<User>().HasData(UserSeed.All);
 	}
 }

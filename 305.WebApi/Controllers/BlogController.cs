@@ -1,7 +1,9 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+﻿using _305.Application.Base.Response;
+using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Query;
+using _305.Application.Features.BlogFeatures.Response;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,105 +11,29 @@ using Microsoft.AspNetCore.Mvc;
 namespace _305.WebApi.Controllers;
 [Route("api/blog")]
 [ApiController]
-public class BlogController(IMediator mediator) : BaseController
+public class BlogController(IMediator mediator) : BaseController(mediator)
 {
-	private readonly IMediator _mediator = mediator;
+	[HttpGet("list")]
+	public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
+		ExecuteQuery(query, cancellationToken);
 
-	[HttpGet]
-	[Route("list")]
-	public async Task<IActionResult> Index(GetPaginatedCategoryQuery query, CancellationToken cancellationToken)
-	{
-		try
-		{
-			var result = await _mediator.Send(query, cancellationToken);
-			return Ok(result);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
+	[HttpGet("all")]
+	public Task<IActionResult> GetAll([FromQuery] GetAllCategoryQuery query, CancellationToken cancellationToken) =>
+		ExecuteQuery(query, cancellationToken);
 
-	[HttpGet]
-	[Route("all")]
-	public async Task<IActionResult> GetAll(GetAllCategoryQuery query, CancellationToken cancellationToken)
-	{
-		try
-		{
-			var result = await _mediator.Send(query, cancellationToken);
-			return Ok(result);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
+	[HttpPost("create")]
+	public Task<IActionResult> Create([FromForm] CreateCategoryCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<CreateCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
-	[HttpPost]
-	[Route("create")]
-	public async Task<IActionResult> Create([FromForm] CreateCategoryCommand command, CancellationToken cancellationToken)
-	{
-		try
-		{
-			if (!ModelState.IsValid)
-				return InvalidModelResponse();
-			var response = await _mediator.Send(command, cancellationToken);
-			return Ok(response);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
+	[HttpPost("edit")]
+	public Task<IActionResult> Edit([FromForm] EditCategoryCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
-	[HttpPost]
-	[Route("edit")]
-	public async Task<IActionResult> Edit([FromForm] EditCategoryCommand command, CancellationToken cancellationToken)
-	{
-		try
-		{
-			if (!ModelState.IsValid)
-				return InvalidModelResponse();
-			var response = await _mediator.Send(command, cancellationToken);
-			return Ok(response);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
+	[HttpGet("get")]
+	public Task<IActionResult> GetBySlug([FromForm] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
+		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); // چون از FromForm استفاده کردی، همچنان باید اعتبارسنجی بشه
 
-	[HttpGet]
-	[Route("get")]
-	public async Task<IActionResult> GetBySlug([FromForm] GetBlogBySlugQuery query, CancellationToken cancellationToken)
-	{
-		try
-		{
-			if (!ModelState.IsValid)
-				return InvalidModelResponse();
-			var response = await _mediator.Send(query, cancellationToken);
-			return Ok(response);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
-
-	[HttpPost]
-	[Route("delete")]
-	public async Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken)
-	{
-		try
-		{
-			if (!ModelState.IsValid)
-				return InvalidModelResponse();
-			var response = await _mediator.Send(command, cancellationToken);
-			return Ok(response);
-		}
-		catch (Exception ex)
-		{
-			return HandleException(ex);
-		}
-	}
+	[HttpPost("delete")]
+	public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<DeleteBlogCommand, ResponseDto<string>>(command, cancellationToken);
 }
