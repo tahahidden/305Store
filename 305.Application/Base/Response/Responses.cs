@@ -1,4 +1,6 @@
-﻿using _305.BuildingBlocks.Text;
+﻿using _305.BuildingBlocks.Enums;
+using _305.BuildingBlocks.Text;
+using Serilog;
 
 namespace _305.Application.Base.Response;
 
@@ -8,115 +10,49 @@ namespace _305.Application.Base.Response;
 /// </summary>
 public static class Responses
 {
-	/// <summary>
-	/// ایجاد پاسخ موفقیت‌آمیز با داده دلخواه، پیام و کد وضعیت (پیش‌فرض 200)
-	/// </summary>
-	public static ResponseDto<T> Success<T>(T? data = default, string? message = null, int code = 200)
+	private static ResponseDto<T> Create<T>(T? data, bool isSuccess, string? message, int code)
 	{
 		return new ResponseDto<T>
 		{
 			data = data,
-			is_success = true,
-			message = message ?? Messages.Success(),
+			is_success = isSuccess,
+			message = message,
 			response_code = code
 		};
 	}
 
-	/// <summary>
-	/// ایجاد پاسخ موفقیت‌آمیز برای عملیات تغییر یا حذف با پیام و کد پیش‌فرض 204 (No Content)
-	/// </summary>
-	public static ResponseDto<T> ChangeOrDelete<T>(T? data = default, string? message = null, int code = 204)
+	#region Success Responses
+
+	public static ResponseDto<T> Success<T>(T? data = default, string? message = null, int code = ResponseCode.Success)
+		=> Create(data, true, message ?? Messages.Success(), code);
+
+	public static ResponseDto<T> ChangeOrDelete<T>(T? data = default, string? message = null, int code = ResponseCode.NoContent)
+		=> Create(data, true, message ?? Messages.Success(), code);
+
+	public static ResponseDto<T> Data<T>(T data, string? message = null, int code = ResponseCode.Success)
+		=> Create(data, true, message ?? Messages.Success(), code);
+
+	#endregion
+
+	#region Failure Responses
+
+	public static ResponseDto<T> Fail<T>(T? data = default, string? message = null, int code = ResponseCode.BadRequest)
+		=> Create(data, false, message ?? Messages.Fail(), code);
+
+	public static ResponseDto<T> ExceptionFail<T>(T? data = default, string? message = null, int code = ResponseCode.InternalServerError)
 	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = true,
-			message = message ?? Messages.Success(),
-			response_code = code
-		};
+		Log.Error("خطای سیستمی: {Message}", message ?? Messages.ExceptionFail());
+		return Create(data, false, message ?? Messages.ExceptionFail(), code);
 	}
 
-	/// <summary>
-	/// ایجاد پاسخ شکست (Fail) با پیام و کد وضعیت پیش‌فرض 400 (Bad Request)
-	/// </summary>
-	public static ResponseDto<T> Fail<T>(T? data = default, string? message = null, int code = 400)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = false,
-			message = message ?? Messages.Fail(),
-			response_code = code
-		};
-	}
-
-	/// <summary>
-	/// ایجاد پاسخ شکست ناشی از Exception با پیام و کد پیش‌فرض 500 (Internal Server Error)
-	/// </summary>
-	public static ResponseDto<T> ExceptionFail<T>(T? data = default, string? message = null, int code = 500)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = false,
-			message = message ?? Messages.ExceptionFail(),
-			response_code = code
-		};
-	}
-
-	/// <summary>
-	/// ایجاد پاسخ شکست به دلیل وجود داده مشابه (تکراری) با پیام و کد 409 (Conflict)
-	/// </summary>
 	public static ResponseDto<T> Exist<T>(T? data, string? name, string property, string? message = null)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = false,
-			message = message ?? Messages.Exist(name, property),
-			response_code = 409 // Conflict
-		};
-	}
+		=> Create(data, false, message ?? Messages.Exist(name, property), ResponseCode.Conflict);
 
-	/// <summary>
-	/// ایجاد پاسخ شکست به دلیل پیدا نشدن داده با پیام و کد 404 (Not Found)
-	/// </summary>
 	public static ResponseDto<T> NotFound<T>(T? data, string? name = null, string? message = null)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = false,
-			message = message ?? Messages.NotFound(name),
-			response_code = 404
-		};
-	}
+		=> Create(data, false, message ?? Messages.NotFound(name), ResponseCode.NotFound);
 
-	/// <summary>
-	/// ایجاد پاسخ موفقیت‌آمیز با داده و پیام دلخواه و کد وضعیت (پیش‌فرض 200)
-	/// </summary>
-	public static ResponseDto<T> Data<T>(T data, string? message = null, int code = 200)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = true,
-			message = message ?? Messages.Success(),
-			response_code = code
-		};
-	}
+	public static ResponseDto<T> NotValid<T>(T? data, string propName = "آیتم", string? message = null, int code = ResponseCode.BadRequest)
+		=> Create(data, false, message ?? Messages.Required(propName), code);
 
-	/// <summary>
-	/// ایجاد پاسخ شکست به دلیل عدم اعتبار داده (اعتبارسنجی ناموفق) با پیام و کد 400 (Bad Request)
-	/// </summary>
-	public static ResponseDto<T> NotValid<T>(T? data, string propName = "آیتم", string? message = null, int code = 400)
-	{
-		return new ResponseDto<T>
-		{
-			data = data,
-			is_success = false,
-			message = message ?? Messages.Required(propName),
-			response_code = code
-		};
-	}
+	#endregion
 }
