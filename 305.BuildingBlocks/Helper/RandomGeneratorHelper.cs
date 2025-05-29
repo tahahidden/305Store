@@ -1,60 +1,75 @@
-﻿using System.Security.Cryptography;
+﻿using _305.BuildingBlocks.Text;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace _305.BuildingBlocks.Helper;
 
-// کلاس ایستا برای تولید رشته، عدد و کدهای تصادفی به صورت امن
+/// <summary>
+/// ابزار تولید مقادیر تصادفی امن مانند رشته، عدد و کد عددی.
+/// از RandomNumberGenerator برای امنیت بیشتر استفاده می‌شود.
+/// </summary>
 public static class RandomGenerator
 {
-    // آرایه‌ای از ارقام ۰ تا ۹ که برای تولید کد عددی استفاده می‌شود
-    private static readonly char[] DefaultDigits = "0123456789".ToCharArray();
+	// یک نمونه ثابت از RandomNumberGenerator برای استفاده در کل کلاس
+	private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
-    /// <summary>
-    /// تولید رشته‌ای تصادفی با طول مشخص، از بین کاراکترهای مجاز و با پیشوند دلخواه
-    /// </summary>
-    /// <param name="length">تعداد کاراکترهای رشته</param>
-    /// <param name="allowedCharacters">کاراکترهای مجاز برای استفاده در رشته</param>
-    /// <param name="prefix">پیشوند اختیاری برای افزودن به ابتدای رشته</param>
-    public static string GenerateString(int length, string allowedCharacters, string prefix = "")
-    {
-        if (length <= 0)
-            throw new ArgumentOutOfRangeException(nameof(length)); // بررسی معتبر بودن طول
+	/// <summary>
+	/// تولید رشته‌ای تصادفی با طول مشخص، از بین کاراکترهای مجاز و با پیشوند اختیاری
+	/// </summary>
+	/// <param name="length">طول کل خروجی نهایی (شامل پیشوند)</param>
+	/// <param name="allowedCharacters">کاراکترهای مجاز برای تولید</param>
+	/// <param name="prefix">پیشوند اختیاری برای ابتدای رشته</param>
+	/// <returns>رشته‌ای تصادفی با فرمت مشخص‌شده</returns>
+	public static string GenerateString(int length, string allowedCharacters, string prefix = "")
+	{
+		if (length <= 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "طول رشته باید بیشتر از صفر باشد.");
 
-        if (string.IsNullOrEmpty(allowedCharacters))
-            throw new ArgumentException("allowedCharacters باید شامل کاراکتر باشد.");
+		if (string.IsNullOrWhiteSpace(allowedCharacters))
+			throw new ArgumentException("allowedCharacters نباید خالی باشد.", nameof(allowedCharacters));
 
-        var result = new StringBuilder(length);
-        var buffer = new byte[sizeof(uint)]; // بافر برای ذخیره اعداد تصادفی
+		// طول واقعی رشته تصادفی (بدون پیشوند)
+		int actualLength = length - prefix.Length;
+		if (actualLength <= 0)
+			throw new ArgumentException("طول رشته باید بزرگتر از طول پیشوند باشد.", nameof(length));
 
-        using var rng = RandomNumberGenerator.Create(); // ایجاد تولیدکننده اعداد تصادفی امن
-        for (int i = 0; i < length; i++)
-        {
-            rng.GetBytes(buffer); // دریافت بایت‌های تصادفی
-            var num = BitConverter.ToUInt32(buffer, 0); // تبدیل بایت‌ها به عدد صحیح بدون علامت
-            result.Append(allowedCharacters[(int)(num % allowedCharacters.Length)]); // انتخاب کاراکتر مجاز با استفاده از باقی‌مانده
-        }
+		var result = new StringBuilder(length);
+		result.Append(prefix); // افزودن پیشوند به ابتدای خروجی
 
-        return prefix + result.ToString(); // افزودن پیشوند و بازگرداندن رشته نهایی
-    }
+		var buffer = new byte[sizeof(uint)]; // بافر برای ذخیره بایت‌های تصادفی
 
-    /// <summary>
-    /// تولید عددی تصادفی بین min و max
-    /// </summary>
-    /// <param name="max">بیشینه مقدار (خارج از بازه)</param>
-    /// <param name="min">کمینه مقدار (شامل بازه)</param>
-    public static int GenerateNumber(int max, int min = 0)
-    {
-        if (max <= min)
-            throw new ArgumentOutOfRangeException(nameof(max), "max باید بزرگتر از min باشد.");
+		for (int i = 0; i < actualLength; i++)
+		{
+			Rng.GetBytes(buffer); // پر کردن بافر با بایت‌های تصادفی
+			uint num = BitConverter.ToUInt32(buffer, 0); // تبدیل به عدد صحیح
+			int index = (int)(num % allowedCharacters.Length); // گرفتن اندیس از کاراکتر مجاز
+			result.Append(allowedCharacters[index]); // افزودن کاراکتر انتخاب‌شده
+		}
 
-        return RandomNumberGenerator.GetInt32(min, max); // تولید عدد صحیح تصادفی بین min و max
-    }
+		return result.ToString(); // بازگرداندن رشته نهایی
+	}
 
-    /// <summary>
-    /// تولید کد عددی تصادفی با طول مشخص (پیش‌فرض ۸ رقمی)
-    /// </summary>
-    public static string GenerateCode(int length = 8)
-    {
-        return GenerateString(length, new string(DefaultDigits)); // استفاده از متد GenerateString فقط با ارقام
-    }
+	/// <summary>
+	/// تولید عدد صحیح تصادفی بین min (شامل) و max (خارج از بازه)
+	/// </summary>
+	/// <param name="max">بیشینه مقدار (خارج از بازه)</param>
+	/// <param name="min">کمینه مقدار (شامل بازه)</param>
+	/// <returns>عدد صحیح تصادفی بین بازه مشخص‌شده</returns>
+	public static int GenerateNumber(int max, int min = 0)
+	{
+		if (max <= min)
+			throw new ArgumentOutOfRangeException(nameof(max), "max باید بزرگتر از min باشد.");
+
+		return RandomNumberGenerator.GetInt32(min, max); // تولید عدد تصادفی امن
+	}
+
+	/// <summary>
+	/// تولید کد عددی تصادفی با طول مشخص (مثلاً برای OTP، تایید پیامک، کد امنیتی)
+	/// </summary>
+	/// <param name="length">تعداد رقم کد (پیش‌فرض ۸ رقم)</param>
+	/// <returns>کدی عددی به‌صورت رشته</returns>
+	public static string GenerateCode(int length = 8)
+	{
+		return GenerateString(length, AllowedCharacters.Numeric0); // فقط با استفاده از ارقام
+	}
 }

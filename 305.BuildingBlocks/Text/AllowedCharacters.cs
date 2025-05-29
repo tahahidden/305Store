@@ -16,10 +16,16 @@ public static class AllowedCharacters
     /// </summary>
     public const string AlphanumericCase = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    /// <summary>
-    /// اعداد و حروف بزرگ فقط
-    /// </summary>
-    public const string AlphanumericUpper = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	/// <summary>
+	///  حروف بزرگ و کوچک (الفبای کامل انگلیسی)
+	/// </summary>
+	public const string Letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	/// <summary>
+	/// اعداد و حروف بزرگ فقط
+	/// </summary>
+	public const string AlphanumericUpper = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /// <summary>
     /// اعداد و حروف کوچک خوانا (بدون i, l, o, q برای جلوگیری از ابهام)
