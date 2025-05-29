@@ -41,17 +41,10 @@ public static class FileHelper
 	/// حذف فایل تصویر از مسیر مشخص
 	/// </summary>
 	/// <param name="imagePath">مسیر کامل فایل تصویری که باید حذف شود</param>
-	public static bool DeleteImage(string imagePath)
+	public static void DeleteImage(string imagePath)
 	{
 		// اگر فایل وجود داشته باشد، آن را حذف می‌کنیم
 		if (File.Exists(imagePath))
-		{
 			File.Delete(imagePath);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
 	}
 }

@@ -1,6 +1,6 @@
-﻿using _305.Application.Base.Pagination;
-using _305.Application.Features.BlogCategoryFeatures.Handler;
+﻿using _305.Application.Features.BlogCategoryFeatures.Handler;
 using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Filters.Pagination;
 using _305.Application.IRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;

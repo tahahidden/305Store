@@ -2,6 +2,7 @@
 using _305.Application.Base.Response;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.IUOW;
+using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
 using MediatR;
 
@@ -21,9 +22,10 @@ public class DeleteBlogCommandHandler : IRequestHandler<DeleteBlogCommand, Respo
 	public async Task<ResponseDto<string>> Handle(DeleteBlogCommand request, CancellationToken cancellationToken)
 	{
 		return await _handler.HandleAsync<Blog, string>(
-			findEntity: () => _unitOfWork.BlogRepository.FindSingle(x => x.id == request.id),
-			onDelete: entity => _unitOfWork.BlogRepository.Remove(entity),
-			name: "مقاله",
+			findEntityAsync: () => _unitOfWork.BlogRepository.FindSingle(x => x.id == request.id),
+			onBeforeDeleteAsync: entity => FileHelper.DeleteImage(entity.image),
+			onDeleteAsync: entity => _unitOfWork.BlogRepository.Remove(entity),
+			entityName: "مقاله",
 			notFoundMessage: "مقاله پیدا نشد",
 			successMessage: "مقاله با موفقیت حذف شد",
 			cancellationToken: cancellationToken

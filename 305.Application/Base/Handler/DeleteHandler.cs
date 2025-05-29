@@ -15,7 +15,7 @@ namespace _305.Application.Base.Handler;
 public class DeleteHandler
 {
 	private readonly IUnitOfWork _unitOfWork;
-
+	private readonly ILogger _logger;
 	/// <summary>
 	/// سازنده کلاس با تزریق UnitOfWork.
 	/// </summary>
@@ -23,6 +23,7 @@ public class DeleteHandler
 	public DeleteHandler(IUnitOfWork unitOfWork)
 	{
 		_unitOfWork = unitOfWork;
+		_logger = Log.ForContext<DeleteHandler>();
 	}
 
 	/// <summary>
@@ -39,30 +40,40 @@ public class DeleteHandler
 	/// <param name="cancellationToken">توکن لغو عملیات</param>
 	/// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
 	public async Task<ResponseDto<TResult>> HandleAsync<TEntity, TResult>(
-		Func<Task<TEntity?>> findEntity,
-		Action<TEntity> onDelete,
-		string? name = "آیتم",
-		string? notFoundMessage = "آیتم مورد نظر پیدا نشد",
-		string? successMessage = "آیتم با موفقیت حذف شد",
-		int successCode = 204,
+		Func<Task<TEntity?>> findEntityAsync,
+		Action<TEntity>? onBeforeDeleteAsync = null,
+		Action<TEntity>? onDeleteAsync = null,
+		string? entityName = "آیتم",
+		string? notFoundMessage = null,
+		string? successMessage = null,
+		int successStatusCode = 204,
 		CancellationToken cancellationToken = default)
 		where TEntity : class
 	{
 		try
 		{
-			var entity = await findEntity();
+			var entity = await findEntityAsync();
 			if (entity == null)
-				return Responses.NotFound<TResult>(default, name, notFoundMessage);
+				return Responses.NotFound<TResult>(default, entityName, notFoundMessage ?? $"{entityName} یافت نشد");
 
-			onDelete(entity);
+			if (onBeforeDeleteAsync is not null)
+				onBeforeDeleteAsync(entity);
+
+			if (onDeleteAsync is not null)
+				onDeleteAsync(entity);
+
 			await _unitOfWork.CommitAsync(cancellationToken);
 
-			return Responses.ChangeOrDelete<TResult>(default, successMessage, successCode);
+			return Responses.ChangeOrDelete<TResult>(default, successMessage ?? $"{entityName} با موفقیت حذف شد", successStatusCode);
+		}
+		catch (OperationCanceledException)
+		{
+			_logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
+			return Responses.Fail<TResult>(default, "عملیات لغو شد", 499);
 		}
 		catch (Exception ex)
 		{
-			// لاگ‌گیری با Serilog برای ثبت خطای زمان حذف
-			Log.Error(ex, "خطا در زمان حذف موجودیت: {Message}", ex.Message);
+			_logger.Error(ex, "خطا در حذف {EntityName}: {Message}", entityName, ex.Message);
 			return Responses.ExceptionFail<TResult>(default, null);
 		}
 	}
