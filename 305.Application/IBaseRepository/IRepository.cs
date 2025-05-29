@@ -26,14 +26,18 @@ public interface IRepository<TEntity> where TEntity : class, IBaseEntity
 
 	Task<TEntity> AddAsyncReturnId(TEntity entity);
 
-	Task<TEntity?> FindSingle(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
-	Task<TEntity?> FindFirst(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
-	List<TEntity> FindList(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
-	List<TEntity> FindList(params string[]? includes);
+	Task<TEntity?> FindSingle(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+	Task<TEntity?> FindFirst(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+	List<TEntity> FindList(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+	List<TEntity> FindList(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
 
-	Task<TEntity?> FindSingleAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
-	Task<TEntity?> FindFirstAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
-	List<TEntity> FindListAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes);
+	Task<TEntity?> FindSingleAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+	Task<TEntity?> FindFirstAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+	List<TEntity> FindListAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
 
-	Task<PaginatedList<TEntity>> GetPagedResultAsync(DefaultPaginationFilter filter, Expression<Func<TEntity, bool>>? predicate, params string[]? includes);
+	Task<PaginatedList<TEntity>> GetPagedResultAsync(
+	DefaultPaginationFilter filter,
+	Expression<Func<TEntity, bool>>? predicate = null,
+	Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null,
+	params Expression<Func<TEntity, string?>>[]? searchFields);
 }

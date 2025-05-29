@@ -33,7 +33,7 @@ public class GetPaginatedBlogQueryHandler : IRequestHandler<GetPaginatedBlogQuer
 			uow => uow.BlogRepository.GetPagedResultAsync(
 				filter,
 				predicate: null,
-				includes: "blog_category"
+				includes: ["blog_category"]
 			)
 		);
 	}

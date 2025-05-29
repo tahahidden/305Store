@@ -148,105 +148,128 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
 	}
 
 	/// <summary>
-	/// اعمال includes روی کوئری برای بارگذاری eager
-	/// </summary>
-	private IQueryable<TEntity> ApplyIncludes(IQueryable<TEntity> query, string[]? includes)
-	{
-		if (includes != null)
-		{
-			foreach (var include in includes)
-			{
-				query = query.Include(include);
-			}
-		}
-		return query;
-	}
-
-	/// <summary>
 	/// یافتن یک موجودیت که دقیقا یک رکورد شرط را داشته باشد
 	/// </summary>
-	public async Task<TEntity?> FindSingle(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public async Task<TEntity?> FindSingle(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return await query.SingleOrDefaultAsync(predicate);
 	}
 
 	/// <summary>
 	/// یافتن اولین موجودیت مطابق شرط
 	/// </summary>
-	public async Task<TEntity?> FindFirst(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public async Task<TEntity?> FindFirst(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return await query.FirstOrDefaultAsync(predicate);
 	}
 
 	/// <summary>
 	/// یافتن لیست موجودیت‌ها مطابق شرط به صورت همزمان (sync)
 	/// </summary>
-	public List<TEntity> FindList(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public List<TEntity> FindList(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return query.Where(predicate).ToList();
 	}
 
 	/// <summary>
 	/// یافتن همه رکوردها بدون شرط
 	/// </summary>
-	public List<TEntity> FindList(params string[]? includes)
+	public List<TEntity> FindList(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return query.ToList();
 	}
 
 	/// <summary>
 	/// یافتن یک موجودیت به صورت AsNoTracking (بدون ردیابی) که دقیقا یک رکورد شرط را داشته باشد
 	/// </summary>
-	public async Task<TEntity?> FindSingleAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public async Task<TEntity?> FindSingleAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>().AsNoTracking(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return await query.SingleOrDefaultAsync(predicate);
 	}
 
 	/// <summary>
 	/// یافتن اولین موجودیت به صورت AsNoTracking مطابق شرط
 	/// </summary>
-	public async Task<TEntity?> FindFirstAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public async Task<TEntity?> FindFirstAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>().AsNoTracking(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return await query.FirstOrDefaultAsync(predicate);
 	}
 
 	/// <summary>
 	/// یافتن لیست موجودیت‌ها مطابق شرط به صورت AsNoTracking
 	/// </summary>
-	public List<TEntity> FindListAsNoTracking(Expression<Func<TEntity, bool>> predicate, params string[]? includes)
+	public List<TEntity> FindListAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>().AsNoTracking(), includes);
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
 		return query.Where(predicate).ToList();
 	}
 
 	/// <summary>
 	/// دریافت نتایج صفحه بندی شده مطابق فیلتر ورودی، با قابلیت شامل کردن Includes
 	/// </summary>
-	public async Task<PaginatedList<TEntity>> GetPagedResultAsync(DefaultPaginationFilter filter, Expression<Func<TEntity, bool>>? predicate, params string[]? includes)
+	public async Task<PaginatedList<TEntity>> GetPagedResultAsync(
+	DefaultPaginationFilter filter,
+	Expression<Func<TEntity, bool>>? predicate = null,
+	Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null,
+	params Expression<Func<TEntity, string?>>[]? searchFields)
 	{
-		var query = ApplyIncludes(DbContext.Set<TEntity>(), includes);
+
+		var query = DbContext.Set<TEntity>().AsQueryable();
+		// اعمال Includes داینامیک
+		if (includeFunc != null)
+			query = includeFunc(query);
+
 		if (predicate != null)
 			query = query.Where(predicate);
 
+		// اگر موجودیت از نوع IBaseEntity است، فیلترها را اعمال کن
 		if (typeof(IBaseEntity).IsAssignableFrom(typeof(TEntity)))
 		{
-			var filterableQuery = query.Cast<IBaseEntity>();
-			filterableQuery = filterableQuery.ApplyFilter(filter);
-			filterableQuery = filterableQuery.ApplySort(filter.SortBy);
-			query = filterableQuery.Cast<TEntity>();
+			// اگر فیلدهایی برای سرچ مشخص شده باشند
+			if (searchFields != null && searchFields.Length > 0)
+			{
+				// اعمال فیلتر با سرچ داینامیک روی فیلدهای مشخص‌شده
+				query = query.ApplyFilter(filter, searchFields);
+			}
+
+			// اعمال مرتب‌سازی
+			query = query.ApplySort(filter.SortBy);
 		}
 		else
 		{
+			// پیش‌فرض مرتب‌سازی بر اساس Id اگر موجودیت IBaseEntity نبود
 			query = query.OrderByDescending(x => EF.Property<object>(x, "Id"));
 		}
 
 		var totalCount = await query.CountAsync();
+
 		var items = await query
 			.Skip((filter.Page - 1) * filter.PageSize)
 			.Take(filter.PageSize)
@@ -254,6 +277,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
 
 		return new PaginatedList<TEntity>(items, totalCount, filter.Page, filter.PageSize);
 	}
+
 
 	#endregion
 }
