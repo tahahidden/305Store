@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace _305.BuildingBlocks.Helper;
 
@@ -33,7 +34,7 @@ public static class FileHelper
         {
             await file.CopyToAsync(stream);
         }
-
+        
         return imagePath; // بازگرداندن مسیر فیزیکی تصویر ذخیره‌شده
     }
 
@@ -41,10 +42,17 @@ public static class FileHelper
     /// حذف فایل تصویر از مسیر مشخص
     /// </summary>
     /// <param name="imagePath">مسیر کامل فایل تصویری که باید حذف شود</param>
-    public static void DeleteImage(string imagePath)
+    public static bool DeleteImage(string imagePath)
     {
-        // اگر فایل وجود داشته باشد، آن را حذف می‌کنیم
-        if (File.Exists(imagePath))
-            File.Delete(imagePath);
-    }
+		// اگر فایل وجود داشته باشد، آن را حذف می‌کنیم
+		if (File.Exists(imagePath))
+        {
+			File.Delete(imagePath);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+	}
 }

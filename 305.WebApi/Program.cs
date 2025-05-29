@@ -1,4 +1,6 @@
-﻿using _305.BuildingBlocks.Configurations;
+﻿using _305.Application.IService;
+using _305.BuildingBlocks.Configurations;
+using _305.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.Configure<JwtConfig>(
 builder.Services.Configure<LockoutConfig>(
 	builder.Configuration.GetSection(LockoutConfig.SectionName));
 
+builder.Services.AddScoped<IJwtService, JwtService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
