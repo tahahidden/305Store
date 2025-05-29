@@ -1,45 +1,29 @@
-﻿namespace _305.BuildingBlocks.Configurations
+﻿namespace _305.BuildingBlocks.Configurations;
+
+/// <summary>
+/// تنظیمات کامل مربوط به توکن‌های JWT شامل تولید و اعتبارسنجی
+/// </summary>
+public class JwtConfig
 {
-    public class JwtSetting
-    {
-        /// <summary>
-        /// آیا اعتبارسنجی کلید امضای JWT فعال باشد؟
-        /// </summary>
-        public bool ValidateIssuerSigningKey { get; set; } = true;
+	public const string SectionName = "Jwt";
 
-        /// <summary>
-        /// آیا اعتبارسنجی مدت زمان انقضای توکن فعال باشد؟
-        /// </summary>
-        public bool ValidateLifetime { get; set; } = true;
+	// ───── تنظیمات اعتبارسنجی (برای JwtBearer) ─────
+	public bool ValidateIssuerSigningKey { get; set; } = true;
+	public bool ValidateLifetime { get; set; } = true;
+	public bool ValidateAudience { get; set; } = true;
+	public bool ValidateIssuer { get; set; } = true;
 
-        /// <summary>
-        /// آیا اعتبارسنجی audience فعال باشد؟
-        /// </summary>
-        public bool ValidateAudience { get; set; } = true;
+	// ───── اطلاعات صادرکننده و گیرنده ─────
+	public string Issuer { get; set; } = string.Empty;
+	public string Audience { get; set; } = string.Empty;
 
-        /// <summary>
-        /// آیا اعتبارسنجی issuer فعال باشد؟
-        /// </summary>
-        public bool ValidateIssuer { get; set; } = true;
+	// ───── کلیدهای امنیتی ─────
+	public string SigningKey { get; set; } = string.Empty;
+	public string AccessTokenSecretKey { get; set; } = string.Empty;
+	public string RefreshTokenSecretKey { get; set; } = string.Empty;
 
-        /// <summary>
-        /// مقدار معتبر برای issuer (فرستنده توکن)
-        /// </summary>
-        public string ValidIssuer { get; set; } = "https://localhost";
-
-        /// <summary>
-        /// مقدار معتبر برای audience (گیرنده توکن)
-        /// </summary>
-        public string ValidAudience { get; set; } = "https://localhost";
-
-        /// <summary>
-        /// کلید امن برای امضای JWT (حداقل 256 بیت)
-        /// </summary>
-        public string SigningKey { get; set; } = "WQ7+dPhLEHdhdaKNzu!ck-fg86TPhUfd#E&&Qq+=vUtfxJ!@sDfe#u^prXW2&Qhmy33u!@e?5-xb*";
-
-        /// <summary>
-        /// مدت اعتبار توکن به دقیقه
-        /// </summary>
-        public int ExpiryInMinutes { get; set; } = 1024;
-    }
+	// ───── مدت‌زمان‌های انقضا ─────
+	public TimeSpan AccessTokenLifetime { get; set; } = TimeSpan.FromMinutes(15);
+	public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(15);
+	public TimeSpan AdminRefreshTokenLifetime { get; set; } = TimeSpan.FromDays(1);
 }

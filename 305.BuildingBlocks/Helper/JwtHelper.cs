@@ -9,7 +9,7 @@ namespace _305.BuildingBlocks.Helper;
 public static class JwtHelper
 {
     // بارگذاری تنظیمات توکن امنیتی
-    private static readonly SecurityTokenConfig Config = new();
+    private static readonly JwtConfig Config = new();
 
     // ساخت توکن دسترسی (Access Token) با استفاده از تنظیمات مربوطه
     public static string CreateJwtAccessToken(long userId, string username) =>
