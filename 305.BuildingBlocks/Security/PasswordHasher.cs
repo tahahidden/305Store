@@ -1,60 +1,65 @@
-﻿using System.Security.Cryptography;
+﻿using _305.BuildingBlocks.Configurations;
+using System.Security.Cryptography;
 
 namespace _305.BuildingBlocks.Security;
 
-// کلاس ایستا برای هش کردن رمز عبور و بررسی اعتبار آن
+/// <summary>
+/// کلاس ایستا برای هش کردن رمز عبور و بررسی اعتبار آن با استفاده از الگوریتم PBKDF2
+/// </summary>
 public static class PasswordHasher
 {
-    // اندازه نمک (Salt) به بایت - ۱۶ بایت معادل ۱۲۸ بیت
-    private const int SaltSize = 16;
+	/// <summary>
+	/// هش کردن رمز عبور به همراه ذخیره نمک و پارامترها در خروجی نهایی
+	/// </summary>
+	/// <param name="password">رمز عبور خام</param>
+	/// <returns>رشته هش شامل پارامترها: iterations.algorithm.key.salt</returns>
+	public static string Hash(string password)
+	{
+		var salt = RandomNumberGenerator.GetBytes(HashConfig.SaltSize); // تولید نمک تصادفی
 
-    // اندازه کلید مشتق‌شده (هش) به بایت - ۳۲ بایت معادل ۲۵۶ بیت
-    private const int KeySize = 32;
+		// اجرای الگوریتم مشتق‌سازی کلید
+		var key = Rfc2898DeriveBytes.Pbkdf2(
+			password,
+			salt,
+			HashConfig.DefaultIterations,
+			HashConfig.DefaultAlgorithm,
+			HashConfig.KeySize);
 
-    // تعداد تکرار الگوریتم مشتق‌سازی برای تقویت امنیت
-    private const int Iterations = 10000;
+		// تبدیل کلید و نمک به base64 و قالب‌بندی با پارامترها
+		return $"{HashConfig.DefaultIterations}.{HashConfig.DefaultAlgorithm}.{Convert.ToBase64String(key)}.{Convert.ToBase64String(salt)}";
+	}
 
-    // الگوریتم هش مورد استفاده (SHA512)
-    private static readonly HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA512;
+	/// <summary>
+	/// بررسی صحت رمز عبور با استفاده از هش ذخیره‌شده
+	/// </summary>
+	/// <param name="hash">هش ذخیره شده شامل iterations.algorithm.key.salt</param>
+	/// <param name="password">رمز عبور خام ورودی</param>
+	/// <returns>درستی یا نادرستی رمز عبور</returns>
+	public static bool Check(string hash, string password)
+	{
+		if (string.IsNullOrWhiteSpace(hash))
+			return false;
 
-    // متد برای هش کردن رمز عبور
-    public static string Hash(string password)
-    {
-        // ایجاد نمونه از Rfc2898DeriveBytes با رمز، اندازه نمک، تعداد تکرار و الگوریتم
-        using var algorithm = new Rfc2898DeriveBytes(password, SaltSize, Iterations, HashAlgorithm);
+		// جدا کردن قسمت‌های هش: تکرار، الگوریتم، کلید، نمک
+		var parts = hash.Split('.', 4);
+		if (parts.Length != 4)
+			throw new FormatException("فرمت هش نامعتبر است. ساختار صحیح: iterations.algorithm.key.salt");
 
-        // استخراج کلید مشتق‌شده (هش نهایی) و تبدیل به Base64
-        var key = Convert.ToBase64String(algorithm.GetBytes(KeySize));
+		// بازیابی پارامترها
+		var iterations = int.Parse(parts[0]);
+		var algorithm = new HashAlgorithmName(parts[1]);
+		var key = Convert.FromBase64String(parts[2]);
+		var salt = Convert.FromBase64String(parts[3]);
 
-        // استخراج نمک تولید شده و تبدیل به Base64
-        var salt = Convert.ToBase64String(algorithm.Salt);
+		// اجرای مشتق‌سازی مجدد با همان پارامترها
+		var keyToCheck = Rfc2898DeriveBytes.Pbkdf2(
+			password,
+			salt,
+			iterations,
+			algorithm,
+			HashConfig.KeySize);
 
-        // بازگرداندن کلید و نمک به صورت رشته‌ای با نقطه جدا شده
-        return $"{key}.{salt}";
-    }
-
-    // متد بررسی رمز عبور با استفاده از هش ذخیره شده
-    public static bool Check(string hash, string password)
-    {
-        // اگر هش خالی یا نال باشد، بازگرداندن false
-        if (string.IsNullOrWhiteSpace(hash)) return false;
-
-        // جدا کردن رشته هش به دو بخش: کلید و نمک
-        var parts = hash.Split('.', 2);
-        if (parts.Length != 2)
-            throw new FormatException("فرمت هش نامعتبر است. باید به صورت 'key.salt' باشد.");
-
-        // تبدیل کلید و نمک از Base64 به بایت آرایه
-        var key = Convert.FromBase64String(parts[0]);
-        var salt = Convert.FromBase64String(parts[1]);
-
-        // ایجاد نمونه جدید از Rfc2898DeriveBytes با رمز عبور و نمک بازیابی‌شده
-        using var algorithm = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithm);
-
-        // استخراج کلید مشتق‌شده جدید برای مقایسه
-        var keyToCheck = algorithm.GetBytes(KeySize);
-
-        // مقایسه دو کلید به صورت زمان-ثابت برای جلوگیری از حمله زمان‌سنجی
-        return CryptographicOperations.FixedTimeEquals(key, keyToCheck);
-    }
+		// مقایسه زمان-ثابت برای جلوگیری از حمله‌های تایمینگ
+		return CryptographicOperations.FixedTimeEquals(key, keyToCheck);
+	}
 }

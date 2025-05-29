@@ -5,42 +5,106 @@ using System.Text.RegularExpressions;
 namespace _305.BuildingBlocks.Helper;
 
 /// <summary>
-/// کلاس کمکی برای تولید Slug از یک عبارت متنی
-/// Slug رشته‌ای است مناسب برای استفاده در URL (مثلاً: "this-is-a-title")
+/// کلاس کمکی برای تولید Slug از یک رشته.
+/// Slug رشته‌ای است مناسب برای استفاده در آدرس URL ها (مثلاً: "this-is-a-title").
 /// </summary>
 public static class SlugHelper
 {
-    /// <summary>
-    /// تولید یک Slug از یک رشته‌ی ورودی (مثلاً تبدیل "سلام دنیا!" به "salam-donya")
-    /// </summary>
-    /// <param name="phrase">عبارت ورودی</param>
-    /// <returns>رشته‌ای قابل استفاده در آدرس URL</returns>
-    public static string GenerateSlug(string phrase)
-    {
-        // اگر رشته خالی یا null باشد، رشته خالی برگردان
-        if (string.IsNullOrWhiteSpace(phrase))
-            return string.Empty;
+	/// <summary>
+	/// تولید Slug از یک عبارت متنی، با نرمال‌سازی و حذف کاراکترهای غیرمجاز.
+	/// پشتیبانی از حروف فارسی و تبدیل آن‌ها به معادل لاتین نیز انجام می‌شود.
+	/// </summary>
+	/// <param name="phrase">عبارت ورودی</param>
+	/// <returns>رشته‌ای بهینه‌شده برای استفاده در URL</returns>
+	public static string GenerateSlug(string phrase)
+	{
+		if (string.IsNullOrWhiteSpace(phrase))
+			return string.Empty;
 
-        // تبدیل عبارت به حروف کوچک و نرمال‌سازی آن برای حذف لهجه‌ها
-        string normalized = phrase.ToLowerInvariant().Normalize(NormalizationForm.FormD);
+		// ۱. تبدیل ارقام فارسی به انگلیسی (مثلاً ۱۲۳ → 123)
+		phrase = ConvertPersianNumbersToEnglish(phrase);
 
-        // حذف کاراکترهای غیر پایه (مثل لهجه‌ها، اعراب و...)
-        var sb = new StringBuilder();
-        foreach (char c in normalized)
-        {
-            var uc = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (uc != UnicodeCategory.NonSpacingMark)
-                sb.Append(c);
-        }
+		// ۲. تبدیل حروف فارسی به معادل انگلیسی ساده (transliteration)
+		phrase = ReplacePersianCharacters(phrase);
 
-        string cleaned = sb.ToString();
+		// ۳. تبدیل به حروف کوچک و نرمال‌سازی برای حذف لهجه‌ها
+		string normalized = phrase.ToLowerInvariant().Normalize(NormalizationForm.FormD);
 
-        // حذف هر چیزی که حرف یا عدد یا فاصله نباشد
-        cleaned = Regex.Replace(cleaned, @"[^a-z0-9\s-]", "");
+		// ۴. حذف کاراکترهای ترکیبی (اعراب، لهجه‌ها و ...)
+		var sb = new StringBuilder();
+		foreach (char c in normalized)
+		{
+			var category = CharUnicodeInfo.GetUnicodeCategory(c);
+			if (category != UnicodeCategory.NonSpacingMark)
+				sb.Append(c);
+		}
 
-        // تبدیل تمام فاصله‌ها یا خط‌تیره‌های متوالی به یک خط‌تیره و حذف خط‌تیره‌های ابتدا و انتها
-        cleaned = Regex.Replace(cleaned, @"[\s-]+", "-").Trim('-');
+		string cleaned = sb.ToString();
 
-        return cleaned;
-    }
+		// ۵. حذف هر چیزی که حرف یا عدد یا فاصله نباشد (مثلاً !@#$)
+		cleaned = Regex.Replace(cleaned, @"[^a-z0-9\s-]", "");
+
+		// ۶. تبدیل فاصله‌ها یا - های متوالی به یک "-"
+		cleaned = Regex.Replace(cleaned, @"[\s-]+", "-").Trim('-');
+
+		return cleaned;
+	}
+
+	/// <summary>
+	/// جایگزینی برخی حروف فارسی با معادل لاتین آن‌ها (transliteration)
+	/// </summary>
+	private static string ReplacePersianCharacters(string input)
+	{
+		return input
+			.Replace("آ", "a")
+			.Replace("ا", "a")
+			.Replace("ب", "b")
+			.Replace("پ", "p")
+			.Replace("ت", "t")
+			.Replace("ث", "s")
+			.Replace("ج", "j")
+			.Replace("چ", "ch")
+			.Replace("ح", "h")
+			.Replace("خ", "kh")
+			.Replace("د", "d")
+			.Replace("ذ", "z")
+			.Replace("ر", "r")
+			.Replace("ز", "z")
+			.Replace("ژ", "zh")
+			.Replace("س", "s")
+			.Replace("ش", "sh")
+			.Replace("ص", "s")
+			.Replace("ض", "z")
+			.Replace("ط", "t")
+			.Replace("ظ", "z")
+			.Replace("ع", "a")
+			.Replace("غ", "gh")
+			.Replace("ف", "f")
+			.Replace("ق", "gh")
+			.Replace("ک", "k")
+			.Replace("گ", "g")
+			.Replace("ل", "l")
+			.Replace("م", "m")
+			.Replace("ن", "n")
+			.Replace("و", "v")
+			.Replace("ه", "h")
+			.Replace("ی", "y")
+			.Replace("ء", "")
+			.Replace("ٔ", "")
+			.Replace("ى", "y")
+			.Replace("ة", "h");
+	}
+
+	/// <summary>
+	/// تبدیل ارقام فارسی (۱۲۳) به انگلیسی (123)
+	/// </summary>
+	private static string ConvertPersianNumbersToEnglish(string input)
+	{
+		var persianDigits = new[] { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+		for (int i = 0; i < persianDigits.Length; i++)
+		{
+			input = input.Replace(persianDigits[i], i.ToString()[0]);
+		}
+		return input;
+	}
 }
