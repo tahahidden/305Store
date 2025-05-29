@@ -43,7 +43,7 @@ public static class DeleteHandlerTestHelper
 		var entity = Mock.Of<TEntity>();
 
 		// تنظیم موک ریپازیتوری برای متد FindSingle که موجودیت را برمی‌گرداند (شبیه‌سازی یافتن موجودیت برای حذف)
-		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync(entity);
+		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>(), null)).ReturnsAsync(entity);
 
 		// تنظیم متد Remove که حذف موجودیت را شبیه‌سازی می‌کند
 		repoMock.Setup(r => r.Remove(It.IsAny<TEntity>()));
@@ -103,7 +103,7 @@ public static class DeleteHandlerTestHelper
 		unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
 		// تنظیم FindSingle به گونه‌ای که موجودیتی پیدا نشود (برگرداندن null)
-		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync((TEntity?)null);
+		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>(), null)).ReturnsAsync((TEntity?)null);
 
 		// ساخت هندلر
 		var handler = handlerFactory(unitOfWorkMock.Object);

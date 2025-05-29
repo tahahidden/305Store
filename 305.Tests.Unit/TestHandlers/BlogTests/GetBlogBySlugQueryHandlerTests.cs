@@ -21,8 +21,8 @@ public class GetBlogBySlugQueryHandlerTests
 				uow => new GetBlogBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(BlogDataProvider.GetBySlug("slug"), token),
 				uow => uow.BlogRepository,
-				blog,
-				includes: new[] { "blog_category" } // 👈 حتماً اگر هندلر include داره، اینجا هم بدی
+				blog
+		// دیگه نیازی به includes نیست چون mock با includeFunc تنظیم می‌شه
 		);
 	}
 

@@ -37,7 +37,7 @@ public static class EditHandlerTestHelper
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 
 		// تنظیم Repository برای بازگرداندن موجودیت فعلی با آیدی داده شده
-		repoMock.Setup(r => r.FindSingle(x => x.id == entityId))
+		repoMock.Setup(r => r.FindSingle(x => x.id == entityId, null))
 				.ReturnsAsync(existingEntity);
 
 		// تنظیم UnitOfWork برای بازگرداندن موفقیت‌آمیز Commit
@@ -59,7 +59,7 @@ public static class EditHandlerTestHelper
 		assertUpdated(existingEntity);
 
 		// اطمینان از اینکه FindSingle و CommitAsync هرکدام یکبار صدا زده شده‌اند
-		repoMock.Verify(r => r.FindSingle(x => x.id == entityId), Times.Once);
+		repoMock.Verify(r => r.FindSingle(x => x.id == entityId, null), Times.Once);
 		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
 	}
 
@@ -90,7 +90,7 @@ public static class EditHandlerTestHelper
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 
 		// تنظیم FindSingle به گونه‌ای که هیچ موجودیتی پیدا نشود (برگشت null)
-		repoMock.Setup(r => r.FindSingle(x => x.id == entityId))
+		repoMock.Setup(r => r.FindSingle(x => x.id == entityId, null))
 				.ReturnsAsync((TEntity?)null);
 
 		// ساخت هندلر
@@ -136,7 +136,7 @@ public static class EditHandlerTestHelper
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 
 		// تنظیم موجودیت فعلی
-		repoMock.Setup(r => r.FindSingle(x => x.id == entityId))
+		repoMock.Setup(r => r.FindSingle(x => x.id == entityId, null))
 				.ReturnsAsync(existingEntity);
 
 		// تنظیم شکست Commit
@@ -154,7 +154,7 @@ public static class EditHandlerTestHelper
 		Assert.Equal(500, result.response_code);
 
 		// بررسی اینکه FindSingle و CommitAsync هر دو یکبار صدا زده شده‌اند
-		repoMock.Verify(r => r.FindSingle(x => x.id == entityId), Times.Once);
+		repoMock.Verify(r => r.FindSingle(x => x.id == entityId, null), Times.Once);
 		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
 	}
 }

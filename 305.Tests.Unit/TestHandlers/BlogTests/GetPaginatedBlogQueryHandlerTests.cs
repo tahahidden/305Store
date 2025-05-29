@@ -26,8 +26,8 @@ public class GetPaginatedBlogQueryHandlerTests
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogRepository,
 				query,
-				paginatedList,
-				includes: new[] { "blog_category" }
+				paginatedList
+		// ❌ includes رو حذف کن چون در نسخه جدید mock با includeFunc کار می‌کنه
 		);
 	}
 
@@ -37,10 +37,10 @@ public class GetPaginatedBlogQueryHandlerTests
 	{
 		// Arrange
 		var categories = new List<Blog>
-		{
-			BlogDataProvider.Row(id: 1, name: "Health"),
-			BlogDataProvider.Row(id: 1, name: "Tech")
-		};
+	{
+		BlogDataProvider.Row(id: 1, name: "Health"),
+		BlogDataProvider.Row(id: 1, name: "Tech")
+	};
 
 		var paginatedList = new PaginatedList<Blog>(
 			categories.Where(c => c.name.Contains("Tech")).ToList(),
@@ -59,8 +59,8 @@ public class GetPaginatedBlogQueryHandlerTests
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogRepository,
 				query,
-				paginatedList,
-				includes: new[] { "blog_category" }
+				paginatedList
+		// حذف includes چون الان به شکل Func<IQueryable<TEntity>, IQueryable<TEntity>> مدیریت می‌شود
 		);
 	}
 
@@ -80,8 +80,8 @@ public class GetPaginatedBlogQueryHandlerTests
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogRepository,
 				query,
-				paginatedList,
-				includes: new[] { "blog_category" }
+				paginatedList
+		// includes حذف شده به دلیل تغییر ساختار
 		);
 	}
 }

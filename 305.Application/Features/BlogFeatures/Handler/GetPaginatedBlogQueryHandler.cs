@@ -5,6 +5,7 @@ using _305.Application.Filters.Pagination;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace _305.Application.Features.BlogFeatures.Handler;
 
@@ -33,7 +34,7 @@ public class GetPaginatedBlogQueryHandler : IRequestHandler<GetPaginatedBlogQuer
 			uow => uow.BlogRepository.GetPagedResultAsync(
 				filter,
 				predicate: null,
-				includes: ["blog_category"]
+				includeFunc: q=>q.Include(x=>x.blog_category)
 			)
 		);
 	}

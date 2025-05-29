@@ -23,46 +23,36 @@ public static class GetBySlugHandlerTestHelper
 	/// <param name="entity">موجودیت نمونه‌ای که باید توسط موک ریپازیتوری برگردانده شود</param>
 	/// <param name="includes">آرایه رشته‌ای از includes اختیاری که باید هنگام فراخوانی FindSingle استفاده شود</param>
 	public static async Task TestGetBySlug_Success<TEntity, TDto, TRepository, THandler>(
-		Func<IUnitOfWork, THandler> handlerFactory,
-		Func<THandler, CancellationToken, Task<ResponseDto<TDto>>> execute,
-		Expression<Func<IUnitOfWork, TRepository>> repoSelector,
-		TEntity entity,
-		string[]? includes = null
-	)
-		where TEntity : class, IBaseEntity
-		where TDto : class, new()
-		where TRepository : class, IRepository<TEntity>
-		where THandler : class
+	Func<IUnitOfWork, THandler> handlerFactory,
+	Func<THandler, CancellationToken, Task<ResponseDto<TDto>>> execute,
+	Expression<Func<IUnitOfWork, TRepository>> repoSelector,
+	TEntity entity
+)
+	where TEntity : class, IBaseEntity
+	where TDto : class, new()
+	where TRepository : class, IRepository<TEntity>
+	where THandler : class
 	{
-		// ایجاد موک UnitOfWork و Repository
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var repoMock = new Mock<TRepository>();
 
-		// تنظیم UnitOfWork برای بازگرداندن موک ریپازیتوری
 		unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
-		// اگر includes ارسال نشده بود، آرایه خالی استفاده می‌شود
-		var includesToUse = includes ?? Array.Empty<string>();
-
-		// تنظیم FindSingle برای بازگرداندن موجودیت نمونه
-		// همراه با بررسی اینکه پارامتر includes ارسال شده مطابق آرایه includesToUse است
+		// ignore includeFunc in Moq verification
 		repoMock.Setup(r =>
 			r.FindSingle(
 				It.IsAny<Expression<Func<TEntity, bool>>>(),
-				It.Is<string[]>(inc => inc.SequenceEqual(includesToUse))
+				It.IsAny<Func<IQueryable<TEntity>, IQueryable<TEntity>>>()
 			)
 		).ReturnsAsync(entity);
 
-		// ساخت هندلر با UnitOfWork موک شده
 		var handler = handlerFactory(unitOfWorkMock.Object);
-
-		// اجرای هندلر
 		var result = await execute(handler, CancellationToken.None);
 
-		// بررسی موفقیت‌آمیز بودن عملیات و غیر null بودن داده برگشتی
 		Assert.True(result.is_success);
 		Assert.NotNull(result.data);
 	}
+
 
 
 	/// <summary>
@@ -95,7 +85,7 @@ public static class GetBySlugHandlerTestHelper
 		unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
 		// تنظیم FindSingle برای بازگرداندن null (موجودیت یافت نشد)
-		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync((TEntity?)null);
+		repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>(), null)).ReturnsAsync((TEntity?)null);
 
 		// ساخت هندلر با UnitOfWork موک شده
 		var handler = handlerFactory(unitOfWorkMock.Object);

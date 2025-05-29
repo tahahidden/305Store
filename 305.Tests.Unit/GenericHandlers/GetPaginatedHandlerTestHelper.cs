@@ -25,47 +25,40 @@ public static class GetPaginatedHandlerTestHelper
 	/// <param name="expectedList">لیست صفحه‌بندی شده مورد انتظار برای مقایسه</param>
 	/// <param name="includes">آرایه رشته‌ای از includes اختیاری که هنگام فراخوانی GetPagedResultAsync ارسال می‌شود</param>
 	public static async Task TestPaginated_Success<TEntity, TRepository, THandler, TQuery>(
-		Func<IUnitOfWork, THandler> handlerFactory,
-		Func<THandler, TQuery, CancellationToken, Task<ResponseDto<PaginatedList<TEntity>>>> execute,
-		Expression<Func<IUnitOfWork, TRepository>> repoSelector,
-		TQuery query,
-		PaginatedList<TEntity> expectedList,
-		string[]? includes = null
-	)
-		where TEntity : class, IBaseEntity
-		where TRepository : class, IRepository<TEntity>
-		where THandler : class
+	Func<IUnitOfWork, THandler> handlerFactory,
+	Func<THandler, TQuery, CancellationToken, Task<ResponseDto<PaginatedList<TEntity>>>> execute,
+	Expression<Func<IUnitOfWork, TRepository>> repoSelector,
+	TQuery query,
+	PaginatedList<TEntity> expectedList
+)
+	where TEntity : class, IBaseEntity
+	where TRepository : class, IRepository<TEntity>
+	where THandler : class
 	{
-		// ساخت موک‌های UnitOfWork و Repository
+		// ساخت موک UnitOfWork و Repository
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var repoMock = new Mock<TRepository>();
 
-		// تنظیم UnitOfWork برای بازگرداندن موک ریپازیتوری
 		unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
-		// اگر includes ارسال نشده بود، آرایه خالی استفاده می‌شود
-		var includesToUse = includes ?? Array.Empty<string>();
+		// ستاپ متد GetPagedResultAsync با includeFunc به عنوان پارامتر
+		repoMock.Setup(r =>
+			r.GetPagedResultAsync(
+				It.IsAny<DefaultPaginationFilter>(),
+				It.IsAny<Expression<Func<TEntity, bool>>>(),
+				It.IsAny<Func<IQueryable<TEntity>, IQueryable<TEntity>>>()
+			)
+		).ReturnsAsync(expectedList);
 
-		// تنظیم متد GetPagedResultAsync برای بازگرداندن لیست صفحه‌بندی شده نمونه
-		repoMock.Setup(r => r.GetPagedResultAsync(
-			It.IsAny<DefaultPaginationFilter>(),               // فیلتر صفحه‌بندی (مهم نیست دقیقاً چه باشد)
-			It.IsAny<Expression<Func<TEntity, bool>>>(),        // شرط فیلتر (مهم نیست دقیقاً چه باشد)
-			It.Is<string[]>(i => i.SequenceEqual(includesToUse)) // includes ارسالی باید مطابق آرایه includesToUse باشد
-		)).ReturnsAsync(expectedList);
-
-		// ساخت هندلر با UnitOfWork موک شده
+		// ساخت هندلر
 		var handler = handlerFactory(unitOfWorkMock.Object);
 
-		// اجرای هندلر با کوئری و CancellationToken.None
+		// اجرای هندلر
 		var result = await execute(handler, query, CancellationToken.None);
 
-		// بررسی موفقیت‌آمیز بودن عملیات
+		// بررسی موفقیت‌آمیز بودن پاسخ
 		Assert.True(result.is_success);
-
-		// بررسی عدم null بودن داده برگشتی
 		Assert.NotNull(result.data);
-
-		// بررسی تعداد آیتم‌های برگشتی با تعداد آیتم‌های لیست مورد انتظار تطابق دارد
 		Assert.Equal(expectedList.Data.Count, result.data.Data.Count);
 	}
 }

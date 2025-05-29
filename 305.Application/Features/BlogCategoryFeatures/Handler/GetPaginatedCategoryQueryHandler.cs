@@ -32,8 +32,7 @@ public class GetPaginatedCategoryQueryHandler : IRequestHandler<GetPaginatedCate
 		return await _handler.Handle<BlogCategory>(
 			uow => uow.BlogCategoryRepository.GetPagedResultAsync(
 				filter,
-				predicate: null,
-				includes: Array.Empty<string>()
+				predicate: null
 			)
 		);
 	}
