@@ -60,7 +60,7 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
 			   await _unitOfWork.BlogRepository.AddAsync(entity);
 			   return slug;
 		   },
-		   createMessage: null,
+		   successMessage: null,
 		   cancellationToken: cancellationToken
 	   );
 	}

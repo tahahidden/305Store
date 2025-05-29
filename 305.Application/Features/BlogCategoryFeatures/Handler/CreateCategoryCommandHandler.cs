@@ -45,7 +45,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 				await _unitOfWork.BlogCategoryRepository.AddAsync(entity);
 				return slug;
 			},
-			createMessage: null,
+			successMessage: null,
 			cancellationToken: cancellationToken
 		);
 	}
