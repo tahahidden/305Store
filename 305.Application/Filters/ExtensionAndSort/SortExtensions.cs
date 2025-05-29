@@ -1,7 +1,7 @@
 ﻿using _305.BuildingBlocks.Enums;
 using _305.Domain.Common;
 
-namespace _305.Application.Base.ExtensionAndSort;
+namespace _305.Application.Filters.ExtensionAndSort;
 /// <summary>
 /// کلاس اکستنشن برای اعمال مرتب‌سازی روی IQueryable
 /// </summary>

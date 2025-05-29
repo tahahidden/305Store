@@ -1,4 +1,4 @@
-﻿using _305.Application.Base.Pagination;
+﻿using _305.Application.Filters.Pagination;
 using _305.Domain.Common;
 using System.Linq.Expressions;
 

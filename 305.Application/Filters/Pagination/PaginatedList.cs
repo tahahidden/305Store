@@ -1,4 +1,4 @@
-﻿namespace _305.Application.Base.Pagination;
+﻿namespace _305.Application.Filters.Pagination;
 
 // کلاس لیست صفحه‌بندی شده برای نتایج قابل صفحه‌بندی
 public class PaginatedList<T>

@@ -1,7 +1,7 @@
-﻿using _305.Application.Base.Pagination;
+﻿using _305.Application.Filters.Pagination;
 using _305.Domain.Common;
 
-namespace _305.Application.Base.ExtensionAndSort;
+namespace _305.Application.Filters.ExtensionAndSort;
 
 /// <summary>
 /// کلاس اکستنشن برای اعمال فیلتر روی کوئری‌های IQueryable

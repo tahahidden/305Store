@@ -1,5 +1,5 @@
-﻿using _305.Application.Base.ExtensionAndSort;
-using _305.Application.Base.Pagination;
+﻿using _305.Application.Filters.ExtensionAndSort;
+using _305.Application.Filters.Pagination;
 using _305.Application.IBaseRepository;
 using _305.Domain.Common;
 using _305.Infrastructure.Persistence;
