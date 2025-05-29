@@ -22,7 +22,8 @@ public class CreateCategoryCommandHandlerTests
             handlerFactory: uow => new CreateCategoryCommandHandler(uow),
             execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
             command: BlogCategoryDataProvider.Create(),
-            repoSelector: uow => uow.BlogCategoryRepository
+            repoSelector: uow => uow.BlogCategoryRepository,
+            expectedNameForExistsCheck : "name"
         );
     }
 

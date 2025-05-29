@@ -31,8 +31,9 @@ public class CreateBlogCommandHandlerTests
                 image_file = file,
                 image_alt = ""
             },
-            repoSelector: uow => uow.BlogRepository
-        );
+            repoSelector: uow => uow.BlogRepository,
+            expectedNameForExistsCheck: "Test Blog"
+		);
     }
 
     [Fact]

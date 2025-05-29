@@ -1,6 +1,7 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
+using _305.BuildingBlocks.Helper;
 using _305.Domain.Common;
 using Moq;
 using System.Linq.Expressions;
@@ -8,63 +9,70 @@ using System.Linq.Expressions;
 namespace _305.Tests.Unit.GenericHandlers;
 public static class CreateHandlerTestHelper
 {
-    public static async Task TestCreateSuccess<TCommand, TEntity, TRepository, THandler>(
-    Func<IUnitOfWork, THandler> handlerFactory, // تابعی که یک هندلر را با UnitOfWork می‌سازد
-    Func<THandler, TCommand, CancellationToken, Task<ResponseDto<string>>> execute, // تابعی که هندلر را اجرا می‌کند و نتیجه برمی‌گرداند
-    TCommand command, // کامند ورودی که باید تست شود
-    Expression<Func<IUnitOfWork, TRepository>> repoSelector, // تعیین می‌کند از UnitOfWork کدام ریپازیتوری انتخاب شود
-    Action<Mock<TRepository>>? setupRepoMock = null // تنظیمات اضافی اختیاری روی ریپازیتوری mock
+	public static async Task TestCreateSuccess<TCommand, TEntity, TRepository, THandler>(
+	Func<IUnitOfWork, THandler> handlerFactory,
+	Func<THandler, TCommand, CancellationToken, Task<ResponseDto<string>>> execute,
+	TCommand command,
+	Expression<Func<IUnitOfWork, TRepository>> repoSelector,
+	Action<Mock<TRepository>>? setupRepoMock = null,
+	string? expectedNameForExistsCheck = null // مقدار مورد انتظار برای چک کردن شرط ExistsAsync
 )
-    where TEntity : class, IBaseEntity // موجودیت باید از IBaseEntity ارث ببرد
-    where TRepository : class, IRepository<TEntity> // ریپازیتوری باید از IRepository<TEntity> ارث ببرد
-    where THandler : class // هندلر باید کلاس باشد
-    {
-        // ایجاد mock از UnitOfWork
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+	where TEntity : class, IBaseEntity
+	where TRepository : class, IRepository<TEntity>
+	where THandler : class
+	{
+		// ایجاد mock از UnitOfWork و Repository
+		var unitOfWorkMock = new Mock<IUnitOfWork>();
+		var repoMock = new Mock<TRepository>();
 
-        // ایجاد mock از ریپازیتوری
-        var repoMock = new Mock<TRepository>();
+		// وصل کردن Repository mock به UnitOfWork mock
+		unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
-        // اتصال ریپازیتوری mock به UnitOfWork mock
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+		// اگر مقدار مورد انتظار برای شرط چک موجودیت داده شده، 
+		// شرط ExistsAsync را با بررسی ExpressionHelper تنظیم کن
+		if (!string.IsNullOrEmpty(expectedNameForExistsCheck))
+		{
+			repoMock.Setup(r => r.ExistsAsync(It.Is<Expression<Func<TEntity, bool>>>(expr =>
+				ExpressionHelper.CheckExpressionForName(expr, expectedNameForExistsCheck)
+			))).ReturnsAsync(false);
+		}
+		else
+		{
+			// پیش‌فرض: موجودیت مشابه وجود ندارد
+			repoMock.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync(false);
+		}
 
-        // شبیه‌سازی: موجودیت تکراری وجود ندارد
-        repoMock.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync(false);
+		// شبیه‌سازی افزودن موجودیت موفق
+		repoMock.Setup(r => r.AddAsync(It.IsAny<TEntity>())).Returns(Task.CompletedTask);
 
-        // شبیه‌سازی: افزودن موجودیت با موفقیت انجام می‌شود
-        repoMock.Setup(r => r.AddAsync(It.IsAny<TEntity>())).Returns(Task.CompletedTask);
+		// شبیه‌سازی Commit موفق
+		unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        // شبیه‌سازی: Commit در UnitOfWork با موفقیت انجام می‌شود
-        unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+		// اعمال تنظیمات اضافی روی repoMock (در صورت ارسال)
+		setupRepoMock?.Invoke(repoMock);
 
-        // اجرای تنظیمات سفارشی روی ریپازیتوری mock (در صورت وجود)
-        setupRepoMock?.Invoke(repoMock);
+		// ساخت Handler با UnitOfWork mock
+		var handler = handlerFactory(unitOfWorkMock.Object);
 
-        // ساخت هندلر با استفاده از UnitOfWork mock
-        var handler = handlerFactory(unitOfWorkMock.Object);
+		// اجرای Command روی Handler و گرفتن نتیجه
+		var result = await execute(handler, command, CancellationToken.None);
 
-        // اجرای Command روی هندلر و دریافت نتیجه
-        var result = await execute(handler, command, CancellationToken.None);
+		// بررسی نتیجه موفقیت‌آمیز بودن عملیات
+		Assert.True(result.is_success);
+		Assert.Equal(201, result.response_code);
+		Assert.NotNull(result.data);
 
-        // بررسی: نتیجه موفقیت‌آمیز بوده باشد
-        Assert.True(result.is_success);
+		// بررسی اینکه AddAsync دقیقاً یک بار فراخوانی شده
+		repoMock.Verify(r => r.AddAsync(It.IsAny<TEntity>()), Times.Once);
 
-        // بررسی: کد وضعیت باید 201 Created باشد
-        Assert.Equal(201, result.response_code);
-
-        // بررسی: داده‌ی برگشتی نباید null باشد
-        Assert.NotNull(result.data);
-
-        // بررسی اینکه AddAsync دقیقاً یک بار صدا زده شده باشد
-        repoMock.Verify(r => r.AddAsync(It.IsAny<TEntity>()), Times.Once);
-
-        // بررسی اینکه CommitAsync دقیقاً یک بار صدا زده شده باشد
-        unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
+		// بررسی اینکه CommitAsync دقیقاً یک بار فراخوانی شده
+		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
+	}
 
 
 
-    public static async Task TestCreateFailure<TCommand, TEntity, TRepository, THandler>(
+
+	public static async Task TestCreateFailure<TCommand, TEntity, TRepository, THandler>(
        Func<IUnitOfWork, THandler> handlerFactory, // تابعی برای ساخت Handler با UnitOfWork
        Func<THandler, TCommand, CancellationToken, Task<ResponseDto<string>>> execute, // تابعی برای اجرای Command روی Handler
        TCommand command, // کامندی که باید تست شود
