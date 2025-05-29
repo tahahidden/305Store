@@ -46,8 +46,6 @@ builder.Services.Configure<LockoutConfig>(
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");
-var jwtConfig = jwtSection.Get<SecurityTokenConfig>();
-builder.Services.AddSingleton(jwtConfig);
 
 builder.Services.AddControllers(options =>
 {
