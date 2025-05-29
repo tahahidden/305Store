@@ -115,7 +115,7 @@ public static class Responses
         {
             data = data,
             is_success = false,
-            message = message ?? Messages.Validate(propName),
+            message = message ?? Messages.Required(propName),
             response_code = code
         };
     }
