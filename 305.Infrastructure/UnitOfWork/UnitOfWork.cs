@@ -12,10 +12,12 @@ public class UnitOfWork : IUnitOfWork
 		_context = context;
 		BlogCategoryRepository = new BlogCategoryRepository(_context);
 		BlogRepository = new BlogRepository(_context);
+		TokenBlacklistRepository = new TokenBlacklistRepository(context);
 	}
 
 	public IBlogCategoryRepository BlogCategoryRepository { get; }
 	public IBlogRepository BlogRepository { get; }
+	public ITokenBlacklistRepository TokenBlacklistRepository { get; set; }
 	/// <summary>
 	/// تلاش برای ذخیره‌سازی تمامی تغییرات در پایگاه داده در قالب یک تراکنش.
 	/// در صورت بروز خطا، تراکنش برگشت داده می‌شود (Rollback).
