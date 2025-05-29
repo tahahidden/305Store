@@ -1,51 +1,84 @@
 ﻿namespace _305.BuildingBlocks.Text;
 
 /// <summary>
-/// کلاس ثابت پیام‌ها برای استفاده در برنامه
-/// شامل پیام‌های عمومی موفقیت، خطا، عدم وجود، وجود و ...
+/// کلاس ثابت برای نگهداری پیام‌های عمومی برنامه.
+/// این کلاس به صورت ساختاریافته (دسته‌بندی شده) پیام‌ها را در گروه‌های مختلف مانند وضعیت، اعتبارسنجی و موجودیت‌ها نگهداری می‌کند.
 /// </summary>
 public static class Messages
 {
-    /// <summary>
-    /// پیام خطای غیرمنتظره
-    /// </summary>
-    public static string ExceptionFail() => "خطایی غیر منتظره رخ داد لطفا دوباره تلاش کنید";
+	/// <summary>
+	/// پیام‌های مربوط به وضعیت عملیات‌ها مانند موفقیت، شکست، خطا و ...
+	/// </summary>
 
-    /// <summary>
-    /// پیام عملیات ناموفق
-    /// </summary>
-    public static string Fail() => "عملیات ناموفق بود";
+	#region status
 
-    /// <summary>
-    /// پیام عملیات موفق
-    /// </summary>
-    public static string Success() => "عملیات موفق بود";
+	/// <summary>
+	/// پیام موفقیت‌آمیز بودن عملیات
+	/// </summary>
+	public static string Success(string message = "عملیات موفق بود") => message;
 
-    /// <summary>
-    /// پیام وقتی آیتم مورد نظر پیدا نشد
-    /// اگر نام آیتم مشخص باشد، آن را نمایش می‌دهد، در غیر اینصورت پیام کلی می‌دهد
-    /// </summary>
-    public static string NotFound(string? name) =>
-        !string.IsNullOrWhiteSpace(name) ? $"{name} پیدا نشد" : "آیتم پیدا نشد";
+	/// <summary>
+	/// پیام شکست عملیات
+	/// </summary>
+	public static string Fail(string message = "عملیات ناموفق بود") => message;
 
-    /// <summary>
-    /// پیام وقتی آیتم با مشخصه‌ای وجود دارد
-    /// اگر نام آیتم مشخص باشد، آن را نمایش می‌دهد، در غیر اینصورت پیام کلی می‌دهد
-    /// </summary>
-    /// <param name="name">نام آیتم</param>
-    /// <param name="property">نام ویژگی یا مشخصه‌ای که چک شده</param>
-    public static string Exist(string? name, string property) =>
-        !string.IsNullOrWhiteSpace(name) ? $"{name} با این {property} وجود دارد" : $"آیتم با این {property} وجود دارد";
+	/// <summary>
+	/// پیام خطای غیرمنتظره برای مواردی که استثنایی رخ داده است
+	/// </summary>
+	public static string ExceptionFail(string message = "خطایی غیر منتظره رخ داد لطفا دوباره تلاش کنید") => message;
 
-    /// <summary>
-    /// پیام تغییر وضعیت آیتم
-    /// </summary>
-    /// <param name="name">نام آیتم یا وضعیت</param>
-    public static string ChangeStatus(string name) => $"وضعیت {name} تغییر کرد";
+	/// <summary>
+	/// پیام تغییر وضعیت یک آیتم (مانند کاربر، سفارش و ...)
+	/// </summary>
+	/// <param name="name">نام وضعیت یا آیتم مورد نظر</param>
+	public static string Change(string name) => $"وضعیت {name} تغییر کرد";
 
-    /// <summary>
-    /// پیام اعتبارسنجی برای مقدار وارد نشده
-    /// </summary>
-    /// <param name="name">نام فیلد یا مقدار مورد نظر</param>
-    public static string Validate(string name) => $"مقدار {name} را وارد کنید";
+	#endregion
+
+
+	/// <summary>
+	/// پیام‌های مربوط به اعتبارسنجی (Validation)
+	/// </summary>
+	#region Validation
+
+	/// <summary>
+	/// پیام برای زمانی که مقدار فیلدی وارد نشده باشد
+	/// </summary>
+	/// <param name="name">نام فیلد یا ویژگی</param>
+	public static string Required(string name) => $"مقدار {name} را وارد کنید";
+	#endregion
+
+	/// <summary>
+	/// پیام‌های مربوط به موجودیت‌ها (Entities)، مانند پیدا نشدن، وجود داشتن، ایجاد، حذف و ...
+	/// </summary>
+	#region Entity
+	/// <summary>
+	/// پیام وقتی آیتم مورد نظر پیدا نشود
+	/// </summary>
+	/// <param name="name">نام آیتم مورد نظر (اختیاری)</param>
+	public static string NotFound(string? name) =>
+		!string.IsNullOrWhiteSpace(name) ? $"{name} پیدا نشد" : "آیتم پیدا نشد";
+
+	/// <summary>
+	/// پیام وقتی آیتمی با یک ویژگی خاص قبلاً ثبت شده باشد (تکراری بودن)
+	/// </summary>
+	/// <param name="name">نام آیتم</param>
+	/// <param name="property">نام ویژگی یا مشخصه تکراری (مثل ایمیل، کد ملی)</param>
+	public static string Exist(string? name, string property) =>
+		!string.IsNullOrWhiteSpace(name) ? $"{name} با این {property} وجود دارد" : $"آیتم با این {property} وجود دارد";
+
+	/// <summary>
+	/// پیام زمانی که آیتمی با موفقیت ایجاد می‌شود
+	/// </summary>
+	/// <param name="name">نام آیتم (اختیاری)</param>
+	public static string Created(string? name = null) =>
+		!string.IsNullOrWhiteSpace(name) ? $"{name} با موفقیت ایجاد شد" : "آیتم با موفقیت ایجاد شد";
+
+	/// <summary>
+	/// پیام زمانی که آیتمی با موفقیت حذف می‌شود
+	/// </summary>
+	/// <param name="name">نام آیتم (اختیاری)</param>
+	public static string Deleted(string? name = null) =>
+		!string.IsNullOrWhiteSpace(name) ? $"{name} با موفقیت حذف شد" : "آیتم با موفقیت حذف شد";
+	#endregion
 }

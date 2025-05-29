@@ -4,23 +4,26 @@ using _305.BuildingBlocks.Text;
 namespace _305.BuildingBlocks.Security;
 
 /// <summary>
-/// کلاس ایستا برای تولید SecurityStamp (مهر امنیتی) به‌صورت تصادفی و امن
+/// کلاس ایستا برای تولید SecurityStamp تصادفی و امن
 /// </summary>
 public static class StampGenerator
 {
-    /// <summary>
-    /// ایجاد مهر امنیتی تصادفی با طول مشخص و حروف و اعداد مجاز
-    /// </summary>
-    /// <param name="length">تعداد کاراکترهای مهر امنیتی</param>
-    /// <returns>رشته‌ای متشکل از حروف و اعداد به صورت حروف بزرگ</returns>
-    public static string CreateSecurityStamp(int length)
-    {
-        // بررسی اینکه طول مهر معتبر باشد (بزرگتر از صفر)
-        if (length <= 0)
-            throw new ArgumentOutOfRangeException(nameof(length), "طول باید بیشتر از صفر باشد.");
+	/// <summary>
+	/// ایجاد مهر امنیتی تصادفی با کاراکترهای مجاز قابل انتخاب (پیش‌فرض: حروف و اعداد)
+	/// </summary>
+	/// <param name="length">طول مهر (باید > 0 باشد)</param>
+	/// <param name="allowedChars">کاراکترهای مجاز (پیش‌فرض: AlphanumericCase)</param>
+	/// <returns>رشته‌ای امن و تصادفی با حروف بزرگ</returns>
+	public static string CreateSecurityStamp(int length, string? allowedChars = null)
+	{
+		if (length <= 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "طول باید بیشتر از صفر باشد.");
 
-        return RandomGenerator
-            .GenerateString(length, AllowedCharacters.AlphanumericCase) // استفاده از کاراکترهای الفبا و عددی
-            .ToUpperInvariant(); // تبدیل به حروف بزرگ برای یکنواختی
-    }
+		var chars = allowedChars ?? AllowedCharacters.AlphanumericCase;
+
+		// تولید رشته تصادفی با استفاده از RandomGenerator و تبدیل به حروف بزرگ
+		return RandomGenerator
+			.GenerateString(length, chars)
+			.ToUpperInvariant();
+	}
 }
