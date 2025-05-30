@@ -42,8 +42,7 @@ public class BlogCategoryAPITests : ControllerBaseTests
 		formData.Add(new StringContent(authorName), "name");
 		formData.Add(new StringContent(authorName), "description");
 
-		var httpResponseMessage = _httpClient.PostAsync(ur
-			l + "/create", formData).Result;
+		var httpResponseMessage = _httpClient.PostAsync(url + "/create", formData).Result;
 
 		//Assert
 		httpResponseMessage.StatusCode.Should().Be(httpStatusCode);
