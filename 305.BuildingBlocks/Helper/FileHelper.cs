@@ -46,8 +46,13 @@ public static class FileHelper
 	/// <param name="imageUrl">آدرس کامل فایل تصویری که باید حذف شود</param>
 	public static void DeleteImage(string imageUrl)
 	{
-		// فقط بخش مسیر بعد از دامنه (یعنی /images/abc.jpg)
-		var relativePath = new Uri(imageUrl).AbsolutePath.TrimStart('/');
+		if (string.IsNullOrWhiteSpace(imageUrl))
+			return;
+
+		// اگر آدرس کامل بود (مثلاً با http شروع شد)، فقط مسیر را استخراج می‌کنیم
+		var relativePath = imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+			? new Uri(imageUrl).AbsolutePath.TrimStart('/')
+			: imageUrl.TrimStart('/');
 
 		// ساخت مسیر فیزیکی کامل روی سرور
 		var fullImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);

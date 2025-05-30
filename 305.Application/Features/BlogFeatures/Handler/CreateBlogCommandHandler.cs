@@ -5,6 +5,7 @@ using _305.Application.Base.Validator;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
+using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using MediatR;
 
@@ -14,11 +15,13 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
 {
 	private readonly CreateHandler _handler;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly IFileService _fileService;
 
-	public CreateBlogCommandHandler(IUnitOfWork unitOfWork)
+	public CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService)
 	{
 		_unitOfWork = unitOfWork;
 		_handler = new CreateHandler(unitOfWork);
+		_fileService = fileService;
 	}
 
 	public async Task<ResponseDto<string>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
@@ -28,7 +31,7 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
 
 		if (request.image_file != null)
 		{
-			var result = await FileHelper.UploadImage(request.image_file);
+			var result = await _fileService.UploadImage(request.image_file);
 			request.image = result;
 		}
 		else

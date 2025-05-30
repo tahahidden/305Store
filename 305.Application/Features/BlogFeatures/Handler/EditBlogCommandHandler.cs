@@ -5,6 +5,7 @@ using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
+using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using MediatR;
 
@@ -15,11 +16,13 @@ public class EditBlogCommandHandler : IRequestHandler<EditBlogCommand, ResponseD
 	private readonly EditHandler<EditBlogCommand, Blog> _handler;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IRepository<Blog> _repository;
-	public EditBlogCommandHandler(IUnitOfWork unitOfWork, IRepository<Blog> repository)
+	private readonly IFileService _fileService;
+	public EditBlogCommandHandler(IUnitOfWork unitOfWork, IRepository<Blog> repository, IFileService fileService)
 	{
 		_unitOfWork = unitOfWork;
 		_handler = new EditHandler<EditBlogCommand, Blog>(unitOfWork, repository);
 		_repository = repository;
+		_fileService = fileService;
 	}
 
 	public async Task<ResponseDto<string>> Handle(EditBlogCommand request, CancellationToken cancellationToken)
@@ -52,9 +55,9 @@ public class EditBlogCommandHandler : IRequestHandler<EditBlogCommand, ResponseD
 				if (request.image_file != null && request.image_file.Length > 0)
 				{
 					if (!string.IsNullOrEmpty(entity.image))
-						FileHelper.DeleteImage(entity.image);
+						_fileService.DeleteImage(entity.image);
 
-					var result = await FileHelper.UploadImage(request.image_file);
+					var result = await _fileService.UploadImage(request.image_file);
 					if (!string.IsNullOrEmpty(result))
 						request.image = result;
 				}

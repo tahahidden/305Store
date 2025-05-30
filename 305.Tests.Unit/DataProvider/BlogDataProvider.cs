@@ -42,11 +42,11 @@ internal static class BlogDataProvider
 		show_blog = true,
 		meta_description = "Test",
 		slug = null,
-		image = "test.jpg",
+		image = null,
 	};
 
 
-	public static Blog Row(string name = "name", long id = 1, string slug = "slug")
+	public static Blog Row(string name = "name", long id = 1, string slug = "slug", string image = "image.jpg")
 	=> new Blog()
 	{
 		id = id,
@@ -61,7 +61,7 @@ internal static class BlogDataProvider
 		show_blog = true,
 		meta_description = "Test",
 		slug = slug,
-		image = "test.jpg",
+		image = image,
 		created_at = DateTime.Now,
 		blog_category = BlogCategoryDataProvider.Row()
 	};
