@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-public class BlogBlogControllerTests : IClassFixture<CustomWebApplicationFactory>
+public class BlogBlogControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
 	private readonly HttpClient _client;
 
-	public BlogBlogControllerTests(CustomWebApplicationFactory factory)
+	public BlogBlogControllerTests(CustomWebApplicationFactory<Program> factory)
 	{
 		_client = factory.CreateClient();
 	}

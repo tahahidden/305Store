@@ -38,8 +38,8 @@ public class ApplicationDbContext : DbContext
 	/// </summary>
 	private void SeedData(ModelBuilder modelBuilder)
 	{
+		modelBuilder.Entity<User>().HasData(UserSeed.All);
 		modelBuilder.Entity<Role>().HasData(RoleSeed.All);
 		modelBuilder.Entity<UserRole>().HasData(UserRoleSeed.All);
-		modelBuilder.Entity<User>().HasData(UserSeed.All);
 	}
 }

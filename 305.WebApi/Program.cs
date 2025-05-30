@@ -65,18 +65,7 @@ builder.Services.AddControllers()
 	});
 
 // ─────────────── Environment-specific DB setup ───────────────
-if (!builder.Environment.IsEnvironment("Test"))
-{
-	string connectionString = builder.Configuration.GetConnectionString("TestDbConnection");
-
-	builder.Services.AddDbContext<ApplicationDbContext>(options =>
-		options.UseSqlServer(connectionString).EnableDetailedErrors());
-
-	// Hangfire (هم به SQL نیاز داره)
-	builder.Services.AddHangfire(config => config.UseSqlServerStorage(connectionString));
-	builder.Services.AddHangfireServer();
-}
-else
+if (!builder.Environment.IsEnvironment("Test")) // این شرط بسیار مهم است
 {
 	string connectionString = builder.Environment.IsDevelopment()
 	? builder.Configuration.GetConnectionString("ServerDbConnection")

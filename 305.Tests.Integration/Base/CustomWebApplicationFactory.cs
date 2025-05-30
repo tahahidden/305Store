@@ -6,33 +6,35 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace _305.Tests.Integration.Base;
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
 	protected override void ConfigureWebHost(IWebHostBuilder builder)
 	{
+		builder.UseEnvironment("Test"); // مهم
+
 		builder.ConfigureServices(services =>
 		{
-			// حذف همه‌ی سرویس‌هایی که AppDbContext ثبت کرده
-			var dbContextDescriptors = services
-				.Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>))
-				.ToList();
+			// حذف DbContextهای ثبت‌شده
+			var descriptor = services.SingleOrDefault(
+				d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
-			foreach (var descriptor in dbContextDescriptors)
+			if (descriptor != null)
 				services.Remove(descriptor);
 
-			// ثبت مجدد با InMemory
+			// افزودن InMemory DB
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
 				options.UseInMemoryDatabase("TestDb");
 			});
 
-			// ساختن Provider جدید
+			// ساخت provider جدید و Seed (اختیاری)
 			var sp = services.BuildServiceProvider();
-
 			using var scope = sp.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-			db.Database.EnsureDeleted(); // برای اطمینان
+			db.Database.EnsureDeleted();
 			db.Database.EnsureCreated();
 		});
 	}
 }
+
+
