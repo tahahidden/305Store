@@ -31,7 +31,7 @@ public class BlogController(IMediator mediator) : BaseController(mediator)
 
 	[HttpGet("get")]
 	public Task<IActionResult> GetBySlug([FromForm] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
-		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); // چون از FromForm استفاده کردی، همچنان باید اعتبارسنجی بشه
+		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); 
 
 	[HttpPost("delete")]
 	public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
