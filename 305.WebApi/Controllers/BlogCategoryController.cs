@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _305.WebApi.Controllers;
-[Route("api/blog-Blog")]
+[Route("api/blog-category")]
 [ApiController]
 public class BlogBlogController(IMediator mediator) : BaseController(mediator)
 {

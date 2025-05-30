@@ -52,13 +52,14 @@ public abstract class ControllerBaseTests
     protected void ResetDatabase()
     {
         var sampleLibraryContext = GetContext();
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete BlacklistedToken");
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete Blog");
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete BlogCategory");
-		sampleLibraryContext.Database.ExecuteSqlRaw("delete Permission");
-		sampleLibraryContext.Database.ExecuteSqlRaw("delete Role");
-		sampleLibraryContext.Database.ExecuteSqlRaw("delete RolePermission");
-		sampleLibraryContext.Database.ExecuteSqlRaw("delete User");
-		sampleLibraryContext.Database.ExecuteSqlRaw("delete UserRole");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [BlacklistedToken]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [Blog]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [BlogCategory]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [Permission]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [Role]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [RolePermission]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [User]");
+		sampleLibraryContext.Database.ExecuteSqlRaw("DELETE FROM [UserRole]");
+
 	}
 }
