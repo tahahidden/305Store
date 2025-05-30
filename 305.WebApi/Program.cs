@@ -2,6 +2,8 @@
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
+using _305.BuildingBlocks.IService;
+using _305.BuildingBlocks.Service;
 using _305.Infrastructure.BaseRepository;
 using _305.Infrastructure.Persistence;
 using _305.Infrastructure.Service;
@@ -44,6 +46,7 @@ builder.Services.Configure<JwtConfig>(
 builder.Services.Configure<LockoutConfig>(
 	builder.Configuration.GetSection(LockoutConfig.SectionName));
 
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");

@@ -13,7 +13,7 @@ public static class FileHelper
 	/// <param name="file">فایل ارسالی از سمت کلاینت (فرم)</param>
 	/// <param name="folderName">نام پوشه‌ای که تصویر در آن ذخیره می‌شود (پیش‌فرض: images)</param>
 	/// <returns>مسیر فیزیکی کامل فایل ذخیره‌شده روی سرور</returns>
-	public static async Task<string> UploadImage(IFormFile file, string folderName = "images")
+	public static async Task<string> UploadImage(IFormFile file, HttpRequest request, string folderName = "images")
 	{
 		// مسیر کامل پوشه ذخیره‌سازی بر اساس مسیر فعلی پروژه
 		var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -34,17 +34,26 @@ public static class FileHelper
 			await file.CopyToAsync(stream);
 		}
 
-		return imagePath; // بازگرداندن مسیر فیزیکی تصویر ذخیره‌شده
+		var baseUrl = $"{request.Scheme}://{request.Host}";
+		var imageUrl = $"{baseUrl}/images/{newFileName}";
+
+		return imageUrl; // بازگرداندن مسیر فیزیکی تصویر ذخیره‌شده
 	}
 
 	/// <summary>
 	/// حذف فایل تصویر از مسیر مشخص
 	/// </summary>
-	/// <param name="imagePath">مسیر کامل فایل تصویری که باید حذف شود</param>
-	public static void DeleteImage(string imagePath)
+	/// <param name="imageUrl">آدرس کامل فایل تصویری که باید حذف شود</param>
+	public static void DeleteImage(string imageUrl)
 	{
+		// فقط بخش مسیر بعد از دامنه (یعنی /images/abc.jpg)
+		var relativePath = new Uri(imageUrl).AbsolutePath.TrimStart('/');
+
+		// ساخت مسیر فیزیکی کامل روی سرور
+		var fullImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
 		// اگر فایل وجود داشته باشد، آن را حذف می‌کنیم
-		if (File.Exists(imagePath))
-			File.Delete(imagePath);
+		if (File.Exists(fullImagePath))
+			File.Delete(fullImagePath);
 	}
 }
