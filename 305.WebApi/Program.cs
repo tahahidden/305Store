@@ -46,6 +46,7 @@ builder.Services.Configure<JwtConfig>(
 builder.Services.Configure<LockoutConfig>(
 	builder.Configuration.GetSection(LockoutConfig.SectionName));
 
+builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
