@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Claims;
 using System.Text;
@@ -46,7 +47,7 @@ builder.Services.Configure<LockoutConfig>(
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");
-
+var jwtConfig = jwtSection.Get<JwtConfig>();
 builder.Services.AddControllers(options =>
 {
 	options.RespectBrowserAcceptHeader = true; // به Accept header احترام بگذار
@@ -144,7 +145,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true,
 			ValidIssuer = jwtConfig.Issuer,
 			ValidAudience = jwtConfig.Audience,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SigningKey)),
 			NameClaimType = ClaimTypes.NameIdentifier // این خط را اضافه کنید تا `NameIdentifier` به درستی ست شود
 		};
 
