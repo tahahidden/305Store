@@ -1,8 +1,5 @@
 ﻿using _305.Application.IBaseRepository;
-using DataLayer;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using _305.Domain.Entity;
 
 namespace _305.Application.IRepository;
 public interface ITokenBlacklistRepository : IRepository<BlacklistedToken>

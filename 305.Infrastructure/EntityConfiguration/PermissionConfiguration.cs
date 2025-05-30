@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace _305.Domain.EntityConfiguration;
+namespace _305.Infrastructure.EntityConfiguration;
 public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
 {
 	public void Configure(EntityTypeBuilder<Permission> builder)

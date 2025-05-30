@@ -42,7 +42,7 @@ builder.Services.Configure<LockoutConfig>(
 	builder.Configuration.GetSection(LockoutConfig.SectionName));
 
 // ─────────────── Services and Repositories ───────────────
-builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -50,7 +50,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 var jwtSection = builder.Configuration.GetSection("JWT");
 var jwtConfig = jwtSection.Get<JwtConfig>();
 
-builder.Services.AddScoped<IDistributedCache>();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
 	options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -83,8 +83,8 @@ if (!builder.Environment.IsEnvironment("Test")) // این شرط بسیار مه
 	builder.Services.AddHangfireServer();
 }
 
-	// ─────────────── Swagger ───────────────
-	builder.Services.AddEndpointsApiExplorer();
+// ─────────────── Swagger ───────────────
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo

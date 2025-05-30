@@ -3,6 +3,11 @@
 namespace _305.Domain.Entity;
 public class RolePermission : BaseEntity
 {
+	public RolePermission()
+	{
+		role = new Role();
+		permission = new Permission();
+	}
 	public long role_id { get; set; }
 	public Role role { get; set; }
 

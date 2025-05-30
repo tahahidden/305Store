@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace _305.Domain.EntityConfiguration;
+namespace _305.Infrastructure.EntityConfiguration;
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
 	public void Configure(EntityTypeBuilder<User> builder)
@@ -24,7 +24,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 		builder
 			.HasMany(x => x.user_roles)
 			.WithOne(x => x.user)
-			.HasForeignKey(x => x.user_id)
+			.HasForeignKey(x => x.userid)
 			.OnDelete(DeleteBehavior.Cascade);
 
 		#endregion

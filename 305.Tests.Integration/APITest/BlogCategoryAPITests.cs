@@ -35,7 +35,7 @@ public class BlogCategoryAPITests : ControllerBaseTests
     [Theory]
     [TestCase("Robert C. Martin", HttpStatusCode.OK, 1)]
     [TestCase(null, HttpStatusCode.BadRequest, 0)]
-    public void Must_Add_Valid_Author(string authorName, HttpStatusCode httpStatusCode, int count)
+    public void Must_Add_Valid_Author(string? authorName, HttpStatusCode httpStatusCode, int count)
     {
         //Arrange
         var author = new CreateCategoryCommand { description = authorName , name = authorName};

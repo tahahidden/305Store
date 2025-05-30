@@ -12,7 +12,7 @@ public abstract class ControllerBaseTests
 {
     protected readonly HttpClient _httpClient;
     private readonly IServiceProvider _serviceProvider;
-    private const string connectionString = "Data Source =.;database=305_sample_test;Trusted_Connection=True;";
+    private const string connectionString = "Server=.;Database=305_test_db;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
     public ControllerBaseTests()
     {
@@ -39,6 +39,7 @@ public abstract class ControllerBaseTests
     {
         var sampleLibraryContext = GetContext();
         sampleLibraryContext.Database.Migrate();
+        
     }
 
     protected virtual void SeedData(params object[] data)
@@ -51,8 +52,13 @@ public abstract class ControllerBaseTests
     protected void ResetDatabase()
     {
         var sampleLibraryContext = GetContext();
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete book");
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete publisher");
-        sampleLibraryContext.Database.ExecuteSqlRaw("delete author");
-    }
+        sampleLibraryContext.Database.ExecuteSqlRaw("delete BlacklistedToken");
+        sampleLibraryContext.Database.ExecuteSqlRaw("delete Blog");
+        sampleLibraryContext.Database.ExecuteSqlRaw("delete BlogCategory");
+		sampleLibraryContext.Database.ExecuteSqlRaw("delete Permission");
+		sampleLibraryContext.Database.ExecuteSqlRaw("delete Role");
+		sampleLibraryContext.Database.ExecuteSqlRaw("delete RolePermission");
+		sampleLibraryContext.Database.ExecuteSqlRaw("delete User");
+		sampleLibraryContext.Database.ExecuteSqlRaw("delete UserRole");
+	}
 }

@@ -25,7 +25,7 @@ public class ApplicationDbContext : DbContext
 	{
 		// اعمال تمام پیکربندی‌های موجود در اسمبلی فعلی که از IEntityTypeConfiguration پیروی می‌کنند
 		modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+		
 		// اگر Seed Data دارید، اینجا اضافه کنید.
 		SeedData(modelBuilder);
 

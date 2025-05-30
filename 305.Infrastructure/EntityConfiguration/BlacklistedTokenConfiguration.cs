@@ -1,11 +1,11 @@
-﻿using DataLayer;
+﻿using _305.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace _305.Domain.EntityConfiguration;
+namespace _305.Infrastructure.EntityConfiguration;
 public class BlacklistedTokenConfiguration : IEntityTypeConfiguration<BlacklistedToken>
 {
 	public void Configure(EntityTypeBuilder<BlacklistedToken> builder)

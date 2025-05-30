@@ -1,6 +1,6 @@
 ﻿
 using _305.Application.IUOW;
-using DataLayer;
+using _305.Domain.Entity;
 
 namespace RaelState.Assistant;
 public class TokenBlacklistMiddleware

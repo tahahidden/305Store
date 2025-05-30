@@ -3,8 +3,8 @@
 namespace _305.Domain.Entity;
 public class UserRole : BaseEntity
 {
-	public long role_id { get; set; }
-	public long user_id { get; set; }
+	public long roleid { get; set; }
+	public long userid { get; set; }
 
 	public User user { get; set; }
 	public Role role { get; set; }

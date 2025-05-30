@@ -3,6 +3,10 @@
 namespace _305.Domain.Entity;
 public class Blog : BaseEntity
 {
+	public Blog()
+	{
+		blog_category = new BlogCategory();
+	}
 	public string description { get; set; } = default!;
 	public string image { get; set; } = default!;
 	public string image_alt { get; set; } = default!;
@@ -14,5 +18,5 @@ public class Blog : BaseEntity
 	public int estimated_read_time { get; set; }
 
 	public long blog_category_id { get; set; }
-	public BlogCategory blog_category { get; set; }
+	public BlogCategory blog_category { get; set; } 
 }

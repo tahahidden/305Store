@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace _305.Domain.EntityConfiguration;
+namespace _305.Infrastructure.EntityConfiguration;
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
 	public void Configure(EntityTypeBuilder<Role> builder)
@@ -17,7 +17,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 		builder
 			.HasMany(x => x.user_roles)
 			.WithOne(x => x.role)
-			.HasForeignKey(x => x.role_id)
+			.HasForeignKey(x => x.roleid)
 			.OnDelete(DeleteBehavior.Restrict);
 
 		#endregion
