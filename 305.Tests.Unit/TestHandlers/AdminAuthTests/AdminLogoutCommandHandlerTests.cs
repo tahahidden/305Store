@@ -6,6 +6,7 @@ using _305.Application.Features.AdminAuthFeatures.Command;
 using _305.Application.Features.AdminAuthFeatures.Handler;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
+using _305.Tests.Unit.DataProvider;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLogoutCommandHandlerTests
@@ -15,7 +16,7 @@ public class AdminLogoutCommandHandlerTests
 	public async Task Handle_ShouldReturnFail_WhenAuthorizationHeaderIsMissing()
 	{
 		// ساخت user با claim
-		var userId = "1";
+		const string userId = "1";
 		var claims = new List<Claim>
 	{
 		new Claim(ClaimTypes.NameIdentifier, userId)
@@ -24,8 +25,10 @@ public class AdminLogoutCommandHandlerTests
 		var principal = new ClaimsPrincipal(identity);
 
 		// ساخت کامل HttpContext با header و response
-		var context = new DefaultHttpContext();
-		context.User = principal;
+		var context = new DefaultHttpContext
+		{
+			User = principal
+		};
 		context.Request.Headers["Authorization"] = ""; // حذف هدر یا خالی گذاشتن
 		context.Response.Body = new MemoryStream();     // اگر نیاز به stream داری
 
@@ -36,12 +39,7 @@ public class AdminLogoutCommandHandlerTests
 		// Mock IUnitOfWork و برگشتن کاربر تستی
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
-			.ReturnsAsync(new User { id = int.Parse(userId) ,
-				mobile = "09333333333",
-				concurrency_stamp = "test",
-				security_stamp = "test",
-				email = "email@3053.com"
-			});
+			.ReturnsAsync(AdminUserDataProvider.Row(id: int.Parse(userId)));
 
 		// Handler
 		var handler = new AdminLogoutCommandHandler(unitOfWorkMock.Object, httpContextAccessorMock.Object);

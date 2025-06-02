@@ -6,6 +6,7 @@ using _305.Application.Features.AdminAuthFeatures.Handler;
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
+using _305.Tests.Unit.DataProvider;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminRefreshCommandHandlerTests
@@ -14,16 +15,7 @@ public class AdminRefreshCommandHandlerTests
 	public async Task Handle_ShouldReturnNewAccessToken_WhenRefreshTokenIsValid()
 	{
 		// Arrange
-		var user = new User
-		{
-			id = 1,
-			refresh_token = "valid_refresh_token",
-			refresh_token_expiry_time = DateTime.Now.AddMinutes(10),
-			mobile = "09333333333",
-			concurrency_stamp = "test",
-			security_stamp = "test",
-			email = "test@305.com"
-		};
+		var user = AdminUserDataProvider.Row();
 		var roles = new List<UserRole>
 	{
 		new UserRole { role = new Role { name = "Admin" } }

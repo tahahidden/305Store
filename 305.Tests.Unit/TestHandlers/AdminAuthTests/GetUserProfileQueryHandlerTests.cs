@@ -6,6 +6,7 @@ using _305.Application.Features.AdminAuthFeatures.Handler;
 using _305.Application.Features.AdminAuthFeatures.Query;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
+using _305.Tests.Unit.DataProvider;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class GetUserProfileQueryHandlerTests
@@ -14,13 +15,8 @@ public class GetUserProfileQueryHandlerTests
 	public async Task Handle_ShouldReturnUserProfile_WhenUserExists()
 	{
 		// Arrange
-		var userId = "1";
-		var user = new User { id = 1, name = "Ali Rezaei",
-			mobile = "09333333333",
-			concurrency_stamp = "test",
-			security_stamp = "test",
-			email = "test@305.com"
-		};
+		const string userId = "1";
+		var user = AdminUserDataProvider.Row(id:int.Parse(userId));
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -48,7 +44,7 @@ public class GetUserProfileQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnNotFound_WhenUserNotExists()
 	{
-		var userId = "1";
+		const string userId = "1";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -87,7 +83,7 @@ public class GetUserProfileQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnExceptionFail_WhenUnhandledExceptionOccurs()
 	{
-		var userId = "1";
+		const string userId = "1";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))

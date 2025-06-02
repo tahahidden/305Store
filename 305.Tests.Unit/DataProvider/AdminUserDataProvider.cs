@@ -1,4 +1,5 @@
-﻿using _305.Application.Features.AdminUserFeatures.Command;
+﻿using _305.Application.Features.AdminAuthFeatures.Command;
+using _305.Application.Features.AdminUserFeatures.Command;
 using _305.Application.Features.AdminUserFeatures.Query;
 using _305.Application.Features.AdminUserFeatures.Response;
 using _305.Application.Filters.Pagination;
@@ -8,7 +9,7 @@ namespace _305.Tests.Unit.DataProvider;
 public static class AdminUserDataProvider
 {
 	public static CreateAdminUserCommand Create(string name = "name")
-=> new CreateAdminUserCommand()
+=> new ()
 {
 	name = name,
 	created_at = DateTime.Now,
@@ -19,7 +20,7 @@ public static class AdminUserDataProvider
 };
 
 	public static EditAdminUserCommand Edit(string name = "name", long id = 1)
-		=> new EditAdminUserCommand()
+		=> new ()
 		{
 			id = id,
 			name = name,
@@ -31,7 +32,7 @@ public static class AdminUserDataProvider
 
 
 	public static User Row(string name = "name", long id = 1, string slug = "slug")
-	=> new User()
+	=> new ()
 	{
 		id = id,
 		email = "info@304.com",
@@ -55,19 +56,19 @@ public static class AdminUserDataProvider
 	};
 
 	public static DeleteAdminUserCommand Delete(long id = 1)
-		=> new DeleteAdminUserCommand()
+		=> new ()
 		{
 			id = id,
 		};
 
 	public static GetAdminUserBySlugQuery GetBySlug(string slug = "slug")
-	=> new GetAdminUserBySlugQuery()
+	=> new ()
 	{
 		slug = slug,
 	};
 
 	public static AdminUserResponse GetOne(string slug = "slug", string name = "name")
-		=> new AdminUserResponse()
+		=> new ()
 		{
 			id = 1,
 			name = name,
@@ -81,7 +82,7 @@ public static class AdminUserDataProvider
 		};
 
 	public static GetPaginatedAdminUserQuery GetByQueryFilter(string searchTerm = "")
-	=> new GetPaginatedAdminUserQuery()
+	=> new ()
 	{
 		Page = 1,
 		PageSize = 10,
@@ -89,10 +90,18 @@ public static class AdminUserDataProvider
 	};
 
 	public static PaginatedList<User> GetPaginatedList()
-	=> new PaginatedList<User>(new List<User>
+	=> new (new List<User>
 		{
 			Row(name: "Tech", id: 1, slug: "tech"),
 			Row(name: "Health", id: 2, slug: "health")
 		}
 	, count: 2, page: 1, pageSize: 10);
+
+
+	public static AdminLoginCommand LoginCommand(string email = "admin@305.com",string password = "correctPassword")
+		=> new()
+		{
+			email = email,
+			password = password
+		};
 }

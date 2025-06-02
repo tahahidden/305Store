@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moq;
-using System.Linq.Expressions;
-using _305.Application.Features.AdminAuthFeatures.Command;
+﻿using _305.Application.Features.AdminAuthFeatures.Command;
 using _305.Application.Features.AdminAuthFeatures.Handler;
 using _305.Application.IRepository;
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Security;
 using _305.Domain.Entity;
+using _305.Tests.Unit.DataProvider;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using System.Linq.Expressions;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLoginCommandHandlerTests
@@ -16,26 +17,15 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldLoginSuccessfully_AndSetCookie()
 	{
 		// Arrange
-		var user = new User
-		{
-			id = 1,
-			email = "admin@example.com",
-			password_hash = PasswordHasher.Hash("correctpassword"),
-			is_active = true,
-			is_locked_out = false,
-			failed_login_count = 0,
-			mobile = "0933333333",
-			concurrency_stamp = "test",
-			security_stamp = "test"
-		};
+		var user = AdminUserDataProvider.Row();
 
 		var userRoles = new List<UserRole>
-	{
-		new UserRole { role = new Role { name = "Admin" } }
-	};
+		{
+			new () { role = new Role { name = "Admin" } }
+		};
 
-		var token = "access_token";
-		var refreshToken = "refresh_token";
+		const string token = "access_token";
+		const string refreshToken = "refresh_token";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -75,11 +65,7 @@ public class AdminLoginCommandHandlerTests
 		// Handler
 		var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, tokenServiceMock.Object, httpContextAccessorMock.Object);
 
-		var command = new AdminLoginCommand
-		{
-			email = "admin@example.com",
-			password = "correctpassword"
-		};
+		var command = AdminUserDataProvider.LoginCommand();
 
 		// Act
 		var result = await handler.Handle(command, CancellationToken.None);
@@ -102,7 +88,7 @@ public class AdminLoginCommandHandlerTests
 
 		var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
 
-		var command = new AdminLoginCommand { email = "notfound@example.com", password = "password" };
+		var command = AdminUserDataProvider.LoginCommand(email:"notFound@305.com");
 
 		// Act
 		var result = await handler.Handle(command, CancellationToken.None);
@@ -117,17 +103,7 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldReturnLockedOut_WhenUserIsLocked()
 	{
 		// Arrange
-		var user = new User
-		{
-			email = "test@example.com",
-			password_hash = PasswordHasher.Hash("pass"),
-			is_active = true,
-			is_locked_out = true,
-			lock_out_end_time = DateTime.Now.AddMinutes(5),
-			mobile = "09333333333",
-			concurrency_stamp = "test",
-			security_stamp = "test"
-		};
+		var user = AdminUserDataProvider.Row();
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -135,8 +111,9 @@ public class AdminLoginCommandHandlerTests
 
 		var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
 
+		var command = AdminUserDataProvider.LoginCommand();
 		// Act
-		var result = await handler.Handle(new AdminLoginCommand { email = "test@example.com", password = "pass" }, CancellationToken.None);
+		var result = await handler.Handle(command, CancellationToken.None);
 
 		// Assert
 		Assert.False(result.is_success);
@@ -149,17 +126,7 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldIncreaseFailedLoginCount_WhenPasswordIsWrong()
 	{
 		// Arrange
-		var user = new User
-		{
-			email = "admin@example.com",
-			password_hash = PasswordHasher.Hash("correctpassword"),
-			is_active = true,
-			is_locked_out = false,
-			failed_login_count = 3,
-			mobile = "09333333333",
-			concurrency_stamp = "test",
-			security_stamp = "test"
-		};
+		var user = AdminUserDataProvider.Row();
 
 		var userRepoMock = new Mock<IUserRepository>();
 		userRepoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -169,8 +136,7 @@ public class AdminLoginCommandHandlerTests
 		unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
 		var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
-
-		var command = new AdminLoginCommand { email = "admin@example.com", password = "wrongpassword" };
+		var command = AdminUserDataProvider.LoginCommand(password: "wrongPassword");
 
 		// Act
 		var result = await handler.Handle(command, CancellationToken.None);
@@ -189,17 +155,7 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldLockUser_WhenFailedLoginCountReachesThreshold()
 	{
 		// Arrange
-		var user = new User
-		{
-			email = "admin@example.com",
-			password_hash = PasswordHasher.Hash("correctpassword"),
-			is_active = true,
-			is_locked_out = false,
-			failed_login_count = 4,
-			mobile = "09333333333",
-			concurrency_stamp = "test",
-			security_stamp = "test"
-		};
+		var user = AdminUserDataProvider.Row();
 
 		var userRepoMock = new Mock<IUserRepository>();
 		userRepoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
@@ -210,7 +166,7 @@ public class AdminLoginCommandHandlerTests
 
 		var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
 
-		var command = new AdminLoginCommand { email = "admin@example.com", password = "wrongpassword" };
+		var command = AdminUserDataProvider.LoginCommand(password: "wrongPassword");
 
 		// Act
 		var result = await handler.Handle(command, CancellationToken.None);
