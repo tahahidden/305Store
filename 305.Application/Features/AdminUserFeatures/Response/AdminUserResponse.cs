@@ -1,7 +1,7 @@
 ﻿using Core.EntityFramework.Models;
 using DataLayer.Base.Response;
 
-namespace GoldAPI.Application.AdminUserFeatures.Response;
+namespace _305.Application.Features.AdminUserFeatures.Response;
 
 public class AdminUserResponse : BaseResponse
 {

@@ -1,14 +1,14 @@
-﻿using Core.Assistant.Helpers;
+﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+using Core.Assistant.Helpers;
 using Core.EntityFramework.Models;
 using DataLayer.Base.Command;
 using DataLayer.Base.Handler;
 using DataLayer.Base.Response;
 using DataLayer.Base.Validator;
 using DataLayer.Repository;
-using GoldAPI.Application.BlogCategoryFeatures.Command;
 using MediatR;
 
-namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
+namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
 
 public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ResponseDto<string>>

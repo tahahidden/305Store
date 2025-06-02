@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 
-namespace GoldAPI.Test.TestHandlers.AdminAuthTests;
+namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLogoutCommandHandlerTests
 {
 

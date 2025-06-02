@@ -1,7 +1,7 @@
-﻿using DataLayer.Base.Query;
-using GoldAPI.Application.AdminUserFeatures.Response;
+﻿using _305.Application.Features.AdminUserFeatures.Response;
+using DataLayer.Base.Query;
 
-namespace GoldAPI.Application.AdminUserFeatures.Query;
+namespace _305.Application.Features.AdminUserFeatures.Query;
 
 public class GetAdminUserBySlugQuery : GetBySlugQuery<AdminUserResponse>
 {

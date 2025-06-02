@@ -1,8 +1,8 @@
-﻿using Core.EntityFramework.Models;
+﻿using _305.Tests.Unit.DataProvider;
+using Core.EntityFramework.Models;
 using DataLayer.Services;
 using GoldAPI.Application.UserRoleFeatures.Command;
 using GoldAPI.Application.UserRoleFeatures.Handler;
-using GoldAPI.Test.DataProvider;
 using GoldAPI.Test.GenericHandlers;
 using Moq;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace GoldAPI.Test.TestHandlers.UserRoleTests;
+namespace _305.Tests.Unit.TestHandlers.UserRoleTests;
 public class CreateUserRoleCommandHandlerTests
 {
 	[Fact]

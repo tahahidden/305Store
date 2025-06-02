@@ -1,6 +1,6 @@
 ﻿using DataLayer.Base.Response;
 
-namespace GoldAPI.Application.BlogCategoryFeatures.Response;
+namespace _305.Application.Features.BlogCategoryFeatures.Response;
 
 public class BlogCategoryResponse : BaseResponse
 {

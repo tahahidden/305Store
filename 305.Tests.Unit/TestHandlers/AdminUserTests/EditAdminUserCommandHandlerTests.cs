@@ -1,13 +1,13 @@
-﻿using Core.EntityFramework.Models;
-using GoldAPI.Application.AdminUserFeatures.Command;
+﻿using _305.Application.Features.AdminUserFeatures.Command;
+using _305.Tests.Unit.DataProvider;
+using Core.EntityFramework.Models;
 using GoldAPI.Application.AdminUserFeatures.Handler;
-using GoldAPI.Test.DataProvider;
 using GoldAPI.Test.GenericHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoldAPI.Test.TestHandlers.AdminUserTests;
+namespace _305.Tests.Unit.TestHandlers.AdminUserTests;
 public class EditAdminUserCommandHandlerTests
 {
 	[Fact]

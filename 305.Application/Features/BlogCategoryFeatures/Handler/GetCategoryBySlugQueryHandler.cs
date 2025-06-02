@@ -1,12 +1,12 @@
-﻿using Core.EntityFramework.Models;
+﻿using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.BlogCategoryFeatures.Response;
+using Core.EntityFramework.Models;
 using DataLayer.Base.Handler;
 using DataLayer.Base.Response;
 using DataLayer.Repository;
-using GoldAPI.Application.BlogCategoryFeatures.Query;
-using GoldAPI.Application.BlogCategoryFeatures.Response;
 using MediatR;
 
-namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
+namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
 public class GetCategoryBySlugQueryHandler : IRequestHandler<GetCategoryBySlugQuery, ResponseDto<BlogCategoryResponse>>
 {

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace GoldAPI.Test.TestHandlers.AdminAuthTests;
+namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLoginCommandHandlerTests
 {
 	[Fact]

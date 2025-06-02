@@ -1,11 +1,11 @@
-﻿using Core.EntityFramework.Models;
+﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+using Core.EntityFramework.Models;
 using DataLayer.Base.Handler;
 using DataLayer.Base.Response;
 using DataLayer.Repository;
-using GoldAPI.Application.BlogCategoryFeatures.Command;
 using MediatR;
 
-namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
+namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
 public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, ResponseDto<string>>
 {

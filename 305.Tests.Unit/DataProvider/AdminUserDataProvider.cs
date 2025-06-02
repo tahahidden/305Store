@@ -1,13 +1,13 @@
-﻿using Core.EntityFramework.Models;
+﻿using _305.Application.Features.AdminUserFeatures.Command;
+using _305.Application.Features.AdminUserFeatures.Query;
+using _305.Application.Features.AdminUserFeatures.Response;
+using Core.EntityFramework.Models;
 using Core.Pagination;
-using GoldAPI.Application.AdminUserFeatures.Command;
-using GoldAPI.Application.AdminUserFeatures.Query;
-using GoldAPI.Application.AdminUserFeatures.Response;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoldAPI.Test.DataProvider;
+namespace _305.Tests.Unit.DataProvider;
 public static class AdminUserDataProvider
 {
 	public static CreateAdminUserCommand Create(string name = "name")

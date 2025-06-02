@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoldAPI.Test.DataProvider;
+namespace _305.Tests.Unit.DataProvider;
 public class UserRoleDataProvider
 {
 	public static CreateUserRoleCommand Create()

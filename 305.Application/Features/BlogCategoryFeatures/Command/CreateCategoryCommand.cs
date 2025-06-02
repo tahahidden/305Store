@@ -1,7 +1,7 @@
 ﻿using DataLayer.Base.Command;
 using System.ComponentModel.DataAnnotations;
 
-namespace GoldAPI.Application.BlogCategoryFeatures.Command;
+namespace _305.Application.Features.BlogCategoryFeatures.Command;
 
 public class CreateCategoryCommand : CreateCommand
 {

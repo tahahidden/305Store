@@ -1,7 +1,7 @@
 ﻿using DataLayer.Base.Command;
 using System.ComponentModel.DataAnnotations;
 
-namespace GoldAPI.Application.AdminUserFeatures.Command;
+namespace _305.Application.Features.AdminUserFeatures.Command;
 
 public class CreateAdminUserCommand : CreateCommand
 {
