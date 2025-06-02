@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\305.Application\305.Application.csproj" />
+    <ProjectReference Include="..\305.BuildingBlocks\305.BuildingBlocks.csproj" />
+    <ProjectReference Include="..\305.Domain\305.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
