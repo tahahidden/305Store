@@ -44,7 +44,7 @@ public class JwtService : IJwtService
 		{
 			new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
 			new Claim(ClaimTypes.Name, user.name),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Todo : Serach
 		};
 
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
