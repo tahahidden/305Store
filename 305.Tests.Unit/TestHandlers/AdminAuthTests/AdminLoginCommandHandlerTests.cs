@@ -145,7 +145,7 @@ public class AdminLoginCommandHandlerTests
 		Assert.False(result.is_success);
 		Assert.Equal(401, result.response_code);
 		Assert.Equal("رمز عبور یا نام کاربری اشتباه است.", result.message);
-		Assert.Equal(4, user.failed_login_count);
+		Assert.Equal(1, user.failed_login_count);
 		unitOfWorkMock.Verify(u => u.UserRepository.Update(It.IsAny<User>()), Times.Once);
 		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
 	}
@@ -155,7 +155,7 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldLockUser_WhenFailedLoginCountReachesThreshold()
 	{
 		// Arrange
-		var user = AdminUserDataProvider.Row();
+		var user = AdminUserDataProvider.Row(failedLoginCount:4);
 
 		var userRepoMock = new Mock<IUserRepository>();
 		userRepoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))

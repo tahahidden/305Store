@@ -18,13 +18,13 @@ public class AdminLoginCommandHandler(
 ) : IRequestHandler<AdminLoginCommand, ResponseDto<LoginResponse>>
 {
 	public static readonly JwtConfig Config = new();
-
+	public static readonly LockoutConfig lockOutConfig = new();
 	public async Task<ResponseDto<LoginResponse>> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var user = await unitOfWork.UserRepository.FindSingle(x => x.email == request.email);
-			if (user == null || !user.is_active)
+			if (user is not { is_active: true })
 				return Responses.NotFound<LoginResponse>(null, name: "کاربر");
 
 			// بررسی قفل شدن کاربر
@@ -34,10 +34,10 @@ public class AdminLoginCommandHandler(
 			if (!PasswordHasher.Check(user.password_hash, request.password))
 			{
 				user.failed_login_count++;
-				if (user.failed_login_count >= 5)
+				if (user.failed_login_count >= lockOutConfig.FailedLoginLimit)
 				{
 					user.is_locked_out = true;
-					user.lock_out_end_time = DateTime.Now.AddMinutes(1); // قفل موقت
+					user.lock_out_end_time = lockOutConfig.Duration; // قفل موقت
 				}
 				unitOfWork.UserRepository.Update(user);
 				await unitOfWork.CommitAsync(cancellationToken);

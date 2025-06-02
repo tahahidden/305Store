@@ -19,5 +19,5 @@ public class LockoutConfig
 	/// <summary>
 	/// مدت‌زمان قفل شدن حساب پس از رسیدن به حد مجاز تلاش‌های ناموفق
 	/// </summary>
-	public TimeSpan Duration { get; set; } = TimeSpan.FromMinutes(1);
+	public DateTime Duration { get; set; } = DateTime.Now.AddMinutes(1);
 }

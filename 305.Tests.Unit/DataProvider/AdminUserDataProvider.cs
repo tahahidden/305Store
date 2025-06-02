@@ -3,6 +3,7 @@ using _305.Application.Features.AdminUserFeatures.Command;
 using _305.Application.Features.AdminUserFeatures.Query;
 using _305.Application.Features.AdminUserFeatures.Response;
 using _305.Application.Filters.Pagination;
+using _305.BuildingBlocks.Security;
 using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.DataProvider;
@@ -15,8 +16,8 @@ public static class AdminUserDataProvider
 	created_at = DateTime.Now,
 	slug = null,
 	updated_at = DateTime.Now,
-	email = "mamad@304.com",
-	password = "password",
+	email = "info@304.com",
+	password = "QAZqaz!@#123",
 };
 
 	public static EditAdminUserCommand Edit(string name = "name", long id = 1)
@@ -26,22 +27,22 @@ public static class AdminUserDataProvider
 			name = name,
 			slug = null,
 			updated_at = DateTime.Now,
-			email = "mamad@304.com",
-			password = "password",
+			email = "info@304.com",
+			password = "QAZqaz!@#123",
 		};
 
 
-	public static User Row(string name = "name", long id = 1, string slug = "slug")
+	public static User Row(string name = "name", long id = 1, string slug = "slug",int failedLoginCount = 0)
 	=> new ()
 	{
 		id = id,
 		email = "info@304.com",
-		failed_login_count = 0,
+		failed_login_count = failedLoginCount,
 		is_locked_out = false,
 		is_delete_able = false,
 		mobile = "09309309393",
 		name = name,
-		password_hash = "omTtMfA5EEJCzjH5t/Q67cRXK5TRwerSqN7sJSm41No=.FRLmTm9jwMcEFnjpjgivJw==", // QAZqaz!@#123
+		password_hash = PasswordHasher.Hash("QAZqaz!@#123"), // QAZqaz!@#123
 		concurrency_stamp = "X3JO2EOCURAEBU6HHY6OBYEDD2877FXU",
 		security_stamp = "098NTB7E5LFFXREHBSEHDKLI0DOBIKST",
 		created_at = new DateTime(2025, 1, 1, 12, 0, 0),
@@ -51,7 +52,7 @@ public static class AdminUserDataProvider
 		is_mobile_confirmed = true,
 		last_login_date_time = DateTime.Now,
 		lock_out_end_time = DateTime.Now,
-		refresh_token = "refresh token",
+		refresh_token = "refresh_token",
 		refresh_token_expiry_time = DateTime.Now.AddDays(15),
 	};
 
@@ -74,7 +75,7 @@ public static class AdminUserDataProvider
 			name = name,
 			slug = slug,
 			created_at = DateTime.Now,
-			email = "email@304.com",
+			email = "info@304.com",
 			is_active = true,
 			is_delete_able = true,
 			last_login_date_time = DateTime.Now,
@@ -98,7 +99,7 @@ public static class AdminUserDataProvider
 	, count: 2, page: 1, pageSize: 10);
 
 
-	public static AdminLoginCommand LoginCommand(string email = "admin@305.com",string password = "correctPassword")
+	public static AdminLoginCommand LoginCommand(string email = "info@304.com", string password = "QAZqaz!@#123")
 		=> new()
 		{
 			email = email,
