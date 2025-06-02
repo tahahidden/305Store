@@ -3,11 +3,11 @@
 namespace _305.Application.IService;
 public interface ISmsService
 {
-    void SendForgotPass(string phone, string pass);
+	void SendForgotPass(string phone, string pass);
 
-    SendResult SendSms(string recipient, string message);
+	SendResult SendSms(string recipient, string message);
 
-    string SendOtp(string recipient, string token);
+	string SendOtp(string recipient, string token);
 
-    string SendBulkSms(List<string> recipients, string message);
+	string SendBulkSms(List<string> recipients, string message);
 }

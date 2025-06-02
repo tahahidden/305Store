@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
-
-namespace _305.Application.Features.AdminAuthFeatures.Response;
+﻿namespace _305.Application.Features.AdminAuthFeatures.Response;
 
 public class LoginResponse
 {

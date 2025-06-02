@@ -3,33 +3,33 @@
 // LoggingMiddleware.cs
 public class LoggingMiddleware
 {
-    private readonly RequestDelegate _next;
-    private static readonly string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
+	private readonly RequestDelegate _next;
+	private static readonly string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
 
-    public LoggingMiddleware(RequestDelegate next)
-    {
-        _next = next;
-        Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
-    }
+	public LoggingMiddleware(RequestDelegate next)
+	{
+		_next = next;
+		Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
+	}
 
 
-    public async Task Invoke(HttpContext context)
-    {
-        var method = context.Request.Method;
-        var path = context.Request.Path;
-        var origin = context.Request.Headers["Origin"].ToString();
+	public async Task Invoke(HttpContext context)
+	{
+		var method = context.Request.Method;
+		var path = context.Request.Path;
+		var origin = context.Request.Headers["Origin"].ToString();
 
-        var logLine = $"{DateTime.Now}: {method} {path} | Origin: {origin}";
+		var logLine = $"{DateTime.Now}: {method} {path} | Origin: {origin}";
 
-        var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
-        Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
-        var bytes = System.Text.Encoding.UTF8.GetBytes(logLine);
+		var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
+		Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
+		var bytes = System.Text.Encoding.UTF8.GetBytes(logLine);
 
-        await using (var stream = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, true))
-        {
-            await stream.WriteAsync(bytes, 0, bytes.Length);
-        }
+		await using (var stream = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, true))
+		{
+			await stream.WriteAsync(bytes, 0, bytes.Length);
+		}
 
-        await _next(context);
-    }
+		await _next(context);
+	}
 }

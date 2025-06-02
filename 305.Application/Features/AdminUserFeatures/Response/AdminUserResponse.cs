@@ -1,7 +1,4 @@
-﻿using Core.EntityFramework.Models;
-using DataLayer.Base.Response;
-
-namespace _305.Application.Features.AdminUserFeatures.Response;
+﻿namespace _305.Application.Features.AdminUserFeatures.Response;
 
 public class AdminUserResponse : BaseResponse
 {

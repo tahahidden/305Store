@@ -3,34 +3,34 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace _305.Infrastructure.Persistence
 {
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
-    {
-        public ApplicationDbContext CreateDbContext(string[] args)
-        {
-            try
-            {
-                // رشته اتصال به دیتابیس (کانکشن استرینگ) به صورت دستی تعریف شده است
-                const string connectionString = "Server=.;Database=305_db;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
+	public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+	{
+		public ApplicationDbContext CreateDbContext(string[] args)
+		{
+			try
+			{
+				// رشته اتصال به دیتابیس (کانکشن استرینگ) به صورت دستی تعریف شده است
+				const string connectionString = "Server=.;Database=305_db;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
-                // ساخت یک DbContextOptionsBuilder برای تنظیمات DbContext
-                var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+				// ساخت یک DbContextOptionsBuilder برای تنظیمات DbContext
+				var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-                // استفاده از SQL Server با رشته اتصال داده شده
-                optionsBuilder.UseSqlServer(connectionString);
+				// استفاده از SQL Server با رشته اتصال داده شده
+				optionsBuilder.UseSqlServer(connectionString);
 
-                // ایجاد و بازگرداندن نمونه‌ای از ApplicationDbContext با تنظیمات بالا
-                return new ApplicationDbContext(optionsBuilder.Options);
-            }
-            catch (Exception ex)
-            {
-                // در صورت بروز خطا، پیام خطا در کنسول چاپ می‌شود
-                Console.WriteLine("ERROR creating DbContext: " + ex.Message);
+				// ایجاد و بازگرداندن نمونه‌ای از ApplicationDbContext با تنظیمات بالا
+				return new ApplicationDbContext(optionsBuilder.Options);
+			}
+			catch (Exception ex)
+			{
+				// در صورت بروز خطا، پیام خطا در کنسول چاپ می‌شود
+				Console.WriteLine("ERROR creating DbContext: " + ex.Message);
 
-                // خطا مجدداً پرتاب می‌شود تا در سطوح بالاتر مدیریت شود
-                throw;
-            }
-        }
-    }
+				// خطا مجدداً پرتاب می‌شود تا در سطوح بالاتر مدیریت شود
+				throw;
+			}
+		}
+	}
 
 }
 

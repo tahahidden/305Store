@@ -1,11 +1,6 @@
 ﻿using _305.Application.Features.AdminUserFeatures.Command;
 using _305.Application.Features.AdminUserFeatures.Query;
 using _305.Application.Features.AdminUserFeatures.Response;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace _305.Tests.Unit.DataProvider;
 public static class AdminUserDataProvider
@@ -77,9 +72,9 @@ public static class AdminUserDataProvider
 			slug = slug,
 			created_at = DateTime.Now,
 			email = "email@304.com",
-			is_active =true,
+			is_active = true,
 			is_delete_able = true,
-			last_login_date_time=DateTime.Now,
+			last_login_date_time = DateTime.Now,
 			updated_at = DateTime.Now
 		};
 

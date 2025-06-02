@@ -1,9 +1,4 @@
 ﻿using _305.Tests.Unit.DataProvider;
-using Core.EntityFramework.Models;
-using DataLayer.Services;
-using GoldAPI.Application.AdminUserFeatures.Command;
-using GoldAPI.Application.AdminUserFeatures.Handler;
-using GoldAPI.Test.GenericHandlers;
 
 namespace _305.Tests.Unit.TestHandlers.AdminUserTests;
 public class DeleteAdminUserCommandHandlerTests

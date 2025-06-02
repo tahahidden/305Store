@@ -1,14 +1,7 @@
-﻿using Core.EntityFramework.Models;
-using DataLayer.Repository;
-using GoldAPI.Application.AdminAuthFeatures.Command;
-using GoldAPI.Application.AdminAuthFeatures.Handler;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Text;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLogoutCommandHandlerTests

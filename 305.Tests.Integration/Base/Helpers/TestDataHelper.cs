@@ -6,27 +6,27 @@ namespace _305.Tests.Integration.Base.Helpers;
 
 public class TestDataHelper(HttpClient client)
 {
-    public async Task<long> CreateCategoryAndReturnIdAsync()
-    {
-        var categoryDto = new MultipartFormDataContent
-            {
-                { new StringContent("name"), "name" },
-                { new StringContent("slug"), "slug" }
-            };
+	public async Task<long> CreateCategoryAndReturnIdAsync()
+	{
+		var categoryDto = new MultipartFormDataContent
+			{
+				{ new StringContent("name"), "name" },
+				{ new StringContent("slug"), "slug" }
+			};
 
-        var response = await client.PostAsync("/api/blog-category/create", categoryDto);
-        response.EnsureSuccessStatusCode();
+		var response = await client.PostAsync("/api/blog-category/create", categoryDto);
+		response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<ResponseDto<string>>(json);
+		var json = await response.Content.ReadAsStringAsync();
+		var result = JsonConvert.DeserializeObject<ResponseDto<string>>(json);
 
-        var getResponse = await client.GetAsync($"/api/blog-category/get?slug={result.data}");
+		var getResponse = await client.GetAsync($"/api/blog-category/get?slug={result.data}");
 
-        var getJson = await getResponse.Content.ReadAsStringAsync();
-        var getResult = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getJson);
+		var getJson = await getResponse.Content.ReadAsStringAsync();
+		var getResult = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getJson);
 
-        return getResult.data.id;
-    }
+		return getResult.data.id;
+	}
 
-    // سایر موجودیت‌ها (مثلاً CreateBlogAndReturnIdAsync) هم همین‌جا اضافه می‌کنی
+	// سایر موجودیت‌ها (مثلاً CreateBlogAndReturnIdAsync) هم همین‌جا اضافه می‌کنی
 }
