@@ -32,13 +32,15 @@ public static class AdminUserDataProvider
 		};
 
 
-	public static User Row(string name = "name", long id = 1, string slug = "slug",int failedLoginCount = 0)
+	public static User Row(string name = "name", long id = 1, 
+		string slug = "slug",int failedLoginCount = 0,
+		bool isLockedOut = false)
 	=> new ()
 	{
 		id = id,
 		email = "info@304.com",
 		failed_login_count = failedLoginCount,
-		is_locked_out = false,
+		is_locked_out = isLockedOut,
 		is_delete_able = false,
 		mobile = "09309309393",
 		name = name,

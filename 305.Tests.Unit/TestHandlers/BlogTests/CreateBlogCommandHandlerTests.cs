@@ -8,31 +8,48 @@ using _305.Tests.Unit.GenericHandlers;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Linq.Expressions;
+using _305.Application.IUOW;
 
 namespace _305.Tests.Unit.TestHandlers.BlogTests;
 public class CreateBlogCommandHandlerTests
 {
 
 	[Fact]
-	public async Task Handle_ShouldCreateBlog_WhenNameAndSlugAreUnique()
+	public async Task Handle_ShouldCreateBlog_WhenNameAndSlugAndCategoryAreValid()
 	{
+		// Arrange
 		var fileServiceMock = new Mock<IFileService>();
-		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
-					   .ReturnsAsync("uploads/test-image.jpg");
+		fileServiceMock
+			.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+			.ReturnsAsync("uploads/test-image.jpg");
+
+		var command = BlogDataProvider.Create(); // این مقدار blog_category_id معتبر داره
+
+		// 🛠️ تعریف اولیه mock دسته‌بندی بلاگ
+		var blogCategoryRepoMock = new Mock<IBlogCategoryRepository>();
+		blogCategoryRepoMock
+			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<BlogCategory, bool>>>()))
+			.ReturnsAsync(true); // فرض می‌گیریم دسته‌بندی وجود داره
 
 		await CreateHandlerTestHelper.TestCreateSuccess<
-			CreateBlogCommand,                 // Command Type
-			Blog,                          // Entity Type
-			IBlogRepository,               // Repository Interface
-			CreateBlogCommandHandler           // Handler Type
+			CreateBlogCommand,
+			Blog,
+			IBlogRepository,
+			CreateBlogCommandHandler
 		>(
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
-			command: BlogDataProvider.Create(),
+			command: command,
 			repoSelector: uow => uow.BlogRepository,
-			expectedNameForExistsCheck: "Test Blog"
+			expectedNameForExistsCheck: command.name,
+			setupUowMock: uow =>
+			{
+				// فقط همین! مقداردهی BlogCategoryRepository، نه BlogRepository
+				uow.Setup(x => x.BlogCategoryRepository).Returns(blogCategoryRepoMock.Object);
+			}
 		);
 	}
+
 
 	[Fact]
 	public async Task Handle_ShouldFail_WhenNameIsDuplicate()

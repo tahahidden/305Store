@@ -11,7 +11,7 @@ using MediatR;
 
 namespace _305.Application.Features.BlogFeatures.Handler;
 
-public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService)
+public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService, bool isTestEnvironment = false)
 	: IRequestHandler<CreateBlogCommand, ResponseDto<string>>
 {
 	private readonly CreateHandler _handler = new(unitOfWork);
@@ -45,7 +45,7 @@ public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileS
 		   },
 		   new ()
 		   {
-			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id),
+			   Rule =  async () => !(await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id)),
 			   Value = "دسته بندی",
 			   IsExistRole = false
 		   }

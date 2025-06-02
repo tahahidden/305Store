@@ -27,7 +27,8 @@ public static class EditHandlerTestHelper
 		TCommand command,
 		long entityId,
 		TEntity existingEntity,
-		Action<TEntity> assertUpdated
+		Action<TEntity> assertUpdated,
+		Action<Mock<IUnitOfWork>>? setupUowMock = null
 	)
 		where TEntity : class, IBaseEntity
 		where THandler : class
@@ -43,6 +44,9 @@ public static class EditHandlerTestHelper
 		// تنظیم UnitOfWork برای بازگرداندن موفقیت‌آمیز Commit
 		unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>()))
 					  .ReturnsAsync(true);
+
+		// اعمال تنظیمات اضافی روی setupUowMock (در صورت ارسال)
+		setupUowMock?.Invoke(unitOfWorkMock);
 
 		// ساخت هندلر با موک‌های آماده شده
 		var handler = handlerFactory(repoMock.Object, unitOfWorkMock.Object);
@@ -126,7 +130,8 @@ public static class EditHandlerTestHelper
 		Func<THandler, TCommand, CancellationToken, Task<ResponseDto<string>>> execute,
 		TCommand command,
 		long entityId,
-		TEntity existingEntity
+		TEntity existingEntity,
+		Action<Mock<IUnitOfWork>>? setupUowMock = null
 	)
 		where TEntity : class, IBaseEntity
 		where THandler : class
@@ -142,6 +147,9 @@ public static class EditHandlerTestHelper
 		// تنظیم شکست Commit
 		unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>()))
 					  .ReturnsAsync(false); // شکست در Commit
+
+		// اعمال تنظیمات اضافی روی setupUowMock (در صورت ارسال)
+		setupUowMock?.Invoke(unitOfWorkMock);
 
 		// ساخت هندلر
 		var handler = handlerFactory(repoMock.Object, unitOfWorkMock.Object);

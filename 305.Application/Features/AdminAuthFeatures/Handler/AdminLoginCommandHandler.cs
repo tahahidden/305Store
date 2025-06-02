@@ -28,7 +28,7 @@ public class AdminLoginCommandHandler(
 				return Responses.NotFound<LoginResponse>(null, name: "کاربر");
 
 			// بررسی قفل شدن کاربر
-			if (user.is_locked_out && user.lock_out_end_time > DateTime.Now)
+			if (user.is_locked_out || user.lock_out_end_time > DateTime.Now)
 				return Responses.Fail<LoginResponse>(null, message: "اکانت شما موقتا قفل شده است", code: 401);
 			// بررسی رمز عبور
 			if (!PasswordHasher.Check(user.password_hash, request.password))

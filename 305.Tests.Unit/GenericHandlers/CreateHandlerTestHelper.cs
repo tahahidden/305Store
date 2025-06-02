@@ -15,6 +15,7 @@ public static class CreateHandlerTestHelper
 	TCommand command,
 	Expression<Func<IUnitOfWork, TRepository>> repoSelector,
 	Action<Mock<TRepository>>? setupRepoMock = null,
+	Action<Mock<IUnitOfWork>>? setupUowMock = null,
 	string? expectedNameForExistsCheck = null // مقدار مورد انتظار برای چک کردن شرط ExistsAsync
 	)
 	where TEntity : class, IBaseEntity
@@ -50,6 +51,7 @@ public static class CreateHandlerTestHelper
 
 		// اعمال تنظیمات اضافی روی repoMock (در صورت ارسال)
 		setupRepoMock?.Invoke(repoMock);
+		setupUowMock?.Invoke(unitOfWorkMock);
 
 		// ساخت Handler با UnitOfWork mock
 		var handler = handlerFactory(unitOfWorkMock.Object);
@@ -63,7 +65,7 @@ public static class CreateHandlerTestHelper
 		Assert.NotNull(result.data);
 
 		// بررسی اینکه AddAsync دقیقاً یک بار فراخوانی شده
-		repoMock.Verify(r => r.AddAsync(It.IsAny<TEntity>()), Times.Once);
+		repoMock.Verify(t => t.AddAsync(It.IsAny<TEntity>()), Times.Once);
 
 		// بررسی اینکه CommitAsync دقیقاً یک بار فراخوانی شده
 		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);

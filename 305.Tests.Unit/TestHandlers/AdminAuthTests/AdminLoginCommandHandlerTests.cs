@@ -103,7 +103,7 @@ public class AdminLoginCommandHandlerTests
 	public async Task Handle_ShouldReturnLockedOut_WhenUserIsLocked()
 	{
 		// Arrange
-		var user = AdminUserDataProvider.Row();
+		var user = AdminUserDataProvider.Row(isLockedOut:true);
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
