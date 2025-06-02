@@ -7,22 +7,16 @@ using MediatR;
 
 namespace _305.Application.Features.AdminUserFeatures.Handler;
 
-public class DeleteAdminUserCommandHandler : IRequestHandler<DeleteAdminUserCommand, ResponseDto<string>>
+public class DeleteAdminUserCommandHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<DeleteAdminUserCommand, ResponseDto<string>>
 {
-	private readonly DeleteHandler _handler;
-	private readonly IUnitOfWork _unitOfWork;
-
-	public DeleteAdminUserCommandHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new DeleteHandler(unitOfWork);
-	}
+	private readonly DeleteHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<string>> Handle(DeleteAdminUserCommand request, CancellationToken cancellationToken)
 	{
 		return await _handler.HandleAsync<User, string>(
-			findEntityAsync: () => _unitOfWork.UserRepository.FindSingle(x => x.id == request.id),
-			onDeleteAsync: entity => _unitOfWork.UserRepository.Remove(entity),
+			findEntityAsync: () => unitOfWork.UserRepository.FindSingle(x => x.id == request.id),
+			onDeleteAsync: entity => unitOfWork.UserRepository.Remove(entity),
 			entityName: "کاربر ادمین",
 			notFoundMessage: "کاربر ادمین پیدا نشد",
 			successMessage: "کاربر ادمین با موفقیت حذف شد",

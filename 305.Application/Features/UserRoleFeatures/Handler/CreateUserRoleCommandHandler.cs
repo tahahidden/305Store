@@ -10,16 +10,10 @@ using MediatR;
 
 namespace _305.Application.Features.UserRoleFeatures.Handler;
 
-public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleCommand, ResponseDto<string>>
+public class CreateUserRoleCommandHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<CreateUserRoleCommand, ResponseDto<string>>
 {
-	private readonly CreateHandler _handler;
-	private readonly IUnitOfWork _unitOfWork;
-
-	public CreateUserRoleCommandHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new CreateHandler(unitOfWork);
-	}
+	private readonly CreateHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<string>> Handle(CreateUserRoleCommand request, CancellationToken cancellationToken)
 	{
@@ -29,7 +23,7 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 		{
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.UserRoleRepository.ExistsAsync(x => x.slug == slug),
+			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.slug == slug),
 			   Value = "نامک"
 		   }
 		};
@@ -39,7 +33,7 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 		   onCreate: async () =>
 		   {
 			   var entity = Mapper.Map<CreateUserRoleCommand, UserRole>(request);
-			   await _unitOfWork.UserRoleRepository.AddAsync(entity);
+			   await unitOfWork.UserRoleRepository.AddAsync(entity);
 			   return slug;
 		   },
 		   successMessage: null,

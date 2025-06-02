@@ -8,16 +8,10 @@ using MediatR;
 
 namespace _305.Application.Features.AdminUserFeatures.Handler;
 
-public class GetPaginatedAdminUserQueryHandler : IRequestHandler<GetPaginatedAdminUserQuery, ResponseDto<PaginatedList<User>>>
+public class GetPaginatedAdminUserQueryHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<GetPaginatedAdminUserQuery, ResponseDto<PaginatedList<User>>>
 {
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly GetPaginatedHandler _handler;
-
-	public GetPaginatedAdminUserQueryHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new GetPaginatedHandler(unitOfWork);
-	}
+	private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
 	public Task<ResponseDto<PaginatedList<User>>> Handle(GetPaginatedAdminUserQuery request, CancellationToken cancellationToken)
 	{

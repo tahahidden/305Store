@@ -10,16 +10,10 @@ using MediatR;
 
 namespace _305.Application.Features.AdminUserFeatures.Handler;
 
-public class CreateAdminUserCommandHandler : IRequestHandler<CreateAdminUserCommand, ResponseDto<string>>
+public class CreateAdminUserCommandHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<CreateAdminUserCommand, ResponseDto<string>>
 {
-	private readonly CreateHandler _handler;
-	private readonly IUnitOfWork _unitOfWork;
-
-	public CreateAdminUserCommandHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new CreateHandler(unitOfWork);
-	}
+	private readonly CreateHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<string>> Handle(CreateAdminUserCommand request, CancellationToken cancellationToken)
 	{
@@ -29,17 +23,17 @@ public class CreateAdminUserCommandHandler : IRequestHandler<CreateAdminUserComm
 		{
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.UserRepository.ExistsAsync(x => x.email == request.email),
+			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.email == request.email),
 			   Value = "ایمیل"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.UserRepository.ExistsAsync(x => x.name == request.name),
+			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.name == request.name),
 			   Value = "نام کاربری"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.UserRepository.ExistsAsync(x => x.slug == slug),
+			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.slug == slug),
 			   Value = "نامک"
 		   }
 
@@ -69,7 +63,7 @@ public class CreateAdminUserCommandHandler : IRequestHandler<CreateAdminUserComm
 				   mobile = "",
 				   slug = slug,
 			   };
-			   await _unitOfWork.UserRepository.AddAsync(entity);
+			   await unitOfWork.UserRepository.AddAsync(entity);
 			   return entity.id.ToString();
 		   },
 		   successMessage: null,

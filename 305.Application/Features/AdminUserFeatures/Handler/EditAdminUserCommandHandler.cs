@@ -11,17 +11,10 @@ using MediatR;
 
 namespace _305.Application.Features.AdminUserFeatures.Handler;
 
-public class EditAdminUserCommandHandler : IRequestHandler<EditAdminUserCommand, ResponseDto<string>>
+public class EditAdminUserCommandHandler(IUnitOfWork unitOfWork, IRepository<User> repository)
+	: IRequestHandler<EditAdminUserCommand, ResponseDto<string>>
 {
-	private readonly EditHandler<EditAdminUserCommand, User> _handler;
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly IRepository<User> _repository;
-	public EditAdminUserCommandHandler(IUnitOfWork unitOfWork, IRepository<User> repository)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new EditHandler<EditAdminUserCommand, User>(unitOfWork, repository);
-		_repository = repository;
-	}
+	private readonly EditHandler<EditAdminUserCommand, User> _handler = new(unitOfWork, repository);
 
 	public async Task<ResponseDto<string>> Handle(EditAdminUserCommand request, CancellationToken cancellationToken)
 	{
@@ -32,17 +25,17 @@ public class EditAdminUserCommandHandler : IRequestHandler<EditAdminUserCommand,
 		{
 		   new ()
 		   {
-			   Rule = async () => await _repository.ExistsAsync(x => x.name == request.name && x.id != request.id),
+			   Rule = async () => await repository.ExistsAsync(x => x.name == request.name && x.id != request.id),
 			   Value = "نام"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _repository.ExistsAsync(x => x.email == request.email && x.id != request.id),
+			   Rule = async () => await repository.ExistsAsync(x => x.email == request.email && x.id != request.id),
 			   Value = "ایمیل"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _repository.ExistsAsync(x => x.slug == slug && x.id != request.id),
+			   Rule = async () => await repository.ExistsAsync(x => x.slug == slug && x.id != request.id),
 			   Value = "نامک"
 		   }
 		};
