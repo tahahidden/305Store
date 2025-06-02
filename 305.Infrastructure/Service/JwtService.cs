@@ -27,7 +27,7 @@ public class JwtService : IJwtService
 		_refreshExpiryMinutes = int.TryParse(config["Jwt:RefreshTokenExpiry"], out var r) ? r : 43200; // 30 روز
 	}
 
-	public string GenerateAccessToken(User user, List<string> roles, IEnumerable<Claim>? extraClaims = null)
+	public string GenerateAccessToken(User user, List<string?> roles, IEnumerable<Claim>? extraClaims = null)
 		=> GenerateToken(user, roles, _accessSecret, TimeSpan.FromMinutes(_accessExpiryMinutes), extraClaims);
 
 	public string GenerateRefreshToken()

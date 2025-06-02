@@ -16,21 +16,19 @@ public class AdminLogoutCommandHandler(
 	IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<AdminLogoutCommand, ResponseDto<string>>
 {
-	private readonly IUnitOfWork _unitOfWork = unitOfWork;
 	public static readonly JwtConfig Config = new();
-	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
 	public async Task<ResponseDto<string>> Handle(AdminLogoutCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+			var userId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null)
-				return Responses.NotFound<string>(default, name: "کاربر");
-			var user = await _unitOfWork.UserRepository.FindSingle(x => x.id == int.Parse(userId));
+				return Responses.NotFound<string>(null, name: "کاربر");
+			var user = await unitOfWork.UserRepository.FindSingle(x => x.id == int.Parse(userId));
 			if (user == null)
-				return Responses.NotFound<string>(default, name: "کاربر");
-			var context = _httpContextAccessor.HttpContext;
+				return Responses.NotFound<string>(null, name: "کاربر");
+			var context = httpContextAccessor.HttpContext;
 			// بررسی اینکه هدر Authorization وجود داره یا نه
 			if (context.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
 			{
@@ -38,10 +36,10 @@ public class AdminLogoutCommandHandler(
 				var token = authorizationHeader.ToString().Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
 
 				if (string.IsNullOrWhiteSpace(token))
-					return Responses.Fail<string>(default, message: "داشتن توکن الزامی است");
+					return Responses.Fail<string>(null, message: "داشتن توکن الزامی است");
 
 
-				await _unitOfWork.TokenBlacklistRepository.AddAsync(new BlacklistedToken
+				await unitOfWork.TokenBlacklistRepository.AddAsync(new BlacklistedToken
 				{
 					token = token,
 					expiry_date = DateTime.Now.AddDays(Config.AccessTokenLifetime.TotalDays),
@@ -53,21 +51,21 @@ public class AdminLogoutCommandHandler(
 				user.refresh_token = null;
 				user.refresh_token_expiry_time = DateTime.MinValue;
 
-				_unitOfWork.UserRepository.Update(user);
-				await _unitOfWork.CommitAsync(cancellationToken);
+				unitOfWork.UserRepository.Update(user);
+				await unitOfWork.CommitAsync(cancellationToken);
 
-				return Responses.Success<string>(default, message: "با موفقیت خارج شدید.");
+				return Responses.Success<string>(null, message: "با موفقیت خارج شدید.");
 			}
 			else
 			{
-				return Responses.Fail<string>(default, message: "توکن در هدر وجود ندارد.", code: 401);
+				return Responses.Fail<string>(null, message: "توکن در هدر وجود ندارد.", code: 401);
 			}
 		}
 		catch (Exception ex)
 		{
 			// لاگ‌گیری با Serilog برای ثبت خطاهای غیرمنتظره
 			Log.Error(ex, "خطا در زمان ایجاد موجودیت: {Message}", ex.Message);
-			return Responses.ExceptionFail<string>(default, null);
+			return Responses.ExceptionFail<string>(null, null);
 		}
 	}
 }

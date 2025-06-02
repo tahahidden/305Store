@@ -5,7 +5,7 @@ using System.Security.Claims;
 namespace _305.Application.IService;
 public interface IJwtService
 {
-	string GenerateAccessToken(User user, List<string> roles, IEnumerable<Claim>? extraClaims = null);
+	string GenerateAccessToken(User user, List<string?> roles, IEnumerable<Claim>? extraClaims = null);
 	string GenerateRefreshToken();
 	bool ValidateToken(string token);
 	JwtPayload? GetPayload(string token);

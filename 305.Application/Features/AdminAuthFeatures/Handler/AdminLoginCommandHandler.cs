@@ -17,21 +17,19 @@ public class AdminLoginCommandHandler(
 	IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<AdminLoginCommand, ResponseDto<LoginResponse>>
 {
-	private readonly IUnitOfWork _unitOfWork = unitOfWork;
 	public static readonly JwtConfig Config = new();
-	private readonly IJwtService _tokenService = jwtService;
-	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+
 	public async Task<ResponseDto<LoginResponse>> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var user = await _unitOfWork.UserRepository.FindSingle(x => x.email == request.email);
+			var user = await unitOfWork.UserRepository.FindSingle(x => x.email == request.email);
 			if (user == null || !user.is_active)
-				return Responses.NotFound<LoginResponse>(default, name: "کاربر");
+				return Responses.NotFound<LoginResponse>(null, name: "کاربر");
 
 			// بررسی قفل شدن کاربر
 			if (user.is_locked_out && user.lock_out_end_time > DateTime.Now)
-				return Responses.Fail<LoginResponse>(default, message: "اکانت شما موقتا قفل شده است", code: 401);
+				return Responses.Fail<LoginResponse>(null, message: "اکانت شما موقتا قفل شده است", code: 401);
 			// بررسی رمز عبور
 			if (!PasswordHasher.Check(user.password_hash, request.password))
 			{
@@ -41,34 +39,34 @@ public class AdminLoginCommandHandler(
 					user.is_locked_out = true;
 					user.lock_out_end_time = DateTime.Now.AddMinutes(1); // قفل موقت
 				}
-				_unitOfWork.UserRepository.Update(user);
-				await _unitOfWork.CommitAsync(cancellationToken);
-				return Responses.Fail<LoginResponse>(default, message: "رمز عبور یا نام کاربری اشتباه است.", code: 401);
+				unitOfWork.UserRepository.Update(user);
+				await unitOfWork.CommitAsync(cancellationToken);
+				return Responses.Fail<LoginResponse>(null, message: "رمز عبور یا نام کاربری اشتباه است.", code: 401);
 			}
 
 			// موفقیت در ورود
 			user.failed_login_count = 0;
 			user.last_login_date_time = DateTime.Now;
-			var role = _unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
+			var role = unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
 			var token = "";
 			do
 			{
-				token = _tokenService.GenerateAccessToken(user, role.Select(x => x.role.name).ToList());
+				token = jwtService.GenerateAccessToken(user, role.Select(x => x.role.name).ToList());
 			}
-			while (await _unitOfWork.TokenBlacklistRepository.ExistsAsync(x => x.token == token));
+			while (await unitOfWork.TokenBlacklistRepository.ExistsAsync(x => x.token == token));
 			var refreshToken = "";
 			do
 			{
-				refreshToken = _tokenService.GenerateRefreshToken();
+				refreshToken = jwtService.GenerateRefreshToken();
 			}
-			while (await _unitOfWork.UserRepository.ExistsAsync(x => x.refresh_token == refreshToken));
+			while (await unitOfWork.UserRepository.ExistsAsync(x => x.refresh_token == refreshToken));
 
 
 			user.refresh_token = refreshToken;
 			user.refresh_token_expiry_time = DateTime.Now.Add(Config.AdminRefreshTokenLifetime);
 
-			_unitOfWork.UserRepository.Update(user);
-			await _unitOfWork.CommitAsync(cancellationToken);
+			unitOfWork.UserRepository.Update(user);
+			await unitOfWork.CommitAsync(cancellationToken);
 
 			// ذخیره توکن در کوکی
 			var cookieOptions = new CookieOptions
@@ -78,7 +76,7 @@ public class AdminLoginCommandHandler(
 				SameSite = SameSiteMode.Lax, // یا None اگر لازم بود
 				Expires = DateTime.Now.AddMinutes(Config.AdminRefreshTokenLifetime.TotalMinutes)
 			};
-			var context = _httpContextAccessor.HttpContext;
+			var context = httpContextAccessor.HttpContext;
 			context.Response.Cookies.Append("jwt", refreshToken, new CookieOptions
 			{
 				HttpOnly = true,
@@ -101,7 +99,7 @@ public class AdminLoginCommandHandler(
 		{
 			// لاگ‌گیری با Serilog برای ثبت خطاهای غیرمنتظره
 			Log.Error(ex, "خطا در زمان ایجاد موجودیت: {Message}", ex.Message);
-			return Responses.ExceptionFail<LoginResponse>(default, null);
+			return Responses.ExceptionFail<LoginResponse>(null, null);
 		}
 	}
 }

@@ -7,8 +7,8 @@ public class CreateAdminUserCommand : CreateCommand<string>
 {
 	[Display(Name = "پسورد")]
 	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public string password { get; set; }
+	public required string password { get; set; }
 	[Display(Name = "ایمیل")]
 	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public string email { get; set; }
+	public required string email { get; set; }
 }

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using _305.Application.Features.AdminAuthFeatures.Handler;
 using _305.Application.Features.AdminAuthFeatures.Query;
-using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
 
@@ -35,7 +34,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, httpContextAccessor.Object);
 
 		// Act
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
@@ -63,7 +62,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 
@@ -78,7 +77,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(Mock.Of<IUnitOfWork>(), Mock.Of<IJwtService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(Mock.Of<IUnitOfWork>(), httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 
@@ -102,7 +101,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 
