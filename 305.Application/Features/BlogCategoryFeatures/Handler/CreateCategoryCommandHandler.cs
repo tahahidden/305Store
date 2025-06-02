@@ -1,46 +1,53 @@
-﻿using _305.Application.Base.Handler;
-using _305.Application.Base.Mapper;
-using _305.Application.Base.Response;
-using _305.Application.Base.Validator;
-using _305.Application.Features.BlogCategoryFeatures.Command;
-using _305.Application.IUOW;
-using _305.BuildingBlocks.Helper;
-using _305.Domain.Entity;
+﻿using Core.Assistant.Helpers;
+using Core.EntityFramework.Models;
+using DataLayer.Base.Handler;
+using DataLayer.Base.Mapper;
+using DataLayer.Base.Response;
+using DataLayer.Base.Validator;
+using DataLayer.Repository;
+using GoldAPI.Application.BlogCategoryFeatures.Command;
 using MediatR;
-namespace _305.Application.Features.BlogCategoryFeatures.Handler;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
 
-public class CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<CreateCategoryCommand, ResponseDto<string>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ResponseDto<string>>
 {
-	private readonly CreateHandler _handler = new(unitOfWork);
+    private readonly CreateHandler _handler;
+    private readonly IUnitOfWork _unitOfWork;
 
-	public async Task<ResponseDto<string>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
-	{
-		var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
+    public CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+        _handler = new CreateHandler(unitOfWork);
+    }
+
+    public async Task<ResponseDto<string>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    {
+        var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
 		var validations = new List<ValidationItem>
-		{
-		   new ()
-		   {
-			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.name == request.name),
-			   Value = "نام",
+        {
+	       new ()
+           {
+               Rule = async () => await _unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.name == request.name),
+               Value = "نام"
 		   },
-		   new ()
-		   {
-			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.slug == slug),
-			   Value = "نامک"
+           new ()
+           {
+               Rule = async () => await _unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.slug == slug),
+               Value = "نامک"
 		   }
 
-		};
+        };
 		return await _handler.HandleAsync(
-			validations: validations,
-			onCreate: async () =>
-			{
-				var entity = Mapper.Map<CreateCategoryCommand, BlogCategory>(request);
-				await unitOfWork.BlogCategoryRepository.AddAsync(entity);
-				return slug;
-			},
-			successMessage: null,
-			cancellationToken: cancellationToken
-		);
-	}
+            validations: validations,
+            onCreate: async () =>
+            {
+                var entity = Mapper.Map<CreateCategoryCommand, BlogCategory>(request);
+                await _unitOfWork.BlogCategoryRepository.AddAsync(entity);
+                return slug;
+            },
+            createMessage: null,
+            cancellationToken: cancellationToken
+        );
+    }
 }

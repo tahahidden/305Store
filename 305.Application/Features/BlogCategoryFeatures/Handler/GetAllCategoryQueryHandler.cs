@@ -1,24 +1,30 @@
-﻿using _305.Application.Base.Handler;
-using _305.Application.Base.Response;
-using _305.Application.Features.BlogCategoryFeatures.Query;
-using _305.Application.Features.BlogCategoryFeatures.Response;
-using _305.Application.IUOW;
-using _305.Domain.Entity;
+﻿using Core.EntityFramework.Models;
+using DataLayer.Base.Handler;
+using DataLayer.Base.Response;
+using DataLayer.Repository;
+using GoldAPI.Application.BlogCategoryFeatures.Query;
+using GoldAPI.Application.BlogCategoryFeatures.Response;
 using MediatR;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Handler;
+namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
 
-public class GetAllCategoryQueryHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<GetAllCategoryQuery, ResponseDto<List<BlogCategoryResponse>>>
+public class GetAllCategoryQueryHandler : IRequestHandler<GetAllCategoryQuery, ResponseDto<List<BlogCategoryResponse>>>
 {
-	private readonly GetAllHandler _handler = new(unitOfWork);
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly GetAllHandler _handler;
 
-	public Task<ResponseDto<List<BlogCategoryResponse>>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
-	{
-		return Task.FromResult(
-			_handler.Handle<BlogCategory, BlogCategoryResponse>(
-				unitOfWork.BlogCategoryRepository.FindList()
-			)
-		);
-	}
+    public GetAllCategoryQueryHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+        _handler = new GetAllHandler(unitOfWork);
+    }
+
+    public Task<ResponseDto<List<BlogCategoryResponse>>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(
+            _handler.Handle<BlogCategory, BlogCategoryResponse>(
+                _unitOfWork.BlogCategoryRepository.FindList()
+            )
+        );
+    }
 }

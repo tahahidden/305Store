@@ -1,7 +1,7 @@
-﻿using _305.Application.Base.Command;
+﻿using DataLayer.Base.Command;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Command;
+namespace GoldAPI.Application.BlogCategoryFeatures.Command;
 
-public class DeleteCategoryCommand : DeleteCommand<string>
+public class DeleteCategoryCommand : DeleteCommand
 {
 }

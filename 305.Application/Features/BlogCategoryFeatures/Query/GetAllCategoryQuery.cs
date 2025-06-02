@@ -1,8 +1,9 @@
-﻿using _305.Application.Base.Query;
-using _305.Application.Features.BlogCategoryFeatures.Response;
+﻿using Core.EntityFramework.Models;
+using DataLayer.Base.Query;
+using GoldAPI.Application.BlogCategoryFeatures.Response;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Query;
+namespace GoldAPI.Application.BlogCategoryFeatures.Query;
 
-public class GetAllCategoryQuery : GetAllQuery<BlogCategoryResponse>
+public class GetAllCategoryQuery: GetAllQuery<BlogCategoryResponse>
 {
 }

@@ -1,8 +1,8 @@
-﻿using _305.Application.Base.Query;
-using _305.Domain.Entity;
+﻿using Core.EntityFramework.Models;
+using DataLayer.Base.Query;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Query;
+namespace GoldAPI.Application.BlogCategoryFeatures.Query;
 
-public class GetPaginatedCategoryQuery : GetPaginatedQuery<BlogCategory>
+public class GetPaginatedCategoryQuery: GetPaginatedQuery<BlogCategory>
 {
 }

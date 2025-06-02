@@ -1,7 +1,7 @@
-﻿using _305.Application.Base.Query;
-using _305.Application.Features.BlogCategoryFeatures.Response;
+﻿using DataLayer.Base.Query;
+using GoldAPI.Application.BlogCategoryFeatures.Response;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Query;
+namespace GoldAPI.Application.BlogCategoryFeatures.Query;
 
 public class GetCategoryBySlugQuery : GetBySlugQuery<BlogCategoryResponse>
 {

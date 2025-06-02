@@ -1,32 +1,32 @@
-﻿using _305.Application.Base.Handler;
-using _305.Application.Base.Response;
-using _305.Application.Base.Validator;
-using _305.Application.Features.BlogCategoryFeatures.Command;
-using _305.Application.IBaseRepository;
-using _305.Application.IUOW;
-using _305.BuildingBlocks.Helper;
-using _305.Domain.Entity;
+﻿using Core.Assistant.Helpers;
+using Core.EntityFramework.Models;
+using DataLayer.Base.Command;
+using DataLayer.Base.Handler;
+using DataLayer.Base.Response;
+using DataLayer.Base.Validator;
+using DataLayer.Repository;
+using GoldAPI.Application.BlogCategoryFeatures.Command;
 using MediatR;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Handler;
+namespace GoldAPI.Application.BlogCategoryFeatures.Handler;
 
 
 public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ResponseDto<string>>
 {
-	private readonly EditHandler<EditCategoryCommand, BlogCategory> _handler;
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly IRepository<BlogCategory> _repository;
-	public EditCategoryCommandHandler(IUnitOfWork unitOfWork, IRepository<BlogCategory> repository)
-	{
-		_unitOfWork = unitOfWork;
-		// استفاده مستقیم از IUnitOfWork برای دادن Repository به هندلر
-		_handler = new EditHandler<EditCategoryCommand, BlogCategory>(_unitOfWork, repository);
-		_repository = repository;
-	}
+    private readonly EditHandler<EditCategoryCommand, BlogCategory> _handler;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IRepository<BlogCategory> _repository;
+    public EditCategoryCommandHandler(IUnitOfWork unitOfWork, IRepository<BlogCategory> repository)
+    {
+        _unitOfWork = unitOfWork;
+        // استفاده مستقیم از IUnitOfWork برای دادن Repository به هندلر
+        _handler = new EditHandler<EditCategoryCommand, BlogCategory>(_unitOfWork, repository);
+        _repository = repository;
+    }
 
-	public async Task<ResponseDto<string>> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
-	{
-		var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
+    public async Task<ResponseDto<string>> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
+    {
+        var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
 
 		var validations = new List<ValidationItem>
 		{
@@ -43,19 +43,19 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, R
 		};
 
 		return await _handler.HandleAsync(
-			id: request.id,
-			validations: validations,
-			updateEntity: entity =>
-			{
-				entity.name = request.name;
-				entity.slug = slug;
-				entity.updated_at = request.updated_at;
-				entity.description = request.description;
-				return Task.FromResult(slug);
-			},
+            id: request.id,
+            validations: validations,
+            updateEntity: async entity =>
+            {
+                entity.name = request.name;
+                entity.slug = slug;
+                entity.updated_at = request.updated_at;
+                entity.description = request.description;
+                return slug;
+            },
 
-			propertyName: "دسته‌بندی",
-			cancellationToken: cancellationToken
-		);
-	}
+            propertyName: "دسته‌بندی",
+            cancellationToken: cancellationToken
+        );
+    }
 }
