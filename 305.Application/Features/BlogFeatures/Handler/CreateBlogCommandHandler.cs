@@ -12,56 +12,56 @@ using MediatR;
 namespace _305.Application.Features.BlogFeatures.Handler;
 
 public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService)
-    : IRequestHandler<CreateBlogCommand, ResponseDto<string>>
+	: IRequestHandler<CreateBlogCommand, ResponseDto<string>>
 {
-    private readonly CreateHandler _handler = new(unitOfWork);
+	private readonly CreateHandler _handler = new(unitOfWork);
 
-    public async Task<ResponseDto<string>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
-    {
+	public async Task<ResponseDto<string>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
+	{
 
-        var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
+		var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
 
-        if (request.image_file != null)
-        {
-            var result = await fileService.UploadImage(request.image_file);
-            request.image = result;
-        }
-        else
-        {
-            return Responses.NotValid<string>(data: null, propName: "تصویر شاخص");
-        }
+		if (request.image_file != null)
+		{
+			var result = await fileService.UploadImage(request.image_file);
+			request.image = result;
+		}
+		else
+		{
+			return Responses.NotValid<string>(data: null, propName: "تصویر شاخص");
+		}
 
-        var validations = new List<ValidationItem>
-        {
-           new ()
-           {
-               Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.name == request.name),
-               Value = "نام"
-           },
-           new ()
-           {
-               Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.slug == slug),
-               Value = "نامک"
-           },
-           new ()
-           {
-               Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id),
-               Value = "دسته بندی",
-               IsExistRole = false
-           }
-        };
+		var validations = new List<ValidationItem>
+		{
+		   new ()
+		   {
+			   Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.name == request.name),
+			   Value = "نام"
+		   },
+		   new ()
+		   {
+			   Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.slug == slug),
+			   Value = "نامک"
+		   },
+		   new ()
+		   {
+			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id),
+			   Value = "دسته بندی",
+			   IsExistRole = false
+		   }
+		};
 
-        return await _handler.HandleAsync(
-           validations: validations,
-           onCreate: async () =>
-           {
-               var entity = Mapper.Map<CreateBlogCommand, Blog>(request);
-               await unitOfWork.BlogRepository.AddAsync(entity);
-               return slug;
-           },
-           successMessage: null,
-           cancellationToken: cancellationToken
-       );
-    }
+		return await _handler.HandleAsync(
+		   validations: validations,
+		   onCreate: async () =>
+		   {
+			   var entity = Mapper.Map<CreateBlogCommand, Blog>(request);
+			   await unitOfWork.BlogRepository.AddAsync(entity);
+			   return slug;
+		   },
+		   successMessage: null,
+		   cancellationToken: cancellationToken
+	   );
+	}
 }
 

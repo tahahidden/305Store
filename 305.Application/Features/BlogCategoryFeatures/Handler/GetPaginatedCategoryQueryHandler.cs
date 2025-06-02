@@ -9,26 +9,26 @@ using MediatR;
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
 public class GetPaginatedCategoryQueryHandler(IUnitOfWork unitOfWork)
-    : IRequestHandler<GetPaginatedCategoryQuery, ResponseDto<PaginatedList<BlogCategory>>>
+	: IRequestHandler<GetPaginatedCategoryQuery, ResponseDto<PaginatedList<BlogCategory>>>
 {
-    private readonly GetPaginatedHandler _handler = new(unitOfWork);
+	private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
-    public async Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
-    {
-        var filter = new DefaultPaginationFilter
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SearchTerm = request.SearchTerm,
-            SortBy = request.SortBy
-        };
+	public async Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
+	{
+		var filter = new DefaultPaginationFilter
+		{
+			Page = request.Page,
+			PageSize = request.PageSize,
+			SearchTerm = request.SearchTerm,
+			SortBy = request.SortBy
+		};
 
-        return await _handler.Handle<BlogCategory>(
-            uow => uow.BlogCategoryRepository.GetPagedResultAsync(
-                filter,
-                predicate: null
-            )
-        );
-    }
+		return await _handler.Handle<BlogCategory>(
+			uow => uow.BlogCategoryRepository.GetPagedResultAsync(
+				filter,
+				predicate: null
+			)
+		);
+	}
 }
 

@@ -10,26 +10,26 @@ using Microsoft.EntityFrameworkCore;
 namespace _305.Application.Features.BlogFeatures.Handler;
 
 public class GetPaginatedBlogQueryHandler(IUnitOfWork unitOfWork)
-    : IRequestHandler<GetPaginatedBlogQuery, ResponseDto<PaginatedList<Blog>>>
+	: IRequestHandler<GetPaginatedBlogQuery, ResponseDto<PaginatedList<Blog>>>
 {
-    private readonly GetPaginatedHandler _handler = new(unitOfWork);
+	private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
-    public Task<ResponseDto<PaginatedList<Blog>>> Handle(GetPaginatedBlogQuery request, CancellationToken cancellationToken)
-    {
-        var filter = new DefaultPaginationFilter
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SearchTerm = request.SearchTerm,
-            SortBy = request.SortBy
-        };
+	public Task<ResponseDto<PaginatedList<Blog>>> Handle(GetPaginatedBlogQuery request, CancellationToken cancellationToken)
+	{
+		var filter = new DefaultPaginationFilter
+		{
+			Page = request.Page,
+			PageSize = request.PageSize,
+			SearchTerm = request.SearchTerm,
+			SortBy = request.SortBy
+		};
 
-        return _handler.Handle<Blog>(
-            uow => uow.BlogRepository.GetPagedResultAsync(
-                filter,
-                predicate: null,
-                includeFunc: q => q.Include(x => x.blog_category)
-            )
-        );
-    }
+		return _handler.Handle<Blog>(
+			uow => uow.BlogRepository.GetPagedResultAsync(
+				filter,
+				predicate: null,
+				includeFunc: q => q.Include(x => x.blog_category)
+			)
+		);
+	}
 }

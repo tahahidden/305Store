@@ -10,23 +10,23 @@ namespace _305.Application.Base.Query;
 /// <typeparam name="TResponse">نوع داده‌ای که قرار است صفحه‌بندی شود.</typeparam>
 public class GetPaginatedQuery<TResponse> : IRequest<ResponseDto<PaginatedList<TResponse>>>
 {
-    /// <summary>
-    /// عبارت جستجو برای فیلتر کردن داده‌ها (اختیاری).
-    /// </summary>
-    public string? SearchTerm { get; set; }
+	/// <summary>
+	/// عبارت جستجو برای فیلتر کردن داده‌ها (اختیاری).
+	/// </summary>
+	public string? SearchTerm { get; set; }
 
-    /// <summary>
-    /// معیار مرتب‌سازی داده‌ها. مقدار پیش‌فرض مرتب‌سازی بر اساس تاریخ ایجاد است.
-    /// </summary>
-    public SortByEnum SortBy { get; set; } = SortByEnum.created_at;
+	/// <summary>
+	/// معیار مرتب‌سازی داده‌ها. مقدار پیش‌فرض مرتب‌سازی بر اساس تاریخ ایجاد است.
+	/// </summary>
+	public SortByEnum SortBy { get; set; } = SortByEnum.created_at;
 
-    /// <summary>
-    /// تعداد آیتم‌ها در هر صفحه. مقدار پیش‌فرض 10 است.
-    /// </summary>
-    public int PageSize { get; set; } = 10;
+	/// <summary>
+	/// تعداد آیتم‌ها در هر صفحه. مقدار پیش‌فرض 10 است.
+	/// </summary>
+	public int PageSize { get; set; } = 10;
 
-    /// <summary>
-    /// شماره صفحه جاری. مقدار پیش‌فرض 1 است.
-    /// </summary>
-    public int Page { get; set; } = 1;
+	/// <summary>
+	/// شماره صفحه جاری. مقدار پیش‌فرض 1 است.
+	/// </summary>
+	public int Page { get; set; } = 1;
 }
