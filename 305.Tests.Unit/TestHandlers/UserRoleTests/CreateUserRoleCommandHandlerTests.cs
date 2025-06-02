@@ -1,6 +1,11 @@
 ﻿using _305.Tests.Unit.DataProvider;
 using Moq;
 using System.Linq.Expressions;
+using _305.Application.Features.UserRoleFeatures.Command;
+using _305.Application.Features.UserRoleFeatures.Handler;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
+using _305.Tests.Unit.GenericHandlers;
 
 namespace _305.Tests.Unit.TestHandlers.UserRoleTests;
 public class CreateUserRoleCommandHandlerTests
@@ -11,7 +16,7 @@ public class CreateUserRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateUserRoleCommand,                 // Command Type
 			UserRole,                          // Entity Type
-			IUserRoleRepo,               // Repository Interface
+			IUserRoleRepository,               // Repository Interface
 			CreateUserRoleCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
@@ -30,7 +35,7 @@ public class CreateUserRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateUserRoleCommand,
 			UserRole,
-			IUserRoleRepo,
+			IUserRoleRepository,
 			CreateUserRoleCommandHandler>(
 
 			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),

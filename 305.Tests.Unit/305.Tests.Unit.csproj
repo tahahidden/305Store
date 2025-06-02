@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestHandlers\AdminAuthTests\AdminRefreshCommandHandlerTests.cs~RF541600.TMP" />
     <None Remove="TestHandlers\BlogTests\EditBlogCommandHandlerTests.cs~RF7eafc3.TMP" />
   </ItemGroup>
 

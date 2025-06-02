@@ -1,4 +1,6 @@
-﻿namespace _305.Application.Features.BlogCategoryFeatures.Response;
+﻿using _305.Application.Base.Response;
+
+namespace _305.Application.Features.BlogCategoryFeatures.Response;
 
 public class BlogCategoryResponse : BaseResponse
 {

@@ -2,6 +2,10 @@
 using _305.Tests.Unit.DataProvider;
 using Moq;
 using System.Linq.Expressions;
+using _305.Application.Features.AdminUserFeatures.Handler;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
+using _305.Tests.Unit.GenericHandlers;
 
 namespace _305.Tests.Unit.TestHandlers.AdminUserTests;
 public class CreateAdminUserCommandHandlerTests
@@ -12,7 +16,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateAdminUserCommand,                 // Command Type
 			User,                          // Entity Type
-			IUserRepo,               // Repository Interface
+			IUserRepository,               // Repository Interface
 			CreateAdminUserCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -28,7 +32,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepo,               // Repository Interface
+			IUserRepository,               // Repository Interface
 			CreateAdminUserCommandHandler
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -52,7 +56,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepo,               // Repository Interface
+			IUserRepository,               // Repository Interface
 			CreateAdminUserCommandHandler
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -80,7 +84,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepo,               // Repository Interface
+			IUserRepository,               // Repository Interface
 			CreateAdminUserCommandHandler>(
 
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),

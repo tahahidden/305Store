@@ -2,6 +2,12 @@
 using MediatR;
 using Serilog;
 using System.Security.Claims;
+using _305.Application.Base.Response;
+using _305.Application.IUOW;
+using _305.BuildingBlocks.Configurations;
+using _305.BuildingBlocks.Helper;
+using _305.Domain.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace _305.Application.Features.AdminAuthFeatures.Handler;
 
@@ -11,7 +17,7 @@ public class AdminLogoutCommandHandler(
 ) : IRequestHandler<AdminLogoutCommand, ResponseDto<string>>
 {
 	private readonly IUnitOfWork _unitOfWork = unitOfWork;
-	public static readonly SecurityTokenConfig Config = new();
+	public static readonly JwtConfig Config = new();
 	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
 	public async Task<ResponseDto<string>> Handle(AdminLogoutCommand request, CancellationToken cancellationToken)

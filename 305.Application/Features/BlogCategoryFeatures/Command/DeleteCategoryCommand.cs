@@ -1,5 +1,7 @@
-﻿namespace _305.Application.Features.BlogCategoryFeatures.Command;
+﻿using _305.Application.Base.Command;
 
-public class DeleteCategoryCommand : DeleteCommand
+namespace _305.Application.Features.BlogCategoryFeatures.Command;
+
+public class DeleteCategoryCommand : DeleteCommand<string>
 {
 }

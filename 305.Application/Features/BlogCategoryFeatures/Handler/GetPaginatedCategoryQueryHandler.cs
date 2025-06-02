@@ -1,4 +1,9 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Query;
+﻿using _305.Application.Base.Handler;
+using _305.Application.Base.Response;
+using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Filters.Pagination;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 using MediatR;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
@@ -28,7 +33,7 @@ public class GetPaginatedCategoryQueryHandler : IRequestHandler<GetPaginatedCate
 			uow => uow.BlogCategoryRepository.GetPagedResultAsync(
 				filter,
 				predicate: null,
-				includes: Array.Empty<string>()
+				includeFunc: null
 			)
 		);
 	}

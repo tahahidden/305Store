@@ -1,4 +1,5 @@
-﻿using _305.Application.Features.AdminAuthFeatures.Response;
+﻿using _305.Application.Base.Response;
+using _305.Application.Features.AdminAuthFeatures.Response;
 using MediatR;
 
 namespace _305.Application.Features.AdminAuthFeatures.Query;

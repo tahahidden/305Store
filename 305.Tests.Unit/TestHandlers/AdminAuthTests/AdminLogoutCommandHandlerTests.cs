@@ -2,6 +2,10 @@
 using Moq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using _305.Application.Features.AdminAuthFeatures.Command;
+using _305.Application.Features.AdminAuthFeatures.Handler;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminLogoutCommandHandlerTests
@@ -31,8 +35,13 @@ public class AdminLogoutCommandHandlerTests
 
 		// Mock IUnitOfWork و برگشتن کاربر تستی
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>()))
-			.ReturnsAsync(new User { id = int.Parse(userId) });
+		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
+			.ReturnsAsync(new User { id = int.Parse(userId) ,
+				mobile = "09333333333",
+				concurrency_stamp = "test",
+				security_stamp = "test",
+				email = "email@3053.com"
+			});
 
 		// Handler
 		var handler = new AdminLogoutCommandHandler(unitOfWorkMock.Object, httpContextAccessorMock.Object);

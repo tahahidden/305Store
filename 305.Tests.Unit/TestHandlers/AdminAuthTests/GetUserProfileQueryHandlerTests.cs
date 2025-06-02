@@ -2,6 +2,11 @@
 using Moq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using _305.Application.Features.AdminAuthFeatures.Handler;
+using _305.Application.Features.AdminAuthFeatures.Query;
+using _305.Application.IService;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class GetUserProfileQueryHandlerTests
@@ -11,10 +16,15 @@ public class GetUserProfileQueryHandlerTests
 	{
 		// Arrange
 		var userId = "1";
-		var user = new User { id = 1, name = "Ali Rezaei" };
+		var user = new User { id = 1, name = "Ali Rezaei",
+			mobile = "09333333333",
+			concurrency_stamp = "test",
+			security_stamp = "test",
+			email = "test@305.com"
+		};
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>()))
+		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync(user);
 
 		var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId) };
@@ -25,7 +35,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtTokenService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
 
 		// Act
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
@@ -42,7 +52,7 @@ public class GetUserProfileQueryHandlerTests
 		var userId = "1";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>()))
+		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync((User)null!);
 
 		var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId) };
@@ -53,7 +63,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtTokenService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 
@@ -68,7 +78,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(Mock.Of<IUnitOfWork>(), Mock.Of<IJwtTokenService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(Mock.Of<IUnitOfWork>(), Mock.Of<IJwtService>(), httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 
@@ -81,7 +91,7 @@ public class GetUserProfileQueryHandlerTests
 		var userId = "1";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>()))
+		unitOfWorkMock.Setup(x => x.UserRepository.FindSingleAsNoTracking(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ThrowsAsync(new Exception("Database failure"));
 
 		var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId) };
@@ -92,7 +102,7 @@ public class GetUserProfileQueryHandlerTests
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 		httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtTokenService>(), httpContextAccessor.Object);
+		var handler = new GetUserProfileQueryHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), httpContextAccessor.Object);
 
 		var result = await handler.Handle(new GetUserProfileQuery(), CancellationToken.None);
 

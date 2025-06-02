@@ -1,4 +1,6 @@
-﻿namespace _305.Tests.Unit.DataProvider;
+﻿using _305.Application.Features.UserRoleFeatures.Command;
+
+namespace _305.Tests.Unit.DataProvider;
 public class UserRoleDataProvider
 {
 	public static CreateUserRoleCommand Create()

@@ -1,4 +1,9 @@
-﻿using _305.Tests.Unit.DataProvider;
+﻿using _305.Application.Features.AdminUserFeatures.Command;
+using _305.Application.Features.AdminUserFeatures.Handler;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
+using _305.Tests.Unit.DataProvider;
+using _305.Tests.Unit.GenericHandlers;
 
 namespace _305.Tests.Unit.TestHandlers.AdminUserTests;
 public class DeleteAdminUserCommandHandlerTests
@@ -11,7 +16,7 @@ public class DeleteAdminUserCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDelete<
 			DeleteAdminUserCommand,
 			User,
-			IUserRepo,
+			IUserRepository,
 			DeleteAdminUserCommandHandler>(
 			handlerFactory: uow => new DeleteAdminUserCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
@@ -28,7 +33,7 @@ public class DeleteAdminUserCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDeleteNotFound<
 			DeleteAdminUserCommand,
 			User,
-			IUserRepo,
+			IUserRepository,
 			DeleteAdminUserCommandHandler>(
 			handlerFactory: uow => new DeleteAdminUserCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),

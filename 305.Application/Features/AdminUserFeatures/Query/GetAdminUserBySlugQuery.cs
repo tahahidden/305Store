@@ -1,4 +1,5 @@
-﻿using _305.Application.Features.AdminUserFeatures.Response;
+﻿using _305.Application.Base.Query;
+using _305.Application.Features.AdminUserFeatures.Response;
 
 namespace _305.Application.Features.AdminUserFeatures.Query;
 

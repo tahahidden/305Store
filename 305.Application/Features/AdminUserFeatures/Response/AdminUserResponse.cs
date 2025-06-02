@@ -1,4 +1,6 @@
-﻿namespace _305.Application.Features.AdminUserFeatures.Response;
+﻿using _305.Application.Base.Response;
+
+namespace _305.Application.Features.AdminUserFeatures.Response;
 
 public class AdminUserResponse : BaseResponse
 {

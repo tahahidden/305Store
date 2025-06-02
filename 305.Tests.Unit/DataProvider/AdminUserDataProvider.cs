@@ -1,6 +1,8 @@
 ﻿using _305.Application.Features.AdminUserFeatures.Command;
 using _305.Application.Features.AdminUserFeatures.Query;
 using _305.Application.Features.AdminUserFeatures.Response;
+using _305.Application.Filters.Pagination;
+using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.DataProvider;
 public static class AdminUserDataProvider

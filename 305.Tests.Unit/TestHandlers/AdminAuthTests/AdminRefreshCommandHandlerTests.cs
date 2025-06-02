@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Linq.Expressions;
+using _305.Application.Features.AdminAuthFeatures.Command;
+using _305.Application.Features.AdminAuthFeatures.Handler;
+using _305.Application.IService;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
 public class AdminRefreshCommandHandlerTests
@@ -13,25 +18,29 @@ public class AdminRefreshCommandHandlerTests
 		{
 			id = 1,
 			refresh_token = "valid_refresh_token",
-			refresh_token_expiry_time = DateTime.Now.AddMinutes(10)
+			refresh_token_expiry_time = DateTime.Now.AddMinutes(10),
+			mobile = "09333333333",
+			concurrency_stamp = "test",
+			security_stamp = "test",
+			email = "test@305.com"
 		};
 		var roles = new List<UserRole>
 	{
-		new UserRole { role = new Role { title = "Admin" } }
+		new UserRole { role = new Role { name = "Admin" } }
 	};
 
 		var accessToken = "new_access_token";
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>()))
+		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync(user);
-		unitOfWorkMock.Setup(u => u.UserRoleRepository.FindList(It.IsAny<Expression<Func<UserRole, bool>>>()))
+		unitOfWorkMock.Setup(u => u.UserRoleRepository.FindList(It.IsAny<Expression<Func<UserRole, bool>>>(), null))
 			.Returns(roles);
 		unitOfWorkMock.Setup(u => u.TokenBlacklistRepository.ExistsAsync(It.IsAny<Expression<Func<BlacklistedToken, bool>>>()))
 			.ReturnsAsync(false);
 
-		var tokenServiceMock = new Mock<IJwtTokenService>();
-		tokenServiceMock.Setup(t => t.GenerateToken(user, It.IsAny<List<string>>()))
+		var tokenServiceMock = new Mock<IJwtService>();
+		tokenServiceMock.Setup(t => t.GenerateAccessToken(user, It.IsAny<List<string>>(), null))
 			.Returns(accessToken);
 
 		var requestCookiesMock = new Mock<IRequestCookieCollection>();
@@ -82,7 +91,7 @@ public class AdminRefreshCommandHandlerTests
 		httpContextAccessorMock.Setup(h => h.HttpContext).Returns(contextMock.Object);
 
 		var handler = new AdminRefreshCommandHandler(new Mock<IUnitOfWork>().Object,
-			new Mock<IJwtTokenService>().Object, httpContextAccessorMock.Object);
+			new Mock<IJwtService>().Object, httpContextAccessorMock.Object);
 
 		var result = await handler.Handle(new AdminRefreshCommand(), CancellationToken.None);
 
@@ -97,11 +106,15 @@ public class AdminRefreshCommandHandlerTests
 		var user = new User
 		{
 			refresh_token = "expired_token",
-			refresh_token_expiry_time = DateTime.Now.AddMinutes(-5) // منقضی شده
+			refresh_token_expiry_time = DateTime.Now.AddMinutes(-5) ,// منقضی شده
+			mobile = "09333333333",
+			concurrency_stamp = "test",
+			security_stamp = "test",
+			email = "test@305.com"
 		};
 
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>()))
+		unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync(user);
 
 		var requestCookiesMock = new Mock<IRequestCookieCollection>();
@@ -125,7 +138,7 @@ public class AdminRefreshCommandHandlerTests
 		httpContextAccessorMock.Setup(h => h.HttpContext).Returns(contextMock.Object);
 
 		var handler = new AdminRefreshCommandHandler(unitOfWorkMock.Object,
-			new Mock<IJwtTokenService>().Object, httpContextAccessorMock.Object);
+			new Mock<IJwtService>().Object, httpContextAccessorMock.Object);
 
 		var result = await handler.Handle(new AdminRefreshCommand(), CancellationToken.None);
 

@@ -1,5 +1,7 @@
-﻿namespace _305.Application.Features.AdminUserFeatures.Command;
+﻿using _305.Application.Base.Command;
 
-public class DeleteAdminUserCommand : DeleteCommand
+namespace _305.Application.Features.AdminUserFeatures.Command;
+
+public class DeleteAdminUserCommand : DeleteCommand<string>
 {
 }

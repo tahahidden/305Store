@@ -1,19 +1,25 @@
-﻿using _305.Application.Features.AdminAuthFeatures.Command;
+﻿using _305.Application.Base.Response;
+using _305.Application.Features.AdminAuthFeatures.Command;
 using _305.Application.Features.AdminAuthFeatures.Response;
+using _305.Application.IService;
+using _305.Application.IUOW;
+using _305.BuildingBlocks.Configurations;
+using _305.BuildingBlocks.Security;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 
 namespace _305.Application.Features.AdminAuthFeatures.Handler;
 
 public class AdminLoginCommandHandler(
 	IUnitOfWork unitOfWork,
-	IJwtTokenService jwtTokenService,
+	IJwtService jwtService,
 	IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<AdminLoginCommand, ResponseDto<LoginResponse>>
 {
 	private readonly IUnitOfWork _unitOfWork = unitOfWork;
-	public static readonly SecurityTokenConfig Config = new();
-	private readonly IJwtTokenService _tokenService = jwtTokenService;
+	public static readonly JwtConfig Config = new();
+	private readonly IJwtService _tokenService = jwtService;
 	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 	public async Task<ResponseDto<LoginResponse>> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
 	{
@@ -43,11 +49,11 @@ public class AdminLoginCommandHandler(
 			// موفقیت در ورود
 			user.failed_login_count = 0;
 			user.last_login_date_time = DateTime.Now;
-			var role = _unitOfWork.UserRoleRepository.FindList(x => x.user_id == user.id);
+			var role = _unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
 			var token = "";
 			do
 			{
-				token = _tokenService.GenerateToken(user, role.Select(x => x.role.title).ToList());
+				token = _tokenService.GenerateAccessToken(user, role.Select(x => x.role.name).ToList());
 			}
 			while (await _unitOfWork.TokenBlacklistRepository.ExistsAsync(x => x.token == token));
 			var refreshToken = "";

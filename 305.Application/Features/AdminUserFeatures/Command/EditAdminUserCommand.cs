@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using _305.Application.Base.Command;
 
 namespace _305.Application.Features.AdminUserFeatures.Command;
 
-public class EditAdminUserCommand : EditCommand
+public class EditAdminUserCommand : EditCommand<string>
 {
 	[Display(Name = "پسورد")]
 	public string? password { get; set; }
