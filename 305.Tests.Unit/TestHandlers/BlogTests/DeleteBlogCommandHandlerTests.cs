@@ -1,12 +1,9 @@
-﻿using _304.Net.Platform.Application.BlogFeatures.Command;
-using _304.Net.Platform.Application.BlogFeatures.Handler;
+﻿using _305.Application.Features.BlogFeatures.Command;
+using _305.Application.Features.BlogFeatures.Handler;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
-using Core.EntityFramework.Models;
-using DataLayer.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace _305.Tests.Unit.TestHandlers.BlogTests;
 public class DeleteBlogCommandHandlerTests

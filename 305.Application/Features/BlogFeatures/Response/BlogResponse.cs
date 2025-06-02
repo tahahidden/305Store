@@ -1,6 +1,5 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Response;
-using Core.EntityFramework.Models;
-using DataLayer.Base.Response;
+﻿using _305.Application.Base.Response;
+using _305.Application.Features.BlogCategoryFeatures.Response;
 
 namespace _305.Application.Features.BlogFeatures.Response;
 

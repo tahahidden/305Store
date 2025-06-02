@@ -1,9 +1,9 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Query;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using DataLayer.Base.Handler;
-using DataLayer.Base.Response;
-using DataLayer.Repository;
+﻿using _305.Application.Base.Handler;
+using _305.Application.Base.Pagination;
+using _305.Application.Base.Response;
+using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 using MediatR;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
@@ -19,7 +19,7 @@ public class GetPaginatedCategoryQueryHandler : IRequestHandler<GetPaginatedCate
         _handler = new GetPaginatedHandler(unitOfWork);
     }
 
-    public Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
+    public async Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
     {
         var filter = new DefaultPaginationFilter
         {
@@ -29,7 +29,7 @@ public class GetPaginatedCategoryQueryHandler : IRequestHandler<GetPaginatedCate
             SortBy = request.SortBy
         };
 
-        return _handler.Handle<BlogCategory>(
+        return await _handler.Handle<BlogCategory>(
             uow => uow.BlogCategoryRepository.GetPagedResultAsync(
                 filter,
                 predicate: null,

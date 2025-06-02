@@ -1,11 +1,8 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Handler;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Query;
-using Core.Base.EF;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using DataLayer.Base.Response;
-using DataLayer.Repository;
-using DataLayer.Services;
+﻿using _305.Application.Base.Pagination;
+using _305.Application.Base.Response;
+using _305.Application.IBaseRepository;
+using _305.Application.IUOW;
+using _305.Domain.Common;
 using Moq;
 using System.Linq.Expressions;
 

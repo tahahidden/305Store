@@ -1,6 +1,5 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Response;
+﻿using _305.Application.Base.Query;
 using _305.Application.Features.BlogFeatures.Response;
-using DataLayer.Base.Query;
 
 namespace _305.Application.Features.BlogFeatures.Query;
 

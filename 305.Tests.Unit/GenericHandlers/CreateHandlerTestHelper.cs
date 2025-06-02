@@ -1,6 +1,7 @@
-﻿using Core.Base.EF;
-using DataLayer.Base.Response;
-using DataLayer.Repository;
+﻿using _305.Application.Base.Response;
+using _305.Application.IBaseRepository;
+using _305.Application.IUOW;
+using _305.Domain.Common;
 using Moq;
 using System.Linq.Expressions;
 

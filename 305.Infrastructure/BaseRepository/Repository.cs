@@ -3,11 +3,8 @@ using _305.Application.Base.Pagination;
 using _305.Application.IBaseRepository;
 using _305.Domain.Common;
 using _305.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Linq;
-using System.Text;
 
 namespace _305.Infrastructure.BaseRepository;
 /// <summary>

@@ -1,9 +1,6 @@
-﻿using DataLayer.Repository;
-using DataLayer.Services;
+﻿using _305.Application.IRepository;
+using _305.Application.IUOW;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace _305.Tests.Unit.Assistant;
 

@@ -1,7 +1,5 @@
 ﻿using _305.Application.Base.Pagination;
 using _305.Domain.Common;
-using Core.Base.EF;
-using System.Linq;
 
 namespace _305.Application.Base.ExtensionAndSort;
 

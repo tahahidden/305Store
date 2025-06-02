@@ -1,5 +1,4 @@
 ﻿using _305.BuildingBlocks.Configurations;
-using Core.Base.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

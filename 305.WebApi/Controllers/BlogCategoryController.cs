@@ -1,5 +1,5 @@
-﻿using _304.Net.Platform.Application.BlogFeatures.Command;
-using _304.Net.Platform.Application.BlogFeatures.Query;
+﻿using _305.Application.Features.BlogFeatures.Command;
+using _305.Application.Features.BlogFeatures.Query;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

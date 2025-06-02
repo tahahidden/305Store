@@ -1,4 +1,4 @@
-﻿using Core.Enums;
+﻿using _305.BuildingBlocks.Enums;
 
 namespace _305.Application.Base.Pagination;
 
@@ -24,5 +24,5 @@ public class DefaultPaginationFilter : PaginationFilter
     public double? Max { get; set; }
 
     // نوع مرتب‌سازی بر اساس Enum تعریف شده (پیش‌فرض: تاریخ ایجاد)
-    public SortByEnum SortBy { get; set; } = SortByEnum.CreationDate;
+    public SortByEnum SortBy { get; set; } = SortByEnum.created_at;
 }

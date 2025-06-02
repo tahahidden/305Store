@@ -1,11 +1,9 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Query;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Response;
+﻿using _305.Application.Base.Handler;
+using _305.Application.Base.Response;
 using _305.Application.Features.BlogFeatures.Query;
 using _305.Application.Features.BlogFeatures.Response;
-using Core.EntityFramework.Models;
-using DataLayer.Base.Handler;
-using DataLayer.Base.Response;
-using DataLayer.Repository;
+using _305.Application.IUOW;
+using _305.Domain.Entity;
 using MediatR;
 
 namespace _305.Application.Features.BlogFeatures.Handler;

@@ -1,11 +1,8 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Command;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Query;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Response;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using _305.Application.Base.Pagination;
+using _305.Application.Features.BlogCategoryFeatures.Command;
+using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.BlogCategoryFeatures.Response;
+using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.DataProvider;
 public static class BlogCategoryDataProvider

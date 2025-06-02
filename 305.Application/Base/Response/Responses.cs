@@ -1,4 +1,4 @@
-﻿using Core.Base.Text;
+﻿using _305.BuildingBlocks.Text;
 
 namespace _305.Application.Base.Response;
 

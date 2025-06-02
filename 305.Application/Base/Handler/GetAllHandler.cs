@@ -1,6 +1,5 @@
-﻿using _305.Application.Base.Mapper;
-using _305.Application.Base.Response;
-using DataLayer.Repository;
+﻿using _305.Application.Base.Response;
+using _305.Application.IUOW;
 using Serilog;
 
 namespace _305.Application.Base.Handler;
@@ -38,7 +37,7 @@ public class GetAllHandler
         try
         {
             // تبدیل هر آیتم در لیست به صورت مجزا
-            var dtoList = entities.Select(e => Mapper.Map<TEntity, TDto>(e)).ToList();
+            var dtoList = entities.Select(e => Mapper.Mapper.Map<TEntity, TDto>(e)).ToList();
 
             // بازگرداندن لیست به صورت پاسخ موفق
             return Responses.Data(dtoList);

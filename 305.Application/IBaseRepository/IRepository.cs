@@ -1,9 +1,6 @@
 ﻿using _305.Application.Base.Pagination;
 using _305.Domain.Common;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace _305.Application.IBaseRepository;
 /// <summary>

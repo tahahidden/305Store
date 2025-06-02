@@ -1,6 +1,5 @@
-﻿using _305.Application.Base.Mapper;
-using _305.Application.Base.Response;
-using DataLayer.Repository;
+﻿using _305.Application.Base.Response;
+using _305.Application.IUOW;
 using Serilog;
 
 namespace _305.Application.Base.Handler;
@@ -47,7 +46,7 @@ public class GetBySlugHandler
                 return Responses.NotFound<TDto>(default, name, notFoundMessage);
 
             // نگاشت Entity به DTO
-            var dto = Mapper.Map<TEntity, TDto>(entity);
+            var dto = Mapper.Mapper.Map<TEntity, TDto>(entity);
             return Responses.Data(dto);
         }
         catch (Exception ex)

@@ -1,6 +1,6 @@
-﻿using _305.Application.Base.Response;
-using Core.Enums;
-using Core.Pagination;
+﻿using _305.Application.Base.Pagination;
+using _305.Application.Base.Response;
+using _305.BuildingBlocks.Enums;
 using MediatR;
 
 namespace _305.Application.Base.Query;
@@ -18,7 +18,7 @@ public class GetPaginatedQuery<T> : IRequest<ResponseDto<PaginatedList<T>>>
     /// <summary>
     /// معیار مرتب‌سازی داده‌ها. مقدار پیش‌فرض مرتب‌سازی بر اساس تاریخ ایجاد است.
     /// </summary>
-    public SortByEnum SortBy { get; set; } = SortByEnum.CreationDate;
+    public SortByEnum SortBy { get; set; } = SortByEnum.created_at;
 
     /// <summary>
     /// تعداد آیتم‌ها در هر صفحه. مقدار پیش‌فرض 10 است.

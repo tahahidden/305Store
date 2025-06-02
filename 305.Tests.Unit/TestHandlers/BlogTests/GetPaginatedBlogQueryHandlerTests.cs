@@ -1,13 +1,8 @@
-﻿using _304.Net.Platform.Application.BlogFeatures.Handler;
-using _304.Net.Platform.Application.BlogFeatures.Query;
-using _304.Net.Platform.Application.BlogFeatures.Handler;
-using _304.Net.Platform.Application.BlogFeatures.Query;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using DataLayer.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using _305.Application.Base.Pagination;
+using _305.Application.Features.BlogFeatures.Handler;
+using _305.Application.Features.BlogFeatures.Query;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
 

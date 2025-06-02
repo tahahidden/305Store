@@ -1,9 +1,7 @@
 ﻿using _305.Application.IRepository;
-using _305.Application.IUnitOfWork;
+using _305.Application.IUOW;
 using _305.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using _305.Infrastructure.Repository;
 
 namespace _305.Infrastructure.UnitOfWork;
 public class UnitOfWork : IUnitOfWork

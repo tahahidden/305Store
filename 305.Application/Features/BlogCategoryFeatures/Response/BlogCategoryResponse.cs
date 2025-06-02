@@ -1,4 +1,4 @@
-﻿using DataLayer.Base.Response;
+﻿using _305.Application.Base.Response;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Response;
 

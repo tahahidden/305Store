@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace _305.Application.Base.Validator;
+﻿namespace _305.Application.Base.Validator;
 /// <summary>
 /// کلاس نمایانگر یک آیتم اعتبارسنجی که شامل یک قانون اعتبارسنجی (تابعی که مقدار بولی async برمی‌گرداند)
 /// و پیغام یا مقدار مرتبط با آن است.

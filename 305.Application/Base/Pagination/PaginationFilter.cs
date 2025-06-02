@@ -1,4 +1,4 @@
-﻿using Core.Enums;
+﻿using _305.BuildingBlocks.Enums;
 
 namespace _305.Application.Base.Pagination;
 

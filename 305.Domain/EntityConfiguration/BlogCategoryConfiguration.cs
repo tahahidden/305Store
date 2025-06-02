@@ -1,7 +1,6 @@
 ﻿using _305.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _305.Domain.EntityConfiguration;
 public class BlogCategoryConfiguration : IEntityTypeConfiguration<BlogCategory>

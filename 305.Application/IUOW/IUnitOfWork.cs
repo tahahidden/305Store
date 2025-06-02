@@ -1,9 +1,6 @@
 ﻿using _305.Application.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace _305.Application.IUnitOfWork;
+namespace _305.Application.IUOW;
 public interface IUnitOfWork : IDisposable
 {
     IBlogCategoryRepository BlogCategoryRepository { get; }

@@ -1,5 +1,5 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Response;
-using DataLayer.Base.Query;
+﻿using _305.Application.Base.Query;
+using _305.Application.Features.BlogCategoryFeatures.Response;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Query;
 

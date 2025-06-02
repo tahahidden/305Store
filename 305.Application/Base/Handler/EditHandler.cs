@@ -1,11 +1,9 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.Base.Validator;
-using Core.Base.EF;
-using DataLayer.Repository;
+using _305.Application.IBaseRepository;
+using _305.Application.IUOW;
+using _305.Domain.Common;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace _305.Application.Base.Handler;
 /// <summary>

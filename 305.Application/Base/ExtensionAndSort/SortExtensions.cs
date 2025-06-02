@@ -1,5 +1,5 @@
 ﻿using _305.BuildingBlocks.Enums;
-using Core.Base.EF;
+using _305.Domain.Common;
 
 namespace _305.Application.Base.ExtensionAndSort;
 /// <summary>
@@ -21,10 +21,10 @@ public static class SortExtensions
         // اگر sortBy مقدار نداشته باشد یا نامشخص باشد، به صورت پیش‌فرض بر اساس شناسه (id) به صورت نزولی مرتب می‌کند
         return sortBy switch
         {
-            SortByEnum.CreationDate => query.OrderBy(x => x.created_at),
-            SortByEnum.CreationDateDescending => query.OrderByDescending(x => x.created_at),
-            SortByEnum.updated_ate => query.OrderBy(x => x.updated_at),
-            SortByEnum.updated_ateDescending => query.OrderByDescending(x => x.updated_at),
+            SortByEnum.created_at => query.OrderBy(x => x.created_at),
+            SortByEnum.created_at_descending => query.OrderByDescending(x => x.created_at),
+            SortByEnum.updated_at => query.OrderBy(x => x.updated_at),
+            SortByEnum.updated_at_descending => query.OrderByDescending(x => x.updated_at),
             SortByEnum.slug => query.OrderBy(x => x.slug),
             SortByEnum.slug_descending => query.OrderByDescending(x => x.slug),
             SortByEnum.name => query.OrderBy(x => x.name),

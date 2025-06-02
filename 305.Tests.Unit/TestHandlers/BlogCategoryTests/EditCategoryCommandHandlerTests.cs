@@ -1,9 +1,8 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Command;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Handler;
+﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+using _305.Application.Features.BlogCategoryFeatures.Handler;
+using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
-using Core.EntityFramework.Models;
-using DataLayer.Services;
 
 namespace _305.Tests.Unit.TestHandlers.BlogCategoryTests;
 public class EditCategoryCommandHandlerTests

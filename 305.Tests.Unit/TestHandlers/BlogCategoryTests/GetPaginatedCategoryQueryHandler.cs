@@ -1,10 +1,10 @@
-﻿using _304.Net.Platform.Application.BlogCategoryFeatures.Handler;
-using _304.Net.Platform.Application.BlogCategoryFeatures.Query;
+﻿using _305.Application.Base.Pagination;
+using _305.Application.Features.BlogCategoryFeatures.Handler;
+using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.IRepository;
+using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
-using Core.EntityFramework.Models;
-using Core.Pagination;
-using DataLayer.Services;
 
 
 namespace _305.Tests.Unit.TestHandlers.BlogCategoryTests;
