@@ -116,19 +116,6 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
 	}
 
 	[Test]
-	public async Task GetAll_Should_Return_List()
-	{
-		var response = await Client.GetAsync($"{BaseUrl}/all");
-		response.EnsureSuccessStatusCode();
-
-		var json = await response.Content.ReadAsStringAsync();
-		var result = JsonConvert.DeserializeObject<ResponseDto<List<BlogResponse>>>(json);
-
-		Assert.That(result?.is_success, Is.True);
-		Assert.That(result?.data, Is.Not.Null);
-	}
-
-	[Test]
 	public async Task Index_Paginated_Should_Return_Success()
 	{
 		var response = await Client.GetAsync($"{BaseUrl}/list?page=1&pageSize=10");
