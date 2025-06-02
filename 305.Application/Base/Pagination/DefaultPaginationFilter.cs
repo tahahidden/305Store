@@ -1,6 +1,6 @@
 ﻿using Core.Enums;
 
-namespace _305.BuildingBlocks.Pagination;
+namespace _305.Application.Base.Pagination;
 
 // فیلتر صفحه‌بندی پیش‌فرض با امکانات جستجو و مرتب‌سازی
 public class DefaultPaginationFilter : PaginationFilter

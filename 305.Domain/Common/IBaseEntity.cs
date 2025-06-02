@@ -1,4 +1,4 @@
-﻿namespace _305.BuildingBlocks.Common;
+﻿namespace _305.Domain.Common;
 
 /// <summary>
 /// اینترفیس پایه برای تمام موجودیت‌ها (Entities) در سیستم

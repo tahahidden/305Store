@@ -1,7 +1,7 @@
 ﻿using _305.BuildingBlocks.Enums;
 using Core.Base.EF;
 
-namespace _305.BuildingBlocks.ExtensionAndSort;
+namespace _305.Application.Base.ExtensionAndSort;
 /// <summary>
 /// کلاس اکستنشن برای اعمال مرتب‌سازی روی IQueryable
 /// </summary>

@@ -1,9 +1,9 @@
-﻿using _305.BuildingBlocks.Common;
-using _305.BuildingBlocks.Pagination;
+﻿using _305.Application.Base.Pagination;
+using _305.Domain.Common;
 using Core.Base.EF;
 using System.Linq;
 
-namespace _305.BuildingBlocks.ExtensionAndSort;
+namespace _305.Application.Base.ExtensionAndSort;
 
 /// <summary>
 /// کلاس اکستنشن برای اعمال فیلتر روی کوئری‌های IQueryable

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace _305.BuildingBlocks.Common;
+namespace _305.Domain.Common;
 
 /// <summary>
 /// کلاس پایه‌ای برای تمام موجودیت‌های (Entity) دیتابیس
