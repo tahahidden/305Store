@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Claims;
 using System.Text;
@@ -22,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 // پیکربندی Serilog
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Debug() // یا .Information() یا .Error()
@@ -30,6 +31,7 @@ Log.Logger = new LoggerConfiguration()
 	.Enrich.WithEnvironmentName()
 	.WriteTo.Console()
 	.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+	.WriteTo.File("Logs/requests.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
 
 builder.Host.UseSerilog(); // اتصال Serilog به Host
@@ -46,8 +48,7 @@ builder.Services.Configure<LockoutConfig>(
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");
-var jwtConfig = jwtSection.Get<SecurityTokenConfig>();
-builder.Services.AddSingleton(jwtConfig);
+var jwtConfig = jwtSection.Get<JwtConfig>();
 
 builder.Services.AddControllers(options =>
 {
@@ -146,7 +147,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true,
 			ValidIssuer = jwtConfig.Issuer,
 			ValidAudience = jwtConfig.Audience,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SigningKey)),
 			NameClaimType = ClaimTypes.NameIdentifier // این خط را اضافه کنید تا `NameIdentifier` به درستی ست شود
 		};
 
