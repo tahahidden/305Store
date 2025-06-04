@@ -1,19 +1,20 @@
 ﻿using _305.Application.Base.Handler;
 using _305.Application.Base.Response;
-using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.UserRoleFeatures.Query;
 using _305.Application.Filters.Pagination;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-namespace _305.Application.Features.BlogCategoryFeatures.Handler;
+namespace _305.Application.Features.UserRoleFeatures.Handler;
 
 public class GetPaginatedUserRoleQueryHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<GetPaginatedCategoryQuery, ResponseDto<PaginatedList<BlogCategory>>>
+	: IRequestHandler<GetPaginatedUserRoleQuery, ResponseDto<PaginatedList<UserRole>>>
 {
 	private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
-	public Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
+	public Task<ResponseDto<PaginatedList<UserRole>>> Handle(GetPaginatedUserRoleQuery request, CancellationToken cancellationToken)
 	{
 		var filter = new DefaultPaginationFilter
 		{
@@ -24,10 +25,10 @@ public class GetPaginatedUserRoleQueryHandler(IUnitOfWork unitOfWork)
 		};
 
 		return _handler.Handle(
-			uow => uow.BlogCategoryRepository.GetPagedResultAsync(
+			uow => uow.UserRoleRepository.GetPagedResultAsync(
 				filter,
 				predicate: null,
-				includeFunc: null
+				includeFunc: x=>x.Include(y => y.role).Include(y => y.user)
 			)
 		);
 	}

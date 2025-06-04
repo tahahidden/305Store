@@ -18,8 +18,8 @@ public class GetCategoryBySlugQueryHandlerTests
 			BlogCategory,
 			BlogCategoryResponse,
 			IBlogCategoryRepository,
-			GetCategoryBySlugQueryHandler>(
-				uow => new GetCategoryBySlugQueryHandler(uow),
+			GetUserRoleBySlugQueryHandler>(
+				uow => new GetUserRoleBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(BlogCategoryDataProvider.GetBySlug(slug: "slug"), token),
 				uow => uow.BlogCategoryRepository,
 				category
@@ -33,8 +33,8 @@ public class GetCategoryBySlugQueryHandlerTests
 			BlogCategory,
 			BlogCategoryResponse,
 			IBlogCategoryRepository,
-			GetCategoryBySlugQueryHandler>(
-				uow => new GetCategoryBySlugQueryHandler(uow),
+			GetUserRoleBySlugQueryHandler>(
+				uow => new GetUserRoleBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(BlogCategoryDataProvider.GetBySlug(slug: "not-found"), token),
 				uow => uow.BlogCategoryRepository
 		);

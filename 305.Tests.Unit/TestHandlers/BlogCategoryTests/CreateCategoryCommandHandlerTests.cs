@@ -17,9 +17,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,                 // Command Type
 			BlogCategory,                          // Entity Type
 			IBlogCategoryRepository,               // Repository Interface
-			CreateCategoryCommandHandler           // Handler Type
+			CreateUserRoleCommandHandler           // Handler Type
 		>(
-			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
+			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: BlogCategoryDataProvider.Create(),
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -34,9 +34,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateCategoryCommandHandler
+			CreateUserRoleCommandHandler
 		>(
-			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
+			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: BlogCategoryDataProvider.Create(name: "Duplicated Name"),
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -58,9 +58,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateCategoryCommandHandler
+			CreateUserRoleCommandHandler
 		>(
-			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
+			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: new CreateCategoryCommand { name = "Test Name", slug = "duplicate-slug" },
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -86,9 +86,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateCategoryCommandHandler>(
+			CreateUserRoleCommandHandler>(
 
-			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
+			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
 
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
 

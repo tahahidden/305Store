@@ -12,11 +12,11 @@ namespace _305.WebApi.Controllers.Admin;
 public class AdminBlogCategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet("list")]
-    public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> Index([FromQuery] GetPaginatedUserRoleQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpGet("all")]
-    public Task<IActionResult> GetAll([FromQuery] GetAllCategoryQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> GetAll([FromQuery] GetAllUserRoleQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpPost("create")]
@@ -28,7 +28,7 @@ public class AdminBlogCategoryController(IMediator mediator) : BaseController(me
         ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
     [HttpGet("get")]
-    public Task<IActionResult> GetBySlug([FromQuery] GetCategoryBySlugQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> GetBySlug([FromQuery] GetUserRoleBySlugQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpPost("delete")]

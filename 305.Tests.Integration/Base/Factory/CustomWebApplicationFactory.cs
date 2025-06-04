@@ -46,9 +46,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommand>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<EditCategoryCommand>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<DeleteCategoryCommand>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllCategoryQuery>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetCategoryBySlugQuery>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPaginatedCategoryQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllUserRoleQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetUserRoleBySlugQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPaginatedUserRoleQuery>());
 
 			// ایجاد سرویس‌پروایدر موقت
 			var sp = services.BuildServiceProvider();

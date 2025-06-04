@@ -17,8 +17,8 @@ public class DeleteCategoryCommandHandlerTests
 			DeleteCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			DeleteCategoryCommandHandler>(
-			handlerFactory: uow => new DeleteCategoryCommandHandler(uow),
+			DeleteUserRoleCommandHandler>(
+			handlerFactory: uow => new DeleteUserRoleCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
 			command: command,
 			repoSelector: uow => uow.BlogCategoryRepository
@@ -34,8 +34,8 @@ public class DeleteCategoryCommandHandlerTests
 			DeleteCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			DeleteCategoryCommandHandler>(
-			handlerFactory: uow => new DeleteCategoryCommandHandler(uow),
+			DeleteUserRoleCommandHandler>(
+			handlerFactory: uow => new DeleteUserRoleCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
 			command: command,
 			repoSelector: uow => uow.BlogCategoryRepository

@@ -10,6 +10,7 @@
   <ItemGroup>
     <None Remove="Base\Response\Responses.cs~RF2f7932.TMP" />
     <None Remove="Features\RoleFeatures\Handler\GetPaginatedUserRoleQueryHandler.cs~RF12b8f60.TMP" />
+    <None Remove="Features\UserRoleFeatures\Handler\EditUserRoleCommandHandler.cs~RF1c53433.TMP" />
   </ItemGroup>
 
   <ItemGroup>

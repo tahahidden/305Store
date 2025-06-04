@@ -13,7 +13,7 @@ namespace _305.WebApi.Controllers.Admin;
 public class AdminBlogController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet("list")]
-    public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> Index([FromQuery] GetPaginatedUserRoleQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpPost("create")]
