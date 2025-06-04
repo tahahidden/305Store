@@ -23,12 +23,12 @@ public class CreateRoleCommandHandler(IUnitOfWork unitOfWork)
 		{
 		   new ()
 		   {
-			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.name == request.name),
+			   Rule = async () => await unitOfWork.RoleRepository.ExistsAsync(x => x.name == request.name),
 			   Value = "نام"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.slug == slug),
+			   Rule = async () => await unitOfWork.RoleRepository.ExistsAsync(x => x.slug == slug),
 			   Value = "نامک"
 		   }
 		};
