@@ -44,14 +44,14 @@ public class EditAdminUserCommandHandler(IUnitOfWork unitOfWork, IRepository<Use
 			id: request.id,
 			validations: validations,
 			propertyName: "کاربر ادمین",
-			updateEntity: async entity =>
+			updateEntity:  entity =>
 			{
 				entity.name = request.name;
 				entity.slug = slug;
 				entity.updated_at = request.updated_at;
 				entity.email = request.email;
 				entity.password_hash = request.password == null ? entity.password_hash : PasswordHasher.Hash(request.password);
-				return slug;
+				return Task.FromResult(slug);
 			},
 			cancellationToken: cancellationToken
 		);

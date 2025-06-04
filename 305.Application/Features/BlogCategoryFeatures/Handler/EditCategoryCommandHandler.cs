@@ -11,18 +11,11 @@ using MediatR;
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
 
-public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ResponseDto<string>>
+public class EditCategoryCommandHandler(IUnitOfWork unitOfWork, IRepository<BlogCategory> repository)
+	: IRequestHandler<EditCategoryCommand, ResponseDto<string>>
 {
-	private readonly EditHandler<EditCategoryCommand, BlogCategory> _handler;
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly IRepository<BlogCategory> _repository;
-	public EditCategoryCommandHandler(IUnitOfWork unitOfWork, IRepository<BlogCategory> repository)
-	{
-		_unitOfWork = unitOfWork;
-		// استفاده مستقیم از IUnitOfWork برای دادن Repository به هندلر
-		_handler = new EditHandler<EditCategoryCommand, BlogCategory>(_unitOfWork, repository);
-		_repository = repository;
-	}
+	private readonly EditHandler<EditCategoryCommand, BlogCategory> _handler = new(unitOfWork, repository);
+	// استفاده مستقیم از IUnitOfWork برای دادن Repository به هندلر
 
 	public async Task<ResponseDto<string>> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
 	{
@@ -32,12 +25,12 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, R
 		{
 		   new ()
 		   {
-			   Rule = async () => await _repository.ExistsAsync(x => x.name == request.name && x.id != request.id),
+			   Rule = async () => await repository.ExistsAsync(x => x.name == request.name && x.id != request.id),
 			   Value = "نام"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _repository.ExistsAsync(x => x.slug == slug && x.id != request.id),
+			   Rule = async () => await repository.ExistsAsync(x => x.slug == slug && x.id != request.id),
 			   Value = "نامک"
 		   }
 		};
@@ -45,13 +38,13 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, R
 		return await _handler.HandleAsync(
 			id: request.id,
 			validations: validations,
-			updateEntity: async entity =>
+			updateEntity: entity =>
 			{
 				entity.name = request.name;
 				entity.slug = slug;
 				entity.updated_at = request.updated_at;
 				entity.description = request.description;
-				return slug;
+				return Task.FromResult(slug);
 			},
 
 			propertyName: "دسته‌بندی",
