@@ -12,6 +12,7 @@ using _305.WebApi.Assistants.Middelware;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -41,15 +42,16 @@ builder.Services.Configure<LockoutConfig>(
 	builder.Configuration.GetSection(LockoutConfig.SectionName));
 
 // ─────────────── Services and Repositories ───────────────
+builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");
-var jwtConfig = jwtSection.Get<SecurityTokenConfig>();
-builder.Services.AddSingleton(jwtConfig);
+var jwtConfig = jwtSection.Get<JwtConfig>();
 
-builder.Services.AddControllers(options =>
+builder.Services.AddScoped<IDistributedCache>();
+builder.Services.AddSession(options =>
 {
 	options.IdleTimeout = TimeSpan.FromMinutes(30);
 	options.Cookie.HttpOnly = true;
@@ -116,7 +118,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ─────────────── JWT Auth ───────────────
-var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtConfig>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	.AddJwtBearer(options =>
 	{
@@ -128,7 +129,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true,
 			ValidIssuer = jwtConfig.Issuer,
 			ValidAudience = jwtConfig.Audience,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SigningKey)),
 			NameClaimType = ClaimTypes.NameIdentifier // این خط را اضافه کنید تا `NameIdentifier` به درستی ست شود
 		};
 		options.Events = new JwtBearerEvents

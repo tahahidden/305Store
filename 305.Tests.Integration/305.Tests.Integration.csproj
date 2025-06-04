@@ -15,8 +15,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,10 +24,6 @@
     <ProjectReference Include="..\305.BuildingBlocks\305.BuildingBlocks.csproj" />
     <ProjectReference Include="..\305.Infrastructure\305.Infrastructure.csproj" />
     <ProjectReference Include="..\305.WebApi\305.WebApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>
