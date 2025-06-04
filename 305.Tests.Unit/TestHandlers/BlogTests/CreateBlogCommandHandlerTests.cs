@@ -1,9 +1,12 @@
 ﻿using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Handler;
 using _305.Application.IRepository;
+using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using _305.Tests.Unit.Assistant;
+using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Linq.Expressions;
 
@@ -14,23 +17,19 @@ public class CreateBlogCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldCreateBlog_WhenNameAndSlugAreUnique()
 	{
-		var file = Files.CreateFakeFormFile();
+		var fileServiceMock = new Mock<IFileService>();
+		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+					   .ReturnsAsync("uploads/test-image.jpg");
+
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateBlogCommand,                 // Command Type
 			Blog,                          // Entity Type
 			IBlogRepository,               // Repository Interface
 			CreateBlogCommandHandler           // Handler Type
 		>(
-			handlerFactory: uow => new CreateBlogCommandHandler(uow),
+			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
-			command: new CreateBlogCommand
-			{
-				name = "Test Blog",
-				slug = null,
-				blog_category_id = 1,
-				image_file = file,
-				image_alt = ""
-			},
+			command: BlogDataProvider.Create(),
 			repoSelector: uow => uow.BlogRepository,
 			expectedNameForExistsCheck: "Test Blog"
 		);
@@ -39,16 +38,18 @@ public class CreateBlogCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldFail_WhenNameIsDuplicate()
 	{
-		var file = Files.CreateFakeFormFile();
+		var fileServiceMock = new Mock<IFileService>();
+		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+					   .ReturnsAsync("uploads/test-image.jpg");
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
 			IBlogRepository,
 			CreateBlogCommandHandler
 		>(
-			handlerFactory: uow => new CreateBlogCommandHandler(uow),
+			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
-			command: new CreateBlogCommand { name = "Duplicate Name", slug = null, image_file = file },
+			command: BlogDataProvider.Create(),
 			repoSelector: uow => uow.BlogRepository,
 			setupRepoMock: repo =>
 			{
@@ -64,16 +65,18 @@ public class CreateBlogCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldFail_WhenSlugIsDuplicate()
 	{
-		var file = Files.CreateFakeFormFile();
+		var fileServiceMock = new Mock<IFileService>();
+		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+					   .ReturnsAsync("uploads/test-image.jpg");
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
 			IBlogRepository,
 			CreateBlogCommandHandler
 		>(
-			handlerFactory: uow => new CreateBlogCommandHandler(uow),
+			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
-			command: new CreateBlogCommand { name = "Test Name", slug = "duplicate-slug", image_file = file },
+			command: BlogDataProvider.Create(),
 			repoSelector: uow => uow.BlogRepository,
 			setupRepoMock: repo =>
 			{
@@ -90,17 +93,17 @@ public class CreateBlogCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnError_WhenExceptionThrown()
 	{
-		var file = Files.CreateFakeFormFile();
-		// Arrange
-		var command = new CreateBlogCommand { name = "Tech", image_file = file };
-
+		var command = BlogDataProvider.Create();
+		var fileServiceMock = new Mock<IFileService>();
+		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+					   .ReturnsAsync("uploads/test-image.jpg");
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateBlogCommand,
 			Blog,
 			IBlogRepository,
 			CreateBlogCommandHandler>(
 
-			handlerFactory: uow => new CreateBlogCommandHandler(uow),
+			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
 
@@ -124,13 +127,16 @@ public class CreateBlogCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldFail_WhenImageFileIsNull()
 	{
+		var fileServiceMock = new Mock<IFileService>();
+		fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+					   .ReturnsAsync("uploads/test-image.jpg");
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
 			IBlogRepository,
 			CreateBlogCommandHandler
 		>(
-			handlerFactory: uow => new CreateBlogCommandHandler(uow),
+			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
 
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 

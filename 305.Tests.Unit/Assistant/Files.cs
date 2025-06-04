@@ -2,28 +2,39 @@
 using System.Text;
 
 namespace _305.Tests.Unit.Assistant;
+
+/// <summary>
+/// ابزار ساخت فایل جعلی برای تست.
+/// با استفاده از این کلاس می‌توانید فایل‌های تستی از نوع <see cref="IFormFile"/> بسازید.
+/// </summary>
 public static class Files
 {
 	/// <summary>
-	/// این متد یک فایل جعلی (Fake) از نوع IFormFile می‌سازد که در تست‌ها کاربرد دارد.
-	/// به کمک این فایل می‌توانیم تست‌هایی که نیاز به آپلود فایل دارند را شبیه‌سازی کنیم بدون نیاز به فایل واقعی.
+	/// ساخت فایل تستی <see cref="IFormFile"/> از محتوای متنی.
 	/// </summary>
-	/// <param name="fileName">نام فایل (پیش‌فرض "test.jpg")</param>
-	/// <param name="contentType">نوع محتوا یا MIME type فایل (پیش‌فرض "image/jpeg")</param>
-	/// <param name="content">محتوای رشته‌ای که داخل فایل قرار می‌گیرد (پیش‌فرض "fake image content")</param>
-	/// <returns>یک نمونه از IFormFile که می‌توان در تست‌ها استفاده کرد</returns>
+	/// <param name="fileName">نام فایل (پیش‌فرض: "test.jpg")</param>
+	/// <param name="contentType">نوع فایل (پیش‌فرض: "image/jpeg")</param>
+	/// <param name="content">محتوای رشته‌ای فایل (پیش‌فرض: "fake image content")</param>
+	/// <returns>فایل جعلی قابل استفاده در تست‌ها</returns>
 	public static IFormFile CreateFakeFormFile(string fileName = "test.jpg", string contentType = "image/jpeg", string content = "fake image content")
 	{
-		// تبدیل رشته محتوای فایل به آرایه بایت و سپس ساخت استریم حافظه‌ای
-		var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+		var bytes = Encoding.UTF8.GetBytes(content);
+		return CreateFakeFormFile(bytes, fileName, contentType);
+	}
 
-		// ساخت نمونه FormFile با استریم ساخته شده، طول استریم و مشخصات فایل مانند نام و نام فرم فیلد
-		return new FormFile(stream, 0, stream.Length, "image_file", fileName)
+	/// <summary>
+	/// ساخت فایل تستی <see cref="IFormFile"/> از آرایه بایت.
+	/// </summary>
+	/// <param name="bytes">محتوای فایل به صورت آرایه بایت</param>
+	/// <param name="fileName">نام فایل</param>
+	/// <param name="contentType">نوع فایل</param>
+	/// <returns>فایل جعلی قابل استفاده در تست‌ها</returns>
+	public static IFormFile CreateFakeFormFile(byte[] bytes, string fileName, string contentType)
+	{
+		var stream = new MemoryStream(bytes);
+		return new FormFile(stream, 0, stream.Length, name: "file", fileName: fileName)
 		{
-			// مقداردهی به هدرهای HTTP فایل (خالی به صورت پیش‌فرض)
 			Headers = new HeaderDictionary(),
-
-			// تعیین نوع محتوا (Content-Type) برای فایل
 			ContentType = contentType
 		};
 	}

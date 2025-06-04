@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Program.cs~RFd6ab14.TMP" />
+    <None Remove="Program.cs~RFdcd524.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.8.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -20,6 +25,10 @@
     <ProjectReference Include="..\305.Application\305.Application.csproj" />
     <ProjectReference Include="..\305.BuildingBlocks\305.BuildingBlocks.csproj" />
     <ProjectReference Include="..\305.Infrastructure\305.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

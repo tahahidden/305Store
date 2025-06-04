@@ -6,7 +6,7 @@ public class UserRole : BaseEntity
 	public long role_id { get; set; }
 	public long user_id { get; set; }
 
-	public User user { get; set; } = default!;
-	public Role role { get; set; } = default!;
+	public User user { get; set; }
+	public Role role { get; set; }
 
 }

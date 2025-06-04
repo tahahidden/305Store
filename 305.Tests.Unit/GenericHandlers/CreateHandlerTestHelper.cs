@@ -3,6 +3,7 @@ using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
 using _305.Domain.Common;
+using _305.Tests.Unit.Assistant;
 using Moq;
 using System.Linq.Expressions;
 
@@ -16,11 +17,11 @@ public static class CreateHandlerTestHelper
 	Expression<Func<IUnitOfWork, TRepository>> repoSelector,
 	Action<Mock<TRepository>>? setupRepoMock = null,
 	string? expectedNameForExistsCheck = null // مقدار مورد انتظار برای چک کردن شرط ExistsAsync
-)
+	)
 	where TEntity : class, IBaseEntity
 	where TRepository : class, IRepository<TEntity>
 	where THandler : class
-	{
+		{
 		// ایجاد mock از UnitOfWork و Repository
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var repoMock = new Mock<TRepository>();
@@ -33,7 +34,7 @@ public static class CreateHandlerTestHelper
 		if (!string.IsNullOrEmpty(expectedNameForExistsCheck))
 		{
 			repoMock.Setup(r => r.ExistsAsync(It.Is<Expression<Func<TEntity, bool>>>(expr =>
-				ExpressionHelper.CheckExpressionForName(expr, expectedNameForExistsCheck)
+				TestExpressionEvaluator.MatchSlugExpression<TEntity>(expr, expectedNameForExistsCheck)
 			))).ReturnsAsync(false);
 		}
 		else
@@ -68,8 +69,6 @@ public static class CreateHandlerTestHelper
 		// بررسی اینکه CommitAsync دقیقاً یک بار فراخوانی شده
 		unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
 	}
-
-
 
 
 	public static async Task TestCreateFailure<TCommand, TEntity, TRepository, THandler>(
