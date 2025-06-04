@@ -12,7 +12,7 @@ using _305.Infrastructure.Persistence;
 namespace _305.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250606051255_Init")]
+    [Migration("20250604220024_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -392,7 +392,7 @@ namespace _305.Infrastructure.Migrations
                             mobile = "09309309393",
                             name = "admin-user",
                             password_hash = "omTtMfA5EEJCzjH5t/Q67cRXK5TRwerSqN7sJSm41No=.FRLmTm9jwMcEFnjpjgivJw==",
-                            refresh_token = "refershtoken",
+                            refresh_token = "refeshToken",
                             refresh_token_expiry_time = new DateTime(2026, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             security_stamp = "098NTB7E5LFFXREHBSEHDKLI0DOBIKST",
                             slug = "Admin-User",

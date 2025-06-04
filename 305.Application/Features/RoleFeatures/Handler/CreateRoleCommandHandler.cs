@@ -7,6 +7,7 @@ using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
 using MediatR;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace _305.Application.Features.RoleFeatures.Handler;
 
@@ -18,7 +19,7 @@ public class CreateRoleCommandHandler(IUnitOfWork unitOfWork)
 	public async Task<ResponseDto<string>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
 	{
 
-		var slug = SlugHelper.GenerateSlug(request.name);
+		var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
 		var validations = new List<ValidationItem>
 		{
 		   new ()

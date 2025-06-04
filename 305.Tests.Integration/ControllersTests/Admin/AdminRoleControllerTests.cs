@@ -6,11 +6,7 @@ using _305.Tests.Integration.Base.TestController;
 using _305.Tests.Unit.DataProvider;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace _305.Tests.Integration.ControllersTests.Admin;
 [TestFixture]
