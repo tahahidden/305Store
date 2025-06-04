@@ -25,7 +25,7 @@ public static class UserSeed
 			is_mobile_confirmed = true,
 			last_login_date_time = new DateTime(2025, 1, 1, 12, 0, 0),
 			lock_out_end_time = new DateTime(2025, 1, 1, 12, 0, 0),
-			refresh_token = "refershtoken",
+			refresh_token = "refeshToken",
 			refresh_token_expiry_time = new DateTime(2026, 1, 1, 12, 0, 0),
 		}
 	];
