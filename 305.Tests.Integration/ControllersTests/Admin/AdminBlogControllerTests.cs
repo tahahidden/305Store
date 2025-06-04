@@ -3,6 +3,7 @@ using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Response;
 using _305.Application.Filters.Pagination;
 using _305.Domain.Entity;
+using _305.Tests.Integration.Base;
 using _305.Tests.Integration.Base.Helpers;
 using _305.Tests.Integration.Base.TestController;
 using _305.Tests.Unit.DataProvider;
@@ -16,7 +17,7 @@ public class AdminBlogControllerTests : BaseControllerTests<CreateBlogCommand, s
 {
     public AdminBlogControllerTests()
     {
-        BaseUrl = "/api/admin/blog";
+        BaseUrl = $"{BaseUrlProvider.AdminApi}blog";
     }
 
     protected override MultipartFormDataContent CreateCreateForm(CreateBlogCommand dto)
@@ -24,7 +25,7 @@ public class AdminBlogControllerTests : BaseControllerTests<CreateBlogCommand, s
         var form = new MultipartFormDataContent
     {
         { new StringContent(dto.name), "name" },
-        { new StringContent(dto.slug), "slug" },
+        { new StringContent(dto.slug ?? "slug"), "slug" },
         { new StringContent(dto.blog_text), "blog_text" },
         { new StringContent(dto.description), "description" },
         { new StringContent(dto.image_alt), "image_alt" },
@@ -52,9 +53,9 @@ public class AdminBlogControllerTests : BaseControllerTests<CreateBlogCommand, s
         {
             { new StringContent(dto.id.ToString()), "id" },
             { new StringContent(dto.name), "name" },
-            { new StringContent(dto.slug), "slug" },
+            { new StringContent(dto.slug ?? "slug"), "slug" },
             { new StringContent(dto.blog_text), "blog_text" },
-            { new StringContent(dto.description), "description" },
+            { new StringContent(dto.description ?? "description"), "description" },
             { new StringContent(dto.image_alt), "image_alt" },
             { new StringContent(dto.keywords), "keywords" },
             { new StringContent(dto.meta_description), "meta_description" },

@@ -1,15 +1,12 @@
 ﻿using _305.Application.Base.Response;
+using _305.Application.Features.AdminUserFeatures.Command;
+using _305.Application.Features.AdminUserFeatures.Response;
+using _305.Tests.Integration.Base;
 using _305.Tests.Integration.Base.TestController;
 using _305.Tests.Unit.DataProvider;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
-using _305.Application.Features.AdminUserFeatures.Command;
-using _305.Application.Features.AdminUserFeatures.Response;
 
 namespace _305.Tests.Integration.ControllersTests.Admin;
 [TestFixture]
@@ -17,7 +14,7 @@ public class AdminUserControllerTests : BaseControllerTests<CreateAdminUserComma
 {
     public AdminUserControllerTests()
     {
-        BaseUrl = "/api/admin/user";
+        BaseUrl = $"{BaseUrlProvider.AdminApi}user";
     }
 
     protected override MultipartFormDataContent CreateCreateForm(CreateAdminUserCommand dto)
@@ -25,7 +22,7 @@ public class AdminUserControllerTests : BaseControllerTests<CreateAdminUserComma
         return new MultipartFormDataContent
             {
                 { new StringContent(dto.name), "name" },
-                { new StringContent(dto.slug), "slug" },
+                { new StringContent(dto.slug ?? "slug"), "slug" },
                 { new StringContent(dto.password), "password" },
                 { new StringContent(dto.email), "email" },
             };
@@ -37,8 +34,8 @@ public class AdminUserControllerTests : BaseControllerTests<CreateAdminUserComma
             {
                 { new StringContent(dto.id.ToString()), "id" },
                 { new StringContent(dto.name), "name" },
-                { new StringContent(dto.slug), "slug" },
-                { new StringContent(dto.password), "password" },
+                { new StringContent(dto.slug ?? "slug"), "slug" },
+                { new StringContent(dto.password ?? "password"), "password" },
                 { new StringContent(dto.email), "email" },
             };
     }

@@ -6,6 +6,7 @@ using _305.Tests.Unit.DataProvider;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Net;
+using _305.Tests.Integration.Base;
 
 namespace _305.Tests.Integration.ControllersTests.Admin
 {
@@ -15,7 +16,7 @@ namespace _305.Tests.Integration.ControllersTests.Admin
     {
         public AdminBlogCategoryControllerTests()
         {
-            BaseUrl = "/api/admin/blog-category";
+            BaseUrl = $"{BaseUrlProvider.AdminApi}blog-category";
         }
 
         protected override MultipartFormDataContent CreateCreateForm(CreateCategoryCommand dto)
@@ -23,7 +24,7 @@ namespace _305.Tests.Integration.ControllersTests.Admin
             return new MultipartFormDataContent
             {
                 { new StringContent(dto.name), "name" },
-                { new StringContent(dto.slug), "slug" }
+                { new StringContent(dto.slug ?? "slug"), "slug" }
             };
         }
 
@@ -33,7 +34,7 @@ namespace _305.Tests.Integration.ControllersTests.Admin
             {
                 { new StringContent(dto.id.ToString()), "id" },
                 { new StringContent(dto.name), "name" },
-                { new StringContent(dto.slug), "slug" }
+                { new StringContent(dto.slug ?? "slug"), "slug" }
             };
         }
 
