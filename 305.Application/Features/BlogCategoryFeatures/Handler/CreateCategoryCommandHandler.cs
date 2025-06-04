@@ -9,16 +9,10 @@ using _305.Domain.Entity;
 using MediatR;
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ResponseDto<string>>
+public class CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<CreateCategoryCommand, ResponseDto<string>>
 {
-	private readonly CreateHandler _handler;
-	private readonly IUnitOfWork _unitOfWork;
-
-	public CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new CreateHandler(unitOfWork);
-	}
+	private readonly CreateHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<string>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
@@ -27,12 +21,12 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 		{
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.name == request.name),
+			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.name == request.name),
 			   Value = "نام"
 		   },
 		   new ()
 		   {
-			   Rule = async () => await _unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.slug == slug),
+			   Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.slug == slug),
 			   Value = "نامک"
 		   }
 
@@ -42,7 +36,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 			onCreate: async () =>
 			{
 				var entity = Mapper.Map<CreateCategoryCommand, BlogCategory>(request);
-				await _unitOfWork.BlogCategoryRepository.AddAsync(entity);
+				await unitOfWork.BlogCategoryRepository.AddAsync(entity);
 				return slug;
 			},
 			successMessage: null,

@@ -8,16 +8,10 @@ using MediatR;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
-public class GetCategoryBySlugQueryHandler : IRequestHandler<GetCategoryBySlugQuery, ResponseDto<BlogCategoryResponse>>
+public class GetCategoryBySlugQueryHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<GetCategoryBySlugQuery, ResponseDto<BlogCategoryResponse>>
 {
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly GetBySlugHandler _handler;
-
-	public GetCategoryBySlugQueryHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new GetBySlugHandler(unitOfWork);
-	}
+	private readonly GetBySlugHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<BlogCategoryResponse>> Handle(GetCategoryBySlugQuery request, CancellationToken cancellationToken)
 	{

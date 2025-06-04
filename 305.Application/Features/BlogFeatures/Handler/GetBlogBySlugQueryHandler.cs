@@ -9,16 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _305.Application.Features.BlogFeatures.Handler;
 
-public class GetBlogBySlugQueryHandler : IRequestHandler<GetBlogBySlugQuery, ResponseDto<BlogResponse>>
+public class GetBlogBySlugQueryHandler(IUnitOfWork unitOfWork)
+	: IRequestHandler<GetBlogBySlugQuery, ResponseDto<BlogResponse>>
 {
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly GetBySlugHandler _handler;
-
-	public GetBlogBySlugQueryHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new GetBySlugHandler(unitOfWork);
-	}
+	private readonly GetBySlugHandler _handler = new(unitOfWork);
 
 	public async Task<ResponseDto<BlogResponse>> Handle(GetBlogBySlugQuery request, CancellationToken cancellationToken)
 	{
