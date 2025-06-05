@@ -34,8 +34,19 @@ public class CreateUserRoleCommandHandler(IUnitOfWork unitOfWork)
 		   {
 			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid),
 			   Value = "ارتباط نقش و کاربر",
+		   },
+		   new ()
+		   {
+			   Rule = async () => !(await unitOfWork.UserRepository.ExistsAsync(x => x.id == request.userid)),
+			   Value = "کاربر",
 			   IsExistRole = true
-		   }
+		   },
+		   new ()
+		   {
+			   Rule = async () => !(await unitOfWork.RoleRepository.ExistsAsync(x => x.id == request.roleid)),
+			   Value = "نقش",
+			   IsExistRole = true
+		   },
 		};
 		return await _handler.HandleAsync(
 			validations: validations,

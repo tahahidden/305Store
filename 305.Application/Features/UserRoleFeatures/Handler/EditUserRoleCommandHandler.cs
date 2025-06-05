@@ -39,7 +39,19 @@ public class EditUserRoleCommandHandler(IUnitOfWork unitOfWork, IRepository<User
 			   Rule = async () => await repository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid &&  x.id != request.id),
 			   Value = "ارتباط نقش و کاربر",
 			   IsExistRole = true
-		   }
+		   },
+		   new ()
+		   {
+			   Rule = async () => !(await unitOfWork.UserRepository.ExistsAsync(x => x.id == request.userid)),
+			   Value = "کاربر",
+			   IsExistRole = true
+		   },
+		   new ()
+		   {
+			   Rule = async () => !(await unitOfWork.RoleRepository.ExistsAsync(x => x.id == request.roleid)),
+			   Value = "نقش",
+			   IsExistRole = true
+		   },
 		};
 
 		return await _handler.HandleAsync(

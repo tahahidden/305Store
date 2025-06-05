@@ -7,36 +7,38 @@ using _305.Domain.Entity;
 namespace _305.Tests.Unit.DataProvider;
 public class UserRoleDataProvider
 {
-	public static CreateUserRoleCommand Create(string name = "UserRole-name", string slug = "UserRole-slug")
+	public static CreateUserRoleCommand Create(string name = "UserRole-name",
+		string slug = "UserRole-slug", long userId = 1, long roleId = 1)
 		=> new()
 		{
 			name = name,
 			slug = slug,
-			userid = 1,
-			roleid = 1
+			userid = userId,
+			roleid = roleId
 		};
 
-	public static EditUserRoleCommand Edit(string name = "name", long id = 1, string slug = "slug")
+	public static EditUserRoleCommand Edit(string name = "name", long id = 1,
+		string slug = "slug", long userId = 1, long roleId = 1)
 		=> new()
 		{
 			id = id,
 			name = name,
 			slug = slug,
 			updated_at = DateTime.Now,
-			userid = 1,
-			roleid = 1
+			userid = userId,
+			roleid = roleId
 		};
 
 
-	public static UserRole Row(string name = "name", long id = 1, string slug = "slug")
+	public static UserRole Row(string name = "name", long id = 1, string slug = "slug", long userId = 1, long roleId = 1)
 		=> new()
 		{
 			id = id,
 			name = name,
 			slug = slug,
 			updated_at = DateTime.Now,
-			userid = 1,
-			roleid = 1
+			userid = userId,
+			roleid = roleId
 		};
 
 	public static DeleteUserRoleCommand Delete(long id = 1)

@@ -7,8 +7,10 @@ using _305.Application.Base.Response;
 using _305.Application.Features.UserRoleFeatures.Command;
 using _305.Application.Features.UserRoleFeatures.Response;
 using _305.Tests.Integration.Base;
+using _305.Tests.Integration.Base.Helpers;
 using _305.Tests.Integration.Base.TestController;
 using _305.Tests.Unit.DataProvider;
+using Microsoft.AspNetCore.OutputCaching;
 using Newtonsoft.Json;
 
 namespace _305.Tests.Integration.ControllersTests.Admin;
@@ -46,7 +48,10 @@ public class AdminUserRoleControllerTests : BaseControllerTests<CreateUserRoleCo
 	[Test]
 	public async Task Create_Should_Return_Success()
 	{
-		var createCommand = UserRoleDataProvider.Create(name: "new-UserRole");
+		var helper = new TestDataHelper(Client);
+		var userId = await helper.CreateUserAndReturnIdAsync();
+		var roleId = await helper.CreateRoleAndReturnIdAsync();
+		var createCommand = UserRoleDataProvider.Create(name: "new-UserRole", userId:userId, roleId:roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		Assert.That(slug, Is.Not.Null);
 	}
@@ -66,11 +71,14 @@ public class AdminUserRoleControllerTests : BaseControllerTests<CreateUserRoleCo
 	[Test]
 	public async Task Edit_Should_Return_Success()
 	{
-		var createCommand = UserRoleDataProvider.Create(name: "edit-title", slug: "edit-slug");
+		var helper = new TestDataHelper(Client);
+		var userId = await helper.CreateUserAndReturnIdAsync();
+		var roleId = await helper.CreateRoleAndReturnIdAsync();
+		var createCommand = UserRoleDataProvider.Create(name: "edit-title", slug: "edit-slug", userId:userId,roleId:roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		var UserRole = await GetBySlugOrIdAsync(slug);
 
-		var editCommand = UserRoleDataProvider.Edit(name: "edited-title", id: UserRole.id, slug: "edited-slug");
+		var editCommand = UserRoleDataProvider.Edit(name: "edited-title", id: UserRole.id, slug: "edited-slug", userId: userId, roleId: roleId);
 		var editForm = CreateEditForm(editCommand);
 		var response = await Client.PostAsync($"{BaseUrl}/edit", editForm);
 		response.EnsureSuccessStatusCode();
