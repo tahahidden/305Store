@@ -144,5 +144,12 @@ namespace _305.Tests.Integration.ControllersTests
 
             await DeleteEntityAsync(category.id);
         }
+
+        public async Task<long> CreateCategoryAndReturnIdAsync()
+        {
+            var slug = await CreateEntityAsync(new CreateCategoryCommand { name = "delete-title", slug = "delete-slug" });
+            var category = await GetBySlugOrIdAsync(slug);
+            return category.id;
+        }
     }
 }

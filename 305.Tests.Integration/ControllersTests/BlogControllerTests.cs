@@ -2,6 +2,7 @@
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Response;
 using _305.BuildingBlocks.Helper;
+using _305.Tests.Integration.Base.Helpers;
 using _305.Tests.Integration.Base.TestController;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -21,7 +22,13 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var form = new MultipartFormDataContent
     {
         { new StringContent(dto.name), "name" },
-        { new StringContent(dto.slug), "slug" }
+        { new StringContent(dto.slug), "slug" },
+        { new StringContent(dto.blog_text), "blog_text" },
+        { new StringContent(dto.description), "description" },
+        { new StringContent(dto.image_alt), "image_alt" },
+        { new StringContent(dto.keywords), "keywords" },
+        { new StringContent(dto.meta_description), "meta_description" },
+
     };
 
         if (dto.image_file is not null)
@@ -42,7 +49,12 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         {
             { new StringContent(dto.id.ToString()), "id" },
             { new StringContent(dto.name), "name" },
-            { new StringContent(dto.slug), "slug" }
+            { new StringContent(dto.slug), "slug" },
+            { new StringContent(dto.blog_text), "blog_text" },
+            { new StringContent(dto.description), "description" },
+            { new StringContent(dto.image_alt), "image_alt" },
+            { new StringContent(dto.keywords), "keywords" },
+            { new StringContent(dto.meta_description), "meta_description" },
         };
 
         if (dto.image_file is not null)
@@ -157,18 +169,46 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task GetBySlug_Should_Return_Success()
     {
-        var dto = new CreateBlogCommand { name = "slug-title", slug = "slug-me" };
-        await CreateEntityAsync(dto);
+        // Arrange
+        var helper = new TestDataHelper(_client);
+        var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=slug-me");
+        var createBlogCommand = new CreateBlogCommand
+        {
+            name = "test-title",
+            slug = "test-title",
+            image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
+            blog_category_id = categoryId,
+            description = "",
+            estimated_read_time = 2,
+            blog_text = "adasdasdsa",
+            keywords = "a,b,c,d",
+            image_alt = "alt",
+            meta_description = "meta",
+            show_blog = true,
+        };
+        await CreateEntityAsync(createBlogCommand);
+
+        // Act
+        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-title"); // اصلاح این خط
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<ResponseDto<BlogResponse>>(json);
 
-        Assert.That(result?.is_success, Is.True);
-        Assert.That(result?.data, Is.Not.Null);
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result?.is_success, Is.True);
+            Assert.That(result?.data, Is.Not.Null);
+            Assert.That(result?.data.slug, Is.EqualTo("test-title")); // اصلاح این خط
+            Assert.That(result?.data.name, Is.EqualTo("test-title")); // اصلاح این خط
+            Assert.That(result?.data.blog_category_id, Is.EqualTo(categoryId));
+        });
     }
+
+
+
 
     [Test]
     public async Task GetBySlug_Should_Return_NotFound_When_Slug_NotExists()

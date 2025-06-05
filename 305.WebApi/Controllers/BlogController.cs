@@ -17,17 +17,13 @@ public class BlogController(IMediator mediator) : BaseController(mediator)
 	public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
 		ExecuteQuery(query, cancellationToken);
 
-	[HttpGet("all")]
-	public Task<IActionResult> GetAll([FromQuery] GetAllCategoryQuery query, CancellationToken cancellationToken) =>
-		ExecuteQuery(query, cancellationToken);
-
 	[HttpPost("create")]
-	public Task<IActionResult> Create([FromForm] CreateCategoryCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<CreateCategoryCommand, ResponseDto<string>>(command, cancellationToken);
+	public Task<IActionResult> Create([FromForm] CreateBlogCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<CreateBlogCommand, ResponseDto<string>>(command, cancellationToken);
 
 	[HttpPost("edit")]
-	public Task<IActionResult> Edit([FromForm] EditCategoryCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
+	public Task<IActionResult> Edit([FromForm] EditBlogCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<EditBlogCommand, ResponseDto<string>>(command, cancellationToken);
 
 	[HttpGet("get")]
 	public Task<IActionResult> GetBySlug([FromQuery] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
