@@ -74,11 +74,11 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 		var helper = new TestDataHelper(Client);
 		var userId = await helper.CreateUserAndReturnIdAsync();
 		var roleId = await helper.CreateRoleAndReturnIdAsync();
-		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug", userId: userId, roleId: roleId);
+		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug", permissionId: userId, roleId: roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		var RolePermission = await GetBySlugOrIdAsync(slug);
 
-		var editCommand = RolePermissionDataProvider.Edit(name: "edited-title", id: RolePermission.id, slug: "edited-slug", userId: userId, roleId: roleId);
+		var editCommand = RolePermissionDataProvider.Edit(name: "edited-title", id: RolePermission.id, slug: "edited-slug", permissionId: userId, roleId: roleId);
 		var editForm = CreateEditForm(editCommand);
 		var response = await Client.PostAsync($"{BaseUrl}/edit", editForm);
 		response.EnsureSuccessStatusCode();
