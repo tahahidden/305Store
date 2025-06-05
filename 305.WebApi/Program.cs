@@ -1,4 +1,5 @@
-﻿using _305.Application.IBaseRepository;
+﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+using _305.Application.IBaseRepository;
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
@@ -156,6 +157,7 @@ builder.Services.AddCors(options =>
 		policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 	});
 });
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommand>());
 
 var app = builder.Build();
 

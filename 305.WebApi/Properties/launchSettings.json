@@ -18,6 +18,22 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "305.WebApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7248;http://localhost:5123",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Test"
+      }
+    }
+      //"305.WebApi": {
+      //  "commandName": "Project",
+      //  "dotnetRunMessages": true,
+      //  "environmentVariables": {
+      //    "ASPNETCORE_ENVIRONMENT": "Test"
+      //  }
     }
   }
-}
+} }

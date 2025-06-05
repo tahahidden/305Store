@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace _305.WebApi.Controllers;
 [Route("api/blog-category")]
 [ApiController]
-public class BlogBlogController(IMediator mediator) : BaseController(mediator)
+public class BlogCategoryController(IMediator mediator) : BaseController(mediator)
 {
 	[HttpGet("list")]
 	public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>

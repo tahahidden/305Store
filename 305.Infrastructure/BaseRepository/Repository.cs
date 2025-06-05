@@ -19,7 +19,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
 	/// سازنده مخزن که DbContext را دریافت می‌کند.
 	/// </summary>
 	/// <param name="dbContext">مقدار DbContext تزریق شده</param>
-	protected Repository(ApplicationDbContext dbContext)
+	public Repository(ApplicationDbContext dbContext)
 	{
 		DbContext = dbContext;
 	}
