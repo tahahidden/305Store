@@ -28,4 +28,9 @@
     <ProjectReference Include="..\305.Domain\305.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\PermissionFeatures\Command\" />
+    <Folder Include="Features\PermissionFeatures\Query\" />
+  </ItemGroup>
+
 </Project>

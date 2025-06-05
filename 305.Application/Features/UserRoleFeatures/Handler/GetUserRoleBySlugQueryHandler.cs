@@ -18,7 +18,7 @@ public class GetUserRoleBySlugQueryHandler(IUnitOfWork unitOfWork)
 	{
 		return await _handler.Handle<UserRole, UserRoleResponse>(
 			async uow => await uow.UserRoleRepository.FindSingle(x => x.slug == request.slug),
-			"دسته‌بندی",
+			"ارتباط نقش با کاربر",
 			null
 		);
 	}
