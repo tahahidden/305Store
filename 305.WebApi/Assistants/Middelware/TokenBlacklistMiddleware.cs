@@ -2,7 +2,7 @@
 using _305.Application.IUOW;
 using _305.Domain.Entity;
 
-namespace RaelState.Assistant;
+namespace _305.WebApi.Assistants.Middelware;
 public class TokenBlacklistMiddleware
 {
     private readonly RequestDelegate _next;

@@ -30,7 +30,7 @@ public class BlogController(IMediator mediator) : BaseController(mediator)
 		ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
 	[HttpGet("get")]
-	public Task<IActionResult> GetBySlug([FromForm] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
+	public Task<IActionResult> GetBySlug([FromQuery] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
 		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); 
 
 	[HttpPost("delete")]
