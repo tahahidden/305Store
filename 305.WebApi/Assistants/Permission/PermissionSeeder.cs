@@ -13,14 +13,17 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 
 		var existingNames = (unitOfWork.PermissionRepository.FindList()).Select(p => p.name).ToHashSet();
 
-		foreach (var p in permissions.Where(p => !existingNames.Contains(p.Permissionname)))
+		foreach (var p in permissions)
 		{
-			await unitOfWork.PermissionRepository.AddAsync(new Domain.Entity.Permission
+			if (!existingNames.Contains(p.Permissionname))
 			{
-				name = p.Permissionname,
-				slug = p.Permissionname,
-				created_at = DateTime.Now,
-			});
+				await unitOfWork.PermissionRepository.AddAsync(new Domain.Entity.Permission
+				{
+					name = p.Permissionname,
+					slug = p.Permissionname,
+					created_at = DateTime.Now,
+				});
+			}
 		}
 
 		await unitOfWork.CommitAsync(CancellationToken.None);
@@ -29,17 +32,19 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 		var allPermissionRoles = (unitOfWork.RolePermissionRepository.FindList()).Select(pr => pr.slug).ToHashSet();
 		foreach (var permission in allPermissions)
 		{
-			var slug = SlugHelper.GenerateSlug(permission.name + "AdminRole");
-			if (allPermissionRoles.Contains(slug)) continue;
-			if (mainAdminRole != null)
-				await unitOfWork.RolePermissionRepository.AddAsync(new RolePermission()
-				{
-					created_at = DateTime.Now,
-					permission_id = permission.id,
-					role_id = mainAdminRole.id,
-					updated_at = DateTime.Now,
-					slug = slug
-				});
+			var slug = SlugHelper.GenerateSlug(permission.name + "MainAdmin");
+			if (!allPermissionRoles.Contains(slug))
+			{
+				if (mainAdminRole != null)
+					await unitOfWork.RolePermissionRepository.AddAsync(new RolePermission()
+					{
+						created_at = DateTime.Now,
+						permission_id = permission.id,
+						role_id = mainAdminRole.id,
+						updated_at = DateTime.Now,
+						slug = slug
+					});
+			}
 
 		}
 		await unitOfWork.CommitAsync(CancellationToken.None);

@@ -6,6 +6,7 @@ using _305.BuildingBlocks.Service;
 using _305.Infrastructure.Persistence;
 using _305.Infrastructure.Service;
 using _305.WebApi.Assistants.Middlewar;
+using _305.WebApi.Assistants.Permission;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<PermissionSeeder>();
+builder.Services.AddScoped<IPermissionChecker, PermissionChecker>();
+
+
 // JWT Config
 var jwtSection = builder.Configuration.GetSection("JWT");
 var jwtConfig = jwtSection.Get<JwtConfig>();
@@ -190,4 +195,20 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.Lifetime.ApplicationStarted.Register(async void () =>
+{
+	try
+	{
+		using var scope = app.Services.CreateScope();
+		var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
+		await seeder.SyncPermissionsAsync();
+	}
+	catch (Exception e)
+	{
+		Log.Error(e, "error during seeding permissions");
+	}
+});
+
+
 app.Run();
