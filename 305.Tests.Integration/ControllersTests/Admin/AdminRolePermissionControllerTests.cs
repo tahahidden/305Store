@@ -19,7 +19,7 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 {
 	public AdminRolePermissionControllerTests()
 	{
-		BaseUrl = $"{BaseUrlProvider.AdminApi}user-role";
+		BaseUrl = $"{BaseUrlProvider.AdminApi}role-permission";
 	}
 
 	protected override MultipartFormDataContent CreateCreateForm(CreateRolePermissionCommand dto)
@@ -49,9 +49,10 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 	public async Task Create_Should_Return_Success()
 	{
 		var helper = new TestDataHelper(Client);
-		var userId = await helper.CreateUserAndReturnIdAsync();
+		var permissionId = await helper.CreatePermissionAndReturnIdAsync();
 		var roleId = await helper.CreateRoleAndReturnIdAsync();
-		var createCommand = RolePermissionDataProvider.Create(name: "new-RolePermission", permissionId: userId, roleId: roleId);
+		
+		var createCommand = RolePermissionDataProvider.Create(name: "new-RolePermission", permissionId: permissionId, roleId: roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		Assert.That(slug, Is.Not.Null);
 	}
@@ -72,13 +73,13 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 	public async Task Edit_Should_Return_Success()
 	{
 		var helper = new TestDataHelper(Client);
-		var userId = await helper.CreateUserAndReturnIdAsync();
+		var permissionId = await helper.CreatePermissionAndReturnIdAsync();
 		var roleId = await helper.CreateRoleAndReturnIdAsync();
-		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug", permissionId: userId, roleId: roleId);
+		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug", permissionId: permissionId, roleId: roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		var RolePermission = await GetBySlugOrIdAsync(slug);
 
-		var editCommand = RolePermissionDataProvider.Edit(name: "edited-title", id: RolePermission.id, slug: "edited-slug", permissionId: userId, roleId: roleId);
+		var editCommand = RolePermissionDataProvider.Edit(name: "edited-title", id: RolePermission.id, slug: "edited-slug", permissionId: permissionId, roleId: roleId);
 		var editForm = CreateEditForm(editCommand);
 		var response = await Client.PostAsync($"{BaseUrl}/edit", editForm);
 		response.EnsureSuccessStatusCode();
@@ -112,7 +113,10 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 	[Test]
 	public async Task GetBySlug_Should_Return_Success()
 	{
-		var createCommand = RolePermissionDataProvider.Create(name: "new name", slug: "new-slug");
+		var helper = new TestDataHelper(Client);
+		var permissionId = await helper.CreatePermissionAndReturnIdAsync();
+		var roleId = await helper.CreateRoleAndReturnIdAsync();
+		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "new-slug", permissionId: permissionId, roleId: roleId);
 		await CreateEntityAsync(createCommand);
 
 		var response = await Client.GetAsync($"{BaseUrl}/get?slug=new-slug");
@@ -139,7 +143,10 @@ public class AdminRolePermissionControllerTests : BaseControllerTests<CreateRole
 	[Test]
 	public async Task Delete_Should_Return_Success()
 	{
-		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug");
+		var helper = new TestDataHelper(Client);
+		var permissionId = await helper.CreatePermissionAndReturnIdAsync();
+		var roleId = await helper.CreateRoleAndReturnIdAsync();
+		var createCommand = RolePermissionDataProvider.Create(name: "edit-title", slug: "edit-slug", permissionId: permissionId, roleId: roleId);
 		var slug = await CreateEntityAsync(createCommand);
 		var RolePermission = await GetBySlugOrIdAsync(slug);
 

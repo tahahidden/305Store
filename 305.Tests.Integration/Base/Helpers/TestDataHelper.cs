@@ -83,8 +83,6 @@ public class TestDataHelper(HttpClient client)
 		{
 			{ new StringContent("name"), "name" },
 			{ new StringContent("slug"), "slug" },
-			{ new StringContent("role_id"), "role_id" },
-			{ new StringContent("permission_id"), "permission_id" }
 		};
 
 		var response = await client.PostAsync("/api/admin/permission/create", dto);
