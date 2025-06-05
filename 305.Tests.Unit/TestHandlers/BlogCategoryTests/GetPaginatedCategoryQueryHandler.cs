@@ -21,9 +21,9 @@ public class GetPaginatedCategoryQueryHandlerTests
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
 			IBlogCategoryRepository,
-			GetPaginatedUserRoleQueryHandler,
-			GetPaginatedUserRoleQuery>(
-				uow => new GetPaginatedUserRoleQueryHandler(uow),
+			GetPaginatedCategoryQueryHandler,
+			GetPaginatedCategoryQuery>(
+				uow => new GetPaginatedCategoryQueryHandler(uow),
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogCategoryRepository,
 				query,
@@ -52,9 +52,9 @@ public class GetPaginatedCategoryQueryHandlerTests
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
 			IBlogCategoryRepository,
-			GetPaginatedUserRoleQueryHandler,
-			GetPaginatedUserRoleQuery>(
-				uow => new GetPaginatedUserRoleQueryHandler(uow),
+			GetPaginatedCategoryQueryHandler,
+			GetPaginatedCategoryQuery>(
+				uow => new GetPaginatedCategoryQueryHandler(uow),
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogCategoryRepository,
 				query,
@@ -72,9 +72,9 @@ public class GetPaginatedCategoryQueryHandlerTests
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
 			IBlogCategoryRepository,
-			GetPaginatedUserRoleQueryHandler,
-			GetPaginatedUserRoleQuery>(
-				uow => new GetPaginatedUserRoleQueryHandler(uow),
+			GetPaginatedCategoryQueryHandler,
+			GetPaginatedCategoryQuery>(
+				uow => new GetPaginatedCategoryQueryHandler(uow),
 				(handler, q, token) => handler.Handle(q, token),
 				uow => uow.BlogCategoryRepository,
 				query,

@@ -12,8 +12,8 @@ public class EditCategoryCommandHandlerTests
 	{
 		await EditHandlerTestHelper.TestEditSuccess<EditCategoryCommand,
 			BlogCategory,
-			EditUserRoleCommandHandler>(
-			handlerFactory: (repo, uow) => new EditUserRoleCommandHandler(uow, repo), // فقط IUnitOfWork پاس می‌دهیم
+			EditCategoryCommandHandler>(
+			handlerFactory: (repo, uow) => new EditCategoryCommandHandler(uow, repo), // فقط IUnitOfWork پاس می‌دهیم
 			execute: (handler, command, token) => handler.Handle(command, token),
 			command: BlogCategoryDataProvider.Edit(name: "Updated Name", id: 1),
 			entityId: 1,
@@ -29,8 +29,8 @@ public class EditCategoryCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnNotFound_WhenEntityDoesNotExist()
 	{
-		await EditHandlerTestHelper.TestEditNotFound<EditCategoryCommand, BlogCategory, EditUserRoleCommandHandler>(
-			handlerFactory: (repo, uow) => new EditUserRoleCommandHandler(uow, repo),
+		await EditHandlerTestHelper.TestEditNotFound<EditCategoryCommand, BlogCategory, EditCategoryCommandHandler>(
+			handlerFactory: (repo, uow) => new EditCategoryCommandHandler(uow, repo),
 			execute: (handler, command, token) => handler.Handle(command, token),
 			command: BlogCategoryDataProvider.Edit(id: 2),
 			entityId: 2
@@ -40,8 +40,8 @@ public class EditCategoryCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnCommitFail_WhenCommitFails()
 	{
-		await EditHandlerTestHelper.TestEditCommitFail<EditCategoryCommand, BlogCategory, EditUserRoleCommandHandler>(
-			handlerFactory: (repo, uow) => new EditUserRoleCommandHandler(uow, repo),
+		await EditHandlerTestHelper.TestEditCommitFail<EditCategoryCommand, BlogCategory, EditCategoryCommandHandler>(
+			handlerFactory: (repo, uow) => new EditCategoryCommandHandler(uow, repo),
 			execute: (handler, command, token) => handler.Handle(command, token),
 			command: BlogCategoryDataProvider.Edit(name: "Updated Name", id: 1),
 			entityId: 1,

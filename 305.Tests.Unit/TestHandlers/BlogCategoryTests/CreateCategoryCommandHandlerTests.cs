@@ -6,6 +6,8 @@ using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
 using Moq;
 using System.Linq.Expressions;
+using _305.Application.Features.BlogCategoryFeatures.Command;
+using _305.Application.Features.BlogCategoryFeatures.Handler;
 
 namespace _305.Tests.Unit.TestHandlers.BlogCategoryTests;
 public class CreateCategoryCommandHandlerTests
@@ -17,9 +19,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,                 // Command Type
 			BlogCategory,                          // Entity Type
 			IBlogCategoryRepository,               // Repository Interface
-			CreateUserRoleCommandHandler           // Handler Type
+			CreateCategoryCommandHandler           // Handler Type
 		>(
-			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
+			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: BlogCategoryDataProvider.Create(),
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -34,9 +36,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateUserRoleCommandHandler
+			CreateCategoryCommandHandler
 		>(
-			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
+			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: BlogCategoryDataProvider.Create(name: "Duplicated Name"),
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -58,9 +60,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateUserRoleCommandHandler
+			CreateCategoryCommandHandler
 		>(
-			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
+			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: new CreateCategoryCommand { name = "Test Name", slug = "duplicate-slug" },
 			repoSelector: uow => uow.BlogCategoryRepository,
@@ -86,9 +88,9 @@ public class CreateCategoryCommandHandlerTests
 			CreateCategoryCommand,
 			BlogCategory,
 			IBlogCategoryRepository,
-			CreateUserRoleCommandHandler>(
+			CreateCategoryCommandHandler>(
 
-			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
+			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
 
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
 

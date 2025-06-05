@@ -44,7 +44,7 @@ public static class BlogCategoryDataProvider
 			id = id,
 		};
 
-	public static GetUserRoleBySlugQuery GetBySlug(string slug = "slug")
+	public static GetCategoryBySlugQuery GetBySlug(string slug = "slug")
 	=> new()
 	{
 		slug = slug,
@@ -59,7 +59,7 @@ public static class BlogCategoryDataProvider
 			description = "Tech Category"
 		};
 
-	public static GetPaginatedUserRoleQuery GetByQueryFilter(string searchTerm = "")
+	public static GetPaginatedCategoryQuery GetByQueryFilter(string searchTerm = "")
 	=> new()
 	{
 		Page = 1,

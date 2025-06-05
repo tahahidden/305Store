@@ -1,5 +1,6 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.UserRoleFeatures.Query;
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.Infrastructure.BaseRepository;
@@ -46,9 +47,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommand>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<EditCategoryCommand>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<DeleteCategoryCommand>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllUserRoleQuery>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetUserRoleBySlugQuery>());
-			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPaginatedUserRoleQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllCategoryQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetCategoryBySlugQuery>());
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPaginatedCategoryQuery>());
 
 			// ایجاد سرویس‌پروایدر موقت
 			var sp = services.BuildServiceProvider();

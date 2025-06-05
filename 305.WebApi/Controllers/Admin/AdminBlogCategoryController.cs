@@ -1,7 +1,7 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
-using _305.Application.Features.BlogCategoryFeatures.Response;
+using _305.Application.Features.BlogFeatures.Query;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +12,11 @@ namespace _305.WebApi.Controllers.Admin;
 public class AdminBlogCategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet("list")]
-    public Task<IActionResult> Index([FromQuery] GetPaginatedUserRoleQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> Index([FromQuery] GetPaginatedBlogQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpGet("all")]
-    public Task<IActionResult> GetAll([FromQuery] GetAllUserRoleQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> GetAll([FromQuery] GetAllCategoryQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpPost("create")]
@@ -28,7 +28,7 @@ public class AdminBlogCategoryController(IMediator mediator) : BaseController(me
         ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
     [HttpGet("get")]
-    public Task<IActionResult> GetBySlug([FromQuery] GetUserRoleBySlugQuery query, CancellationToken cancellationToken) =>
+    public Task<IActionResult> GetBySlug([FromQuery] GetCategoryBySlugQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
     [HttpPost("delete")]

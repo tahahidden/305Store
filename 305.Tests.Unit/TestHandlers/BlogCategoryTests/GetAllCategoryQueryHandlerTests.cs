@@ -19,9 +19,9 @@ public class GetAllCategoryQueryHandlerTests
 		};
 
 		await GetAllHandlerTestHelper.TestHandle_Success
-			   <BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllUserRoleQueryHandler>(
-			   handlerFactory: unitOfWork => new GetAllUserRoleQueryHandler(unitOfWork),
-			   execute: (handler, ct) => handler.Handle(new GetAllUserRoleQuery(), ct),
+			   <BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllCategoryQueryHandler>(
+			   handlerFactory: unitOfWork => new GetAllCategoryQueryHandler(unitOfWork),
+			   execute: (handler, ct) => handler.Handle(new GetAllCategoryQuery(), ct),
 			   repoSelector: u => u.BlogCategoryRepository,
 			   entities: categories);
 	}
@@ -29,9 +29,9 @@ public class GetAllCategoryQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnFail_WhenExceptionThrown()
 	{
-		await GetAllHandlerTestHelper.TestHandle_FailOnException<BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllUserRoleQueryHandler>(
-			handlerFactory: uow => new GetAllUserRoleQueryHandler(uow),
-			execute: (handler, ct) => handler.Handle(new GetAllUserRoleQuery(), ct),
+		await GetAllHandlerTestHelper.TestHandle_FailOnException<BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllCategoryQueryHandler>(
+			handlerFactory: uow => new GetAllCategoryQueryHandler(uow),
+			execute: (handler, ct) => handler.Handle(new GetAllCategoryQuery(), ct),
 			repoSelector: uow => uow.BlogCategoryRepository);
 	}
 }
