@@ -10,7 +10,7 @@ namespace _305.Tests.Integration.ControllersTests
 {
     [TestFixture]
     public class BlogCategoryControllerTests
-        : BaseControllerTests<CreateCategoryCommand, string, BlogCategoryResponse, BlogCategoryResponse>
+        : BaseControllerTests<CreateCategoryCommand, string, EditCategoryCommand, BlogCategoryResponse>
     {
         public BlogCategoryControllerTests()
         {
@@ -26,7 +26,7 @@ namespace _305.Tests.Integration.ControllersTests
             };
         }
 
-        protected override MultipartFormDataContent CreateEditForm(BlogCategoryResponse dto)
+        protected override MultipartFormDataContent CreateEditForm(EditCategoryCommand dto)
         {
             return new MultipartFormDataContent
             {
@@ -62,10 +62,12 @@ namespace _305.Tests.Integration.ControllersTests
             var slug = await CreateEntityAsync(new CreateCategoryCommand { name = "edit-title", slug = "edit-slug" });
             var category = await GetBySlugOrIdAsync(slug);
 
-            category.name = "edited-title";
-            category.slug = "edited-slug";
-
-            var editForm = CreateEditForm(category);
+            var editForm = CreateEditForm(new EditCategoryCommand()
+            {
+                id = category.id,
+                slug = "edited-slug",
+                name = "edited-title"
+            });
             var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
             response.EnsureSuccessStatusCode();
 

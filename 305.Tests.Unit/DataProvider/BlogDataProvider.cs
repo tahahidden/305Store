@@ -2,6 +2,7 @@
 using _305.Application.Features.BlogFeatures.Query;
 using _305.Application.Features.BlogFeatures.Response;
 using _305.Application.Filters.Pagination;
+using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
 using _305.Tests.Unit.Assistant;
 
@@ -14,7 +15,7 @@ internal static class BlogDataProvider
 			name = name,
 			description = "Test",
 			image_alt = "Test",
-			image_file = Files.CreateFakeFormFile(),
+			image_file = FakeFileHelper.CreateFakeFormFile(),
 			blog_category_id = 1,
 			blog_text = "Test",
 			created_at = DateTime.Now,
@@ -33,7 +34,7 @@ internal static class BlogDataProvider
 		name = name,
 		description = "Test",
 		image_alt = "Test",
-		image_file = Files.CreateFakeFormFile(),
+		image_file = FakeFileHelper.CreateFakeFormFile(),
 		blog_category_id = 1,
 		blog_text = "Test",
 		updated_at = DateTime.Now,

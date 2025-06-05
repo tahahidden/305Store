@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace _305.Tests.Integration.Base.TestController;
-public abstract class BaseControllerTests<TCreateDto, TKey, TEntity, TPaginatedEntity>
+public abstract class BaseControllerTests<TCreateDto, TKey, TEditDto, TResponse>
 {
     protected HttpClient _client = null!;
     protected CustomWebApplicationFactory _factory = null!;
@@ -30,16 +30,16 @@ public abstract class BaseControllerTests<TCreateDto, TKey, TEntity, TPaginatedE
     }
 
     protected abstract MultipartFormDataContent CreateCreateForm(TCreateDto dto);
-    protected abstract MultipartFormDataContent CreateEditForm(TEntity dto);
+    protected abstract MultipartFormDataContent CreateEditForm(TEditDto dto);
 
     protected virtual async Task<ResponseDto<TKey>?> DeserializeCreateResponse(string json)
         => await Task.Run(() => JsonConvert.DeserializeObject<ResponseDto<TKey>>(json));
 
-    protected virtual async Task<ResponseDto<TEntity>?> DeserializeEntityResponse(string json)
-        => await Task.Run(() => JsonConvert.DeserializeObject<ResponseDto<TEntity>>(json));
+    protected virtual async Task<ResponseDto<TResponse>?> DeserializeEntityResponse(string json)
+        => await Task.Run(() => JsonConvert.DeserializeObject<ResponseDto<TResponse>>(json));
 
-    protected virtual async Task<ResponseDto<PaginatedList<TPaginatedEntity>>?> DeserializePaginatedResponse(string json)
-        => await Task.Run(() => JsonConvert.DeserializeObject<ResponseDto<PaginatedList<TPaginatedEntity>>>(json));
+    protected virtual async Task<ResponseDto<PaginatedList<TResponse>>?> DeserializePaginatedResponse(string json)
+        => await Task.Run(() => JsonConvert.DeserializeObject<ResponseDto<PaginatedList<TResponse>>>(json));
 
     public async Task<TKey> CreateEntityAsync(TCreateDto dto)
     {
@@ -54,7 +54,7 @@ public abstract class BaseControllerTests<TCreateDto, TKey, TEntity, TPaginatedE
         return result!.data!;
     }
 
-    public async Task<TEntity> GetBySlugOrIdAsync(string slugOrId)
+    public async Task<TResponse> GetBySlugOrIdAsync(string slugOrId)
     {
         var response = await _client.GetAsync($"{_baseUrl}/get?slug={slugOrId}");
         response.EnsureSuccessStatusCode();
