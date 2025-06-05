@@ -7,15 +7,15 @@ using _305.Domain.Entity;
 using _305.Tests.Unit.Assistant;
 
 namespace _305.Tests.Unit.DataProvider;
-internal static class BlogDataProvider
+public static class BlogDataProvider
 {
-	public static CreateBlogCommand Create(string name = "test")
+	public static CreateBlogCommand Create(string name = "test", string? slug = "slug")
 		=> new CreateBlogCommand()
 		{
 			name = name,
 			description = "Test",
 			image_alt = "Test",
-			image_file = FakeFileHelper.CreateFakeFormFile(),
+			image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
 			blog_category_id = 1,
 			blog_text = "Test",
 			created_at = DateTime.Now,
@@ -24,7 +24,7 @@ internal static class BlogDataProvider
 			keywords = "a,b,c",
 			show_blog = true,
 			meta_description = "Test",
-			slug = null,
+			slug = slug,
 		};
 
 	public static EditBlogCommand Edit(string name = "test", long id = 1)
@@ -34,7 +34,7 @@ internal static class BlogDataProvider
 		name = name,
 		description = "Test",
 		image_alt = "Test",
-		image_file = FakeFileHelper.CreateFakeFormFile(),
+		image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
 		blog_category_id = 1,
 		blog_text = "Test",
 		updated_at = DateTime.Now,
