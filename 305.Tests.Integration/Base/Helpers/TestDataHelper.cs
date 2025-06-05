@@ -77,5 +77,28 @@ public class TestDataHelper(HttpClient client)
 		return getResult.data.id;
 	}
 
+	public async Task<long> CreatePermissionAndReturnIdAsync()
+	{
+		var dto = new MultipartFormDataContent
+		{
+			{ new StringContent("name"), "name" },
+			{ new StringContent("slug"), "slug" },
+			{ new StringContent("role_id"), "role_id" },
+			{ new StringContent("permission_id"), "permission_id" }
+		};
+
+		var response = await client.PostAsync("/api/admin/permission/create", dto);
+		response.EnsureSuccessStatusCode();
+
+		var json = await response.Content.ReadAsStringAsync();
+		var result = JsonConvert.DeserializeObject<ResponseDto<string>>(json);
+
+		var getResponse = await client.GetAsync($"/api/admin/permission/get?slug={result.data}");
+
+		var getJson = await getResponse.Content.ReadAsStringAsync();
+		var getResult = JsonConvert.DeserializeObject<ResponseDto<UserResponse>>(getJson);
+
+		return getResult.data.id;
+	}
 	// سایر موجودیت‌ها (مثلاً CreateBlogAndReturnIdAsync) هم همین‌جا اضافه می‌کنی
 }
