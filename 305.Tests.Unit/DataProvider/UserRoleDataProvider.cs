@@ -53,15 +53,6 @@ public class UserRoleDataProvider
 			slug = slug,
 		};
 
-	public static UserRoleResponse GetOne(string slug = "slug", string name = "name")
-		=> new()
-		{
-			id = 1,
-			name = name,
-			slug = slug,
-			userid = 1,
-			roleid = 1
-		};
 
 	public static GetPaginatedUserRoleQuery GetByQueryFilter(string searchTerm = "")
 		=> new()

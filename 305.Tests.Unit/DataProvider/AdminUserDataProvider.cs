@@ -70,20 +70,6 @@ public static class AdminUserDataProvider
 		slug = slug,
 	};
 
-	public static AdminUserResponse GetOne(string slug = "slug", string name = "name")
-		=> new ()
-		{
-			id = 1,
-			name = name,
-			slug = slug,
-			created_at = DateTime.Now,
-			email = "info@304.com",
-			is_active = true,
-			is_delete_able = true,
-			last_login_date_time = DateTime.Now,
-			updated_at = DateTime.Now
-		};
-
 	public static GetPaginatedAdminUserQuery GetByQueryFilter(string searchTerm = "")
 	=> new ()
 	{

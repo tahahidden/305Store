@@ -50,14 +50,6 @@ public static class BlogCategoryDataProvider
 		slug = slug,
 	};
 
-	public static BlogCategoryResponse GetOne(string slug = "slug", string name = "name")
-		=> new()
-		{
-			id = 1,
-			name = name,
-			slug = slug,
-			description = "Tech Category"
-		};
 
 	public static GetPaginatedCategoryQuery GetByQueryFilter(string searchTerm = "")
 	=> new()

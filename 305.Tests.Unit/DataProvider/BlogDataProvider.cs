@@ -79,26 +79,6 @@ public static class BlogDataProvider
 		slug = slug,
 	};
 
-	public static BlogResponse GetOne(string slug = "slug", string name = "name")
-		=> new()
-		{
-			id = 1,
-			name = name,
-			description = "Test",
-			image_alt = "Test",
-			blog_category_id = 1,
-			blog_text = "Test",
-			updated_at = DateTime.Now,
-			estimated_read_time = 5,
-			keywords = "a,b,c",
-			show_blog = true,
-			meta_description = "Test",
-			slug = slug,
-			image = "test.jpg",
-			created_at = DateTime.Now,
-			blog_category = BlogCategoryDataProvider.GetOne()
-		};
-
 	public static GetPaginatedBlogQuery GetByQueryFilter(string searchTerm = "")
 	=> new()
 	{

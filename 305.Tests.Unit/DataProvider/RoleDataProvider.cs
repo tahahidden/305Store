@@ -45,14 +45,6 @@ public class RoleDataProvider
 			slug = slug,
 		};
 
-	public static RoleResponse GetOne(string slug = "slug", string name = "name")
-		=> new()
-		{
-			id = 1,
-			name = name,
-			slug = slug,
-		};
-
 	public static GetPaginatedRoleQuery GetByQueryFilter(string searchTerm = "")
 		=> new()
 		{
