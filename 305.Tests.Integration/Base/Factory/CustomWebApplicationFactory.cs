@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
-namespace _305.Tests.Integration;
+namespace _305.Tests.Integration.Base.Factory;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
