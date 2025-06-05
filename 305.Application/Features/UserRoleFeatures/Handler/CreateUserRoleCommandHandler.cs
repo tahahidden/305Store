@@ -32,7 +32,7 @@ public class CreateUserRoleCommandHandler(IUnitOfWork unitOfWork)
 		   },
 		   new ()
 		   {
-			   Rule = async () => !(await unitOfWork.UserRoleRepository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid)),
+			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid),
 			   Value = "ارتباط نقش و کاربر",
 			   IsExistRole = true
 		   }
