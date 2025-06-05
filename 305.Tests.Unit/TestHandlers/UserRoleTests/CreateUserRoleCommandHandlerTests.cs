@@ -11,11 +11,20 @@ using System.Text;
 using Moq;
 
 namespace _305.Tests.Unit.TestHandlers.UserRoleTests;
-public class CreateUserUserRoleCommandHandlerTests
+public class CreateUserRoleCommandHandlerTests
 {
 	[Fact]
 	public async Task Handle_ShouldCreateUserRole_WhenNameAndSlugAreUnique()
 	{
+		var roleRepoMock = new Mock<IRoleRepository>();
+		roleRepoMock
+			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
+			.ReturnsAsync(true);
+		var userRepoMock = new Mock<IUserRepository>();
+		userRepoMock
+			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<User, bool>>>()))
+			.ReturnsAsync(true);
+
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateUserRoleCommand,                 // Command Type
 			UserRole,                          // Entity Type
@@ -25,7 +34,12 @@ public class CreateUserUserRoleCommandHandlerTests
 			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: UserRoleDataProvider.Create(),
-			repoSelector: uow => uow.UserRoleRepository
+			repoSelector: uow => uow.UserRoleRepository,
+			setupUowMock: uow =>
+			{
+				uow.Setup(x => x.RoleRepository).Returns(roleRepoMock.Object);
+				uow.Setup(x => x.UserRepository).Returns(userRepoMock.Object);
+			}
 		);
 	}
 

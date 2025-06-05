@@ -13,6 +13,14 @@ public class CreateRolePermissionCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldCreateRolePermission_WhenNameAndSlugAreUnique()
 	{
+		var roleRepoMock = new Mock<IRoleRepository>();
+		roleRepoMock
+			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
+			.ReturnsAsync(true);
+		var permissionRepoMock = new Mock<IPermissionRepository>();
+		permissionRepoMock
+			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
+			.ReturnsAsync(true);
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateRolePermissionCommand,                 // Command Type
 			RolePermission,                          // Entity Type
@@ -22,7 +30,12 @@ public class CreateRolePermissionCommandHandlerTests
 			handlerFactory: uow => new CreateRolePermissionCommandHandler(uow),
 			execute: (handler, cmd, ct) => handler.Handle(cmd, ct),
 			command: RolePermissionDataProvider.Create(),
-			repoSelector: uow => uow.RolePermissionRepository
+			repoSelector: uow => uow.RolePermissionRepository,
+			setupUowMock: uow =>
+			{
+				uow.Setup(x => x.RoleRepository).Returns(roleRepoMock.Object);
+				uow.Setup(x => x.PermissionRepository).Returns(permissionRepoMock.Object);
+			}
 		);
 	}
 
