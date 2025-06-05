@@ -23,28 +23,31 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            // حذف قبلی DbContext (مخصوص EF Core)
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+            builder.UseEnvironment("Test");
 
+            // حذف DbContext قبلی
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            // ثبت DbContext با InMemory برای تست
+            // اتصال in-memory با SQLite
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var connection = new SqliteConnection("DataSource=:memory:");
-                connection.Open(); // مهم!
-
                 options.UseSqlite(connection);
             });
 
-            // ثبت Repository و UnitOfWork
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // ثبت MediatR (اگر لازمه)
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommand>());
+
+            // اجرای migration یا ساخت دیتابیس (اختیاری)
+            var sp = services.BuildServiceProvider();
+            using var scope = sp.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            db.Database.EnsureCreated(); // یا db.Database.Migrate(); اگر از Migration استفاده می‌کنی
         });
     }
 }

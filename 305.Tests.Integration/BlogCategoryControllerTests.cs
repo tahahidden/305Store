@@ -1,4 +1,5 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+﻿using _305.Application.Base.Response;
+using _305.Application.Features.BlogCategoryFeatures.Command;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
@@ -49,7 +50,7 @@ public class BlogCategoryControllerTests
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
-        var responseData = await response.Content.ReadFromJsonAsync<_305.Application.Base.Response.ResponseDto<string>>();
+        var responseData = await response.Content.ReadFromJsonAsync<ResponseDto<string>>();
         responseData.Should().NotBeNull();
         responseData!.is_success.Should().BeTrue();
     }
