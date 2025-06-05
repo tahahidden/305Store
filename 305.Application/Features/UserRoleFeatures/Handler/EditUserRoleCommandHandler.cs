@@ -36,7 +36,7 @@ public class EditUserRoleCommandHandler(IUnitOfWork unitOfWork, IRepository<User
 		   },
 		   new ()
 		   {
-			   Rule = async () => await unitOfWork.UserRoleRepository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid),
+			   Rule = async () => await repository.ExistsAsync(x => x.userid == request.userid && x.roleid == request.roleid &&  x.id != request.id),
 			   Value = "ارتباط نقش و کاربر",
 			   IsExistRole = true
 		   }
