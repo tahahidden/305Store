@@ -1,6 +1,7 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.BlogCategoryFeatures.Response;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Query;
 using _305.Application.Features.BlogFeatures.Response;
@@ -30,10 +31,10 @@ public class BlogCategoryController(IMediator mediator) : BaseController(mediato
 		ExecuteCommand<EditCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 
 	[HttpGet("get")]
-	public Task<IActionResult> GetBySlug([FromForm] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
-		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); 
+	public Task<IActionResult> GetBySlug([FromQuery] GetCategoryBySlugQuery query, CancellationToken cancellationToken) =>
+		ExecuteCommand<GetCategoryBySlugQuery, ResponseDto<BlogCategoryResponse>>(query, cancellationToken); 
 
 	[HttpPost("delete")]
-	public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<DeleteBlogCommand, ResponseDto<string>>(command, cancellationToken);
+	public Task<IActionResult> Delete([FromForm] DeleteCategoryCommand command, CancellationToken cancellationToken) =>
+		ExecuteCommand<DeleteCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 }

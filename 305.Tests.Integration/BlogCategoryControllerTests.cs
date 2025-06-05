@@ -1,16 +1,10 @@
 ﻿using _305.Application.Base.Response;
-using _305.Application.Features.BlogCategoryFeatures.Command;
-using _305.Application.Features.BlogCategoryFeatures.Query;
-using _305.Application.Features.BlogFeatures.Command;
-using _305.Application.Features.BlogFeatures.Response;
+using _305.Application.Features.BlogCategoryFeatures.Response;
+using _305.Application.Filters.Pagination;
 using _305.Tests.Integration;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace _305.IntegrationTests.Controllers;
 
@@ -19,7 +13,7 @@ public class BlogCategoryControllerTests
 {
     private HttpClient _client = null!;
     private CustomWebApplicationFactory _factory = null!;
-
+   
     [SetUp]
     public void Setup()
     {
@@ -43,40 +37,75 @@ public class BlogCategoryControllerTests
     }
 
     [Test]
+    public async Task Create_Should_Return_BadRequest_When_MissingName()
+    {
+        var form = new MultipartFormDataContent
+    {
+        // حذف فیلد name
+        { new StringContent("slug-only"), "slug" }
+    };
+
+        var response = await _client.PostAsync("/api/blog-category/create", form);
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+    }
+
+    [Test]
     public async Task Edit_Should_Return_Success()
     {
-        // اول بساز
-        var create = new MultipartFormDataContent
+        // ایجاد دسته‌بندی جدید
+        var createContent = new MultipartFormDataContent
         {
             { new StringContent("edit-title"), "name" },
             { new StringContent("edit-slug"), "slug" }
         };
-        var createResponse = await _client.PostAsync("/api/blog-category/create", create);
-        var createResult = JsonConvert.DeserializeObject<ResponseDto<string>>(await createResponse.Content.ReadAsStringAsync());
-        var id = createResult?.data;
 
-        // حالا ویرایش
-        var edit = new MultipartFormDataContent
-        {
-            { new StringContent(id!), "id" },
-            { new StringContent("edited-title"), "name" },
-            { new StringContent("edited-slug"), "slug" }
-        };
+        var createResponse = await _client.PostAsync("/api/blog-category/create", createContent);
+        createResponse.EnsureSuccessStatusCode();
 
-        var response = await _client.PostAsync("/api/blog-category/edit", edit);
-        var content = await response.Content.ReadAsStringAsync();
+        var createResultJson = await createResponse.Content.ReadAsStringAsync();
+        var createResult = JsonConvert.DeserializeObject<ResponseDto<string>>(createResultJson);
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), $"Response Content: {content}");
+        Assert.That(createResult, Is.Not.Null);
+        Assert.That(createResult.is_success, Is.EqualTo(true));
+        Assert.That(createResult.data, Is.Not.Null);
+
+        var slug = createResult.data;
+
+        var response = await _client.GetAsync($"/api/blog-category/get?slug={slug}");
+
+        var getResultJson = await response.Content.ReadAsStringAsync();
+        var category = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getResultJson);
+
+        // ویرایش دسته
+        var editContent = new MultipartFormDataContent
+    {
+        { new StringContent(category.data.id.ToString()), "id" },
+        { new StringContent("edited-title"), "name" },
+        { new StringContent("edited-slug"), "slug" }
+    };
+
+        var editResponse = await _client.PostAsync("/api/blog-category/edit", editContent);
+        editResponse.EnsureSuccessStatusCode();
+
+        //اگر خواستی می‌تونی محتوای جواب ویرایش رو چاپ کنی برای دیباگ:
+        var editResultJson = await editResponse.Content.ReadAsStringAsync();
+        var editResult = JsonConvert.DeserializeObject<ResponseDto<string>>(editResultJson);
+        Assert.That(editResult, Is.Not.Null);
+        Assert.That(editResult.is_success, Is.EqualTo(true));
+        Assert.That(editResult.data, Is.Not.Null);
     }
+
+
 
     [Test]
     public async Task GetAll_Should_Return_List()
     {
         var response = await _client.GetAsync("/api/blog-category/all");
-
+        var getResultJson = await response.Content.ReadAsStringAsync();
+        var getResult = JsonConvert.DeserializeObject<ResponseDto<List<BlogCategoryResponse>>>(getResultJson);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-        var result = await response.Content.ReadAsStringAsync();
-        Assert.Equals(result.Contains("data") || result.Contains("Data"), true);
+        Assert.That(getResult.is_success, Is.EqualTo(true));
     }
 
     [Test]
@@ -88,25 +117,49 @@ public class BlogCategoryControllerTests
     }
 
     [Test]
+    public async Task List_Should_Return_Correct_PageSize()
+    {
+        var response = await _client.GetAsync("/api/blog-category/list?page=1&pageSize=5");
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<ResponseDto<PaginatedList<BlogCategoryResponse>>>(content);
+
+        Assert.That(result.is_success, Is.True);
+        Assert.That(result.data.Data.Count, Is.LessThanOrEqualTo(5));
+    }
+
+
+    [Test]
     public async Task GetBySlug_Should_Return_Success()
     {
         // ابتدا ایجاد
         var form = new MultipartFormDataContent
         {
-            { new StringContent("slug-title"), "Title" },
-            { new StringContent("slug-me"), "Slug" }
+            { new StringContent("slug-title"), "name" },
+            { new StringContent("slug-me"), "slug" }
         };
         await _client.PostAsync("/api/blog-category/create", form);
 
-        // درخواست با slug
-        var slugForm = new MultipartFormDataContent
-        {
-            { new StringContent("slug-me"), "Slug" }
-        };
+        var response = await _client.GetAsync($"/api/blog-category/get?slug=slug-me");
 
-        var response = await _client.PostAsync("/api/blog-category/get", slugForm);
+        var getResultJson = await response.Content.ReadAsStringAsync();
+        var getResult = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getResultJson);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(getResult.data, Is.Not.Null);
+        Assert.That(getResult.is_success, Is.EqualTo(true));
+    }
+
+    [Test]
+    public async Task GetBySlug_Should_Return_NotFound_When_Slug_NotExists()
+    {
+        var response = await _client.GetAsync("/api/blog-category/get?slug=not-exists-slug");
+
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(content);
+        Assert.That(result.is_success, Is.False);
+        Assert.That(result.response_code, Is.EqualTo(404));
     }
 
     [Test]
@@ -115,17 +168,21 @@ public class BlogCategoryControllerTests
         // اول ایجاد
         var form = new MultipartFormDataContent
         {
-            { new StringContent("delete-title"), "Title" },
-            { new StringContent("delete-slug"), "Slug" }
+            { new StringContent("delete-title"), "name" },
+            { new StringContent("delete-slug"), "slug" }
         };
         var createResp = await _client.PostAsync("/api/blog-category/create", form);
         var createResult = JsonConvert.DeserializeObject<ResponseDto<string>>(await createResp.Content.ReadAsStringAsync());
-        var id = createResult?.data;
+        var slug = createResult?.data;
+
+        var getResponse = await _client.GetAsync($"/api/blog-category/get?slug={slug}");
+        var getResultJson = await getResponse.Content.ReadAsStringAsync();
+        var category = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getResultJson);
 
         // حالا حذف
         var deleteForm = new MultipartFormDataContent
         {
-            { new StringContent(id!), "Id" }
+            { new StringContent(category.data.id.ToString()), "Id" }
         };
 
         var response = await _client.PostAsync("/api/blog-category/delete", deleteForm);

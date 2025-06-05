@@ -1,5 +1,6 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.IUOW;
+using _305.Domain.Entity;
 using Serilog;
 
 namespace _305.Application.Base.Handler;
@@ -42,13 +43,13 @@ public class GetBySlugHandler
 	{
 		try
 		{
-			// تلاش برای یافتن موجودیت از طریق تابع fetchFunc
-			var entity = await fetchFunc(_unitOfWork);
+            // تلاش برای یافتن موجودیت از طریق تابع fetchFunc
+            var entity = await fetchFunc(_unitOfWork);
 			if (entity == null)
 				return Responses.NotFound<TDto>(default, name, notFoundMessage);
 
-			// نگاشت Entity به DTO
-			var dto = Mapper.Mapper.Map<TEntity, TDto>(entity);
+            // نگاشت Entity به DTO
+            var dto = Mapper.Mapper.Map<TEntity, TDto>(entity);
 			return Responses.Data(dto);
 		}
 		catch (OperationCanceledException)
