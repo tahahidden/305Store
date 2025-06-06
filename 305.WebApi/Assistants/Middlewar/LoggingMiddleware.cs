@@ -1,15 +1,15 @@
-﻿namespace _305.WebApi.Assistants.Middelware;
+﻿namespace _305.WebApi.Assistants.Middlewar;
 
 // LoggingMiddleware.cs
 public class LoggingMiddleware
 {
     private readonly RequestDelegate _next;
-    private static readonly string logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
+    private static readonly string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
 
     public LoggingMiddleware(RequestDelegate next)
     {
         _next = next;
-        Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
     }
 
 
@@ -23,9 +23,9 @@ public class LoggingMiddleware
 
         var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
         Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(logLine);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(logLine);
 
-        using (var stream = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, true))
+        await using (var stream = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, true))
         {
             await stream.WriteAsync(bytes, 0, bytes.Length);
         }

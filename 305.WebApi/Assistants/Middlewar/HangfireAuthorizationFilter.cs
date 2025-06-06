@@ -1,6 +1,6 @@
 ﻿using Hangfire.Dashboard;
 
-namespace _305.WebApi.Assistants.Middelware;
+namespace _305.WebApi.Assistants.Middlewar;
 
 public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
 {
@@ -12,7 +12,7 @@ public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
     /// <param name="allowedRoles">نقش‌های مجاز برای دسترسی به داشبورد</param>
     public HangfireAuthorizationFilter(params string[] allowedRoles)
     {
-        _allowedRoles = allowedRoles ?? Array.Empty<string>();
+        _allowedRoles = allowedRoles ?? [];
     }
 
     public bool Authorize(DashboardContext context)
@@ -25,10 +25,8 @@ public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
             return false;
 
         // اگر نقش خاصی تنظیم نشده باشد، فقط احراز هویت کافی است
-        if (_allowedRoles.Length == 0)
-            return true;
-
-        // بررسی نقش‌ها
-        return _allowedRoles.Any(role => user.IsInRole(role));
+        return _allowedRoles.Length == 0 ||
+               // بررسی نقش‌ها
+               _allowedRoles.Any(role => user.IsInRole(role));
     }
 }

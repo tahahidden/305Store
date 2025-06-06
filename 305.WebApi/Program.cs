@@ -5,7 +5,6 @@ using _305.BuildingBlocks.IService;
 using _305.BuildingBlocks.Service;
 using _305.Infrastructure.Persistence;
 using _305.Infrastructure.Service;
-using _305.WebApi.Assistants.Middelware;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +16,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using _305.WebApi.Assistants.Middlewar;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,6 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithEnvironmentName()
     .WriteTo.Console()
     .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
-    .WriteTo.File("Logs/requests.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
 
@@ -58,7 +57,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.WriteIndented = true;
@@ -67,7 +66,7 @@ builder.Services.AddControllers()
 // ─────────────── Environment-specific DB setup ───────────────
 if (!builder.Environment.IsEnvironment("Test")) // این شرط بسیار مهم است
 {
-    string connectionString = builder.Environment.IsDevelopment()
+    var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("ServerDbConnection")
     : builder.Configuration.GetConnectionString("ProductionDbConnection");
 
@@ -171,7 +170,7 @@ if (!app.Environment.IsEnvironment("Test"))
 {
     app.UseHangfireDashboard("/hangfire", new DashboardOptions
     {
-        Authorization = new[] { new HangfireAuthorizationFilter("Admin", "MainAdmin") }
+        Authorization = [new HangfireAuthorizationFilter("Admin", "MainAdmin")]
     });
 }
 

@@ -4,25 +4,16 @@ using Hangfire;
 
 namespace _305.WebApi.Assistants.Schedule;
 
-public class TokenCleanUpJob
+public class TokenCleanUpJob(IRecurringJobManager recurringJobManager, IServiceScopeFactory scopeFactory)
 {
-    private readonly IRecurringJobManager _recurringJobManager;
-    private readonly IServiceScopeFactory _scopeFactory;
-
     public const string JobId = "token-cleanup";
-
-    public TokenCleanUpJob(IRecurringJobManager recurringJobManager, IServiceScopeFactory scopeFactory)
-    {
-        _recurringJobManager = recurringJobManager;
-        _scopeFactory = scopeFactory;
-    }
 
     /// <summary>
     /// زمان‌بندی اجرای خودکار Job به صورت متناوب.
     /// </summary>
     public void ConfigureJobs()
     {
-        _recurringJobManager.AddOrUpdate(
+        recurringJobManager.AddOrUpdate(
             JobId,
             () => ExecuteScopedTask(),
             cronExpression: Cron.Hourly
@@ -35,7 +26,7 @@ public class TokenCleanUpJob
     /// <returns></returns>
     public async Task ExecuteScopedTask()
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
 
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var tokenCleanupTask = scope.ServiceProvider.GetRequiredService<TokenCleanupTask>();

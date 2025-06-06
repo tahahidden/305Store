@@ -6,7 +6,6 @@ using Serilog;
 namespace _305.WebApi.Base;
 public class BaseController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator = mediator;
     /// <summary>
     /// ساخت پاسخ خطا برای مدل نامعتبر (InvalidModelState)
     /// </summary>
@@ -19,7 +18,7 @@ public class BaseController(IMediator mediator) : ControllerBase
 
         var combinedMessage = string.Join(" | ", errorMessages);
 
-        return BadRequest(Responses.Fail<string>(default, combinedMessage));
+        return BadRequest(Responses.Fail<string>(null, combinedMessage));
     }
 
     /// <summary>
@@ -38,7 +37,7 @@ public class BaseController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var response = await _mediator.Send(request, cancellationToken);
+            var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
         catch (Exception ex)
@@ -55,7 +54,7 @@ public class BaseController(IMediator mediator) : ControllerBase
             if (!ModelState.IsValid)
                 return InvalidModelResponse();
 
-            var response = await _mediator.Send(request, cancellationToken);
+            var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
         catch (Exception ex)
