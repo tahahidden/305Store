@@ -105,12 +105,16 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task Edit_Should_Return_Success()
     {
+        // Arrange
+        var helper = new TestDataHelper(_client);
+        var categoryId = await helper.CreateCategoryAndReturnIdAsync();
+
         var slug = await CreateEntityAsync(new CreateBlogCommand
         {
             name = "test-title",
             slug = "test-title",
             image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-            blog_category_id = 1,
+            blog_category_id = categoryId,
             description = "",
             estimated_read_time = 2,
             blog_text = "",
@@ -192,7 +196,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         await CreateEntityAsync(createBlogCommand);
 
         // Act
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-title"); // اصلاح این خط
+        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-title"); 
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -203,8 +207,8 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         {
             Assert.That(result?.is_success, Is.True);
             Assert.That(result?.data, Is.Not.Null);
-            Assert.That(result?.data.slug, Is.EqualTo("test-title")); // اصلاح این خط
-            Assert.That(result?.data.name, Is.EqualTo("test-title")); // اصلاح این خط
+            Assert.That(result?.data.slug, Is.EqualTo("test-title")); 
+            Assert.That(result?.data.name, Is.EqualTo("test-title"));
             Assert.That(result?.data.blog_category_id, Is.EqualTo(categoryId));
         });
     }
@@ -226,7 +230,24 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task Delete_Should_Return_Success()
     {
-        var slug = await CreateEntityAsync(new CreateBlogCommand { name = "delete-title", slug = "delete-slug" });
+        // Arrange
+        var helper = new TestDataHelper(_client);
+        var categoryId = await helper.CreateCategoryAndReturnIdAsync();
+
+        var slug = await CreateEntityAsync(new CreateBlogCommand
+        {
+            name = "test-title",
+            slug = "test-title",
+            image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
+            blog_category_id = categoryId,
+            description = "adaddas",
+            estimated_read_time = 2,
+            blog_text = "adasdasdsa",
+            keywords = "a,b,c,d",
+            image_alt = "alt",
+            meta_description = "meta",
+            show_blog = true,
+        });
         var category = await GetBySlugOrIdAsync(slug);
 
         await DeleteEntityAsync(category.id);
