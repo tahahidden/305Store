@@ -33,7 +33,7 @@ public class EditCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 	/// </summary>
 	[Display(Name = "نام")]
 	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public string name { get; set; }
+	public required string name { get; set; }
 
 	/// <summary>
 	/// تاریخ و زمان آخرین ویرایش.
