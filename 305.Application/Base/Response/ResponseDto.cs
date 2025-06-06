@@ -8,7 +8,7 @@ public class ResponseDto<T>
     /// <summary>
     /// پیام پاسخ (موفقیت، خطا و غیره)
     /// </summary>
-    public string message { get; set; }
+    public string? message { get; set; }
 
     /// <summary>
     /// داده اصلی پاسخ که ممکن است مقدار داشته یا null باشد

@@ -47,13 +47,13 @@ public class GetAllHandler
         catch (OperationCanceledException)
         {
             _logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
-            return Responses.Fail<List<TDto>>(default, "عملیات لغو شد", 499);
+            return Responses.Fail<List<TDto>>(null, "عملیات لغو شد", 499);
         }
         catch (Exception ex)
         {
             // لاگ‌گیری مستقیم با Serilog در صورت بروز خطا
             _logger.Error(ex, "خطا در زمان تبدیل لیست موجودیت‌ها به DTO: {Message}", ex.Message);
-            return Responses.ExceptionFail<List<TDto>>(default, null);
+            return Responses.ExceptionFail<List<TDto>>(null, null);
         }
     }
 }

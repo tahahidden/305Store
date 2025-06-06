@@ -31,12 +31,13 @@ public class DeleteHandler
     /// </summary>
     /// <typeparam name="TEntity">نوع موجودیت مورد نظر برای حذف</typeparam>
     /// <typeparam name="TResult">نوع خروجی دلخواه</typeparam>
-    /// <param name="findEntity">تابعی برای واکشی موجودیت مورد نظر</param>
-    /// <param name="onDelete">عملیات حذف که روی موجودیت اعمال می‌شود</param>
-    /// <param name="name">نام موجودیت برای پیام‌های خطا یا موفقیت</param>
+    /// <param name="findEntityAsync">تابعی برای واکشی موجودیت مورد نظر</param>
+    /// <param name="onBeforeDeleteAsync">عملیات حذف که روی موجودیت اعمال می‌شود</param>
+    /// <param name="onDeleteAsync">فانکشن حذف</param>
+    /// <param name="entityName">نام موجودیت برای پیام‌های خطا یا موفقیت</param>
     /// <param name="notFoundMessage">پیام دلخواه در صورت عدم یافتن موجودیت</param>
     /// <param name="successMessage">پیام دلخواه در صورت حذف موفق</param>
-    /// <param name="successCode">کد وضعیت HTTP برای موفقیت، به‌صورت پیش‌فرض 204 (NoContent)</param>
+    /// <param name="successStatusCode">کد وضعیت HTTP برای موفقیت، به‌صورت پیش‌فرض 204 (NoContent)</param>
     /// <param name="cancellationToken">توکن لغو عملیات</param>
     /// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
     public async Task<ResponseDto<TResult>> HandleAsync<TEntity, TResult>(
@@ -56,11 +57,9 @@ public class DeleteHandler
             if (entity == null)
                 return Responses.NotFound<TResult>(default, entityName, notFoundMessage ?? $"{entityName} یافت نشد");
 
-            if (onBeforeDeleteAsync is not null)
-                onBeforeDeleteAsync(entity);
+            onBeforeDeleteAsync?.Invoke(entity);
 
-            if (onDeleteAsync is not null)
-                onDeleteAsync(entity);
+            onDeleteAsync?.Invoke(entity);
 
             await _unitOfWork.CommitAsync(cancellationToken);
 

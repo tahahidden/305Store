@@ -66,8 +66,8 @@ public static class Mapper
                     {
                         var nestedMappedValue = typeof(Mapper)
                             .GetMethod("Map")
-                            .MakeGenericMethod(sourceProp.PropertyType, destProp.PropertyType)
-                            .Invoke(null, new object[] { sourceValue });
+                            ?.MakeGenericMethod(sourceProp.PropertyType, destProp.PropertyType)
+                            .Invoke(null, [sourceValue]);
 
                         destProp.SetValue(destination, nestedMappedValue);
                     }
@@ -106,10 +106,7 @@ public static class Mapper
             return true;
 
         // بررسی می‌کند اگر type2 nullable است نوع اصلی آن برابر type1 باشد
-        if (IsNullableType(type2) && Nullable.GetUnderlyingType(type2) == type1)
-            return true;
-
-        return false;
+        return IsNullableType(type2) && Nullable.GetUnderlyingType(type2) == type1;
     }
 
     /// <summary>

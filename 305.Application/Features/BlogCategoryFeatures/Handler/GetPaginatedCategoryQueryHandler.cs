@@ -8,16 +8,10 @@ using MediatR;
 
 namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 
-public class GetPaginatedCategoryQueryHandler : IRequestHandler<GetPaginatedCategoryQuery, ResponseDto<PaginatedList<BlogCategory>>>
+public class GetPaginatedCategoryQueryHandler(IUnitOfWork unitOfWork)
+    : IRequestHandler<GetPaginatedCategoryQuery, ResponseDto<PaginatedList<BlogCategory>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly GetPaginatedHandler _handler;
-
-    public GetPaginatedCategoryQueryHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-        _handler = new GetPaginatedHandler(unitOfWork);
-    }
+    private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
     public async Task<ResponseDto<PaginatedList<BlogCategory>>> Handle(GetPaginatedCategoryQuery request, CancellationToken cancellationToken)
     {

@@ -9,16 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _305.Application.Features.BlogFeatures.Handler;
 
-public class GetPaginatedBlogQueryHandler : IRequestHandler<GetPaginatedBlogQuery, ResponseDto<PaginatedList<Blog>>>
+public class GetPaginatedBlogQueryHandler(IUnitOfWork unitOfWork)
+    : IRequestHandler<GetPaginatedBlogQuery, ResponseDto<PaginatedList<Blog>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly GetPaginatedHandler _handler;
-
-    public GetPaginatedBlogQueryHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-        _handler = new GetPaginatedHandler(unitOfWork);
-    }
+    private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
     public Task<ResponseDto<PaginatedList<Blog>>> Handle(GetPaginatedBlogQuery request, CancellationToken cancellationToken)
     {

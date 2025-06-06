@@ -59,7 +59,7 @@ public class EditHandler<TCommand, TEntity>
             // یافتن موجودیت بر اساس شناسه
             var entity = await _repository.FindSingle(x => x.id == id);
             if (entity == null)
-                return Responses.NotFound<string>(default, propertyName);
+                return Responses.NotFound<string>(null, propertyName);
 
             // بررسی اعتبارسنجی‌ها (در صورت وجود)
             if (validations != null)
@@ -68,7 +68,7 @@ public class EditHandler<TCommand, TEntity>
                 {
                     var isValid = await validation.Rule();
                     if (isValid)
-                        return Responses.Exist<string>(default, null, validation.Value);
+                        return Responses.Exist<string>(null, null, validation.Value);
                 }
             }
 
@@ -93,13 +93,13 @@ public class EditHandler<TCommand, TEntity>
         catch (OperationCanceledException)
         {
             _logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
-            return Responses.Fail<string>(default, "عملیات لغو شد", 499);
+            return Responses.Fail<string>(null, "عملیات لغو شد", 499);
         }
         catch (Exception ex)
         {
             // ثبت خطای احتمالی با Serilog
             _logger.Error(ex, "خطا در زمان ویرایش موجودیت: {Message}", ex.Message);
-            return Responses.ExceptionFail<string>(default, null);
+            return Responses.ExceptionFail<string>(null, null);
         }
     }
 }

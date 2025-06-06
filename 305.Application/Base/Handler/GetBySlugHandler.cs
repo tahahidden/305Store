@@ -11,10 +11,12 @@ public class GetBySlugHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
+
     /// <summary>
     /// سازنده کلاس که وابستگی به <see cref="IUnitOfWork"/> را تزریق می‌کند.
     /// </summary>
     /// <param name="unitOfWork">واحد کاری برای دسترسی به منابع داده</param>
+    /// <param name="logger">serilog</param>
     public GetBySlugHandler(IUnitOfWork unitOfWork, ILogger? logger = null)
     {
         _unitOfWork = unitOfWork;
@@ -45,7 +47,7 @@ public class GetBySlugHandler
             // تلاش برای یافتن موجودیت از طریق تابع fetchFunc
             var entity = await fetchFunc(_unitOfWork);
             if (entity == null)
-                return Responses.NotFound<TDto>(default, name, notFoundMessage);
+                return Responses.NotFound<TDto>(null, name, notFoundMessage);
 
             // نگاشت Entity به DTO
             var dto = Mapper.Mapper.Map<TEntity, TDto>(entity);
@@ -54,13 +56,13 @@ public class GetBySlugHandler
         catch (OperationCanceledException)
         {
             _logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
-            return Responses.Fail<TDto>(default, "عملیات لغو شد", 499);
+            return Responses.Fail<TDto>(null, "عملیات لغو شد", 499);
         }
         catch (Exception ex)
         {
             // ثبت خطا با استفاده از Serilog
             _logger.Error(ex, "خطا در زمان دریافت موجودیت بر اساس Slug: {Message}", ex.Message);
-            return Responses.ExceptionFail<TDto>(default, null);
+            return Responses.ExceptionFail<TDto>(null, null);
         }
     }
 }

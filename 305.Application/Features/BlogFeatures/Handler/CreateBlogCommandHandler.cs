@@ -11,18 +11,10 @@ using MediatR;
 
 namespace _305.Application.Features.BlogFeatures.Handler;
 
-public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, ResponseDto<string>>
+public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService)
+    : IRequestHandler<CreateBlogCommand, ResponseDto<string>>
 {
-    private readonly CreateHandler _handler;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IFileService _fileService;
-
-    public CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileService)
-    {
-        _unitOfWork = unitOfWork;
-        _handler = new CreateHandler(unitOfWork);
-        _fileService = fileService;
-    }
+    private readonly CreateHandler _handler = new(unitOfWork);
 
     public async Task<ResponseDto<string>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
     {
@@ -31,7 +23,7 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
 
         if (request.image_file != null)
         {
-            var result = await _fileService.UploadImage(request.image_file);
+            var result = await fileService.UploadImage(request.image_file);
             request.image = result;
         }
         else
@@ -43,12 +35,12 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
         {
            new ()
            {
-               Rule = async () => await _unitOfWork.BlogRepository.ExistsAsync(x => x.name == request.name),
+               Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.name == request.name),
                Value = "نام"
            },
            new ()
            {
-               Rule = async () => await _unitOfWork.BlogRepository.ExistsAsync(x => x.slug == slug),
+               Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.slug == slug),
                Value = "نامک"
            }
 
@@ -59,7 +51,7 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
            onCreate: async () =>
            {
                var entity = Mapper.Map<CreateBlogCommand, Blog>(request);
-               await _unitOfWork.BlogRepository.AddAsync(entity);
+               await unitOfWork.BlogRepository.AddAsync(entity);
                return slug;
            },
            successMessage: null,

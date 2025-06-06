@@ -35,7 +35,7 @@ public class CreateHandler
     /// <typeparam name="TResult">نوع نتیجه خروجی</typeparam>
     /// <param name="validations">لیست قوانین اعتبارسنجی برای بررسی تکراری بودن یا شرایط خاص</param>
     /// <param name="onCreate">تابع حاوی منطق ایجاد موجودیت</param>
-    /// <param name="createMessage">پیام موفقیت در صورت موفق بودن عملیات</param>
+    /// <param name="successMessage">پیام موفقیت در صورت موفق بودن عملیات</param>
     /// <param name="cancellationToken">توکن کنسل کردن عملیات</param>
     /// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
     public async Task<ResponseDto<TResult>> HandleAsync<TResult>(
