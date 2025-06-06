@@ -26,7 +26,7 @@ public static class FileHelper
 		}
 
 		// ساخت نام جدید یکتا برای فایل با استفاده از GUID و پسوند فایل اصلی
-		var newFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+		var newFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
 		var imagePath = Path.Combine(uploadPath, newFileName);
 
 		// ذخیره‌سازی فایل در مسیر مشخص‌شده

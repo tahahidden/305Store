@@ -44,7 +44,8 @@ public class JwtService : IJwtService
 		{
 			new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
 			new Claim(ClaimTypes.Name, user.name),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Todo : Serach
+			// افزودن شناسه یکتا (JWT ID) برای شناسایی و امکان رد (revoke) توکن در آینده
+			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
 		};
 
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -53,6 +54,7 @@ public class JwtService : IJwtService
 			claims.AddRange(extraClaims);
 
 		var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+		// for JWS (JSON Web Signature)
 		var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
 		var token = new JwtSecurityToken(

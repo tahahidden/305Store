@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Serilog;
 
 namespace _305.Application.Base.Mapper;
 
@@ -72,9 +73,9 @@ public static class Mapper
 						destProp.SetValue(destination, nestedMappedValue);
 					}
 				}
-				catch
+				catch(Exception ex)
 				{
-					// TODO: در صورت نیاز، خطای نگاشت را لاگ کنید و ادامه دهید
+					Log.Error(ex, "خطا در مپ");
 					continue;
 				}
 			}
