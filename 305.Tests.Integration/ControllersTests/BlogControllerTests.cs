@@ -62,13 +62,11 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
             { new StringContent(dto.blog_category_id.ToString()), "blog_category_id" }
         };
 
-        if (dto.image_file is not null)
-        {
-            var stream = dto.image_file.OpenReadStream();
-            var content = new StreamContent(stream);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(dto.image_file.ContentType ?? "application/octet-stream");
-            form.Add(content, "image_file", dto.image_file.FileName);
-        }
+        if (dto.image_file is null) return form;
+        var stream = dto.image_file.OpenReadStream();
+        var content = new StreamContent(stream);
+        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(dto.image_file.ContentType ?? "application/octet-stream");
+        form.Add(content, "image_file", dto.image_file.FileName);
 
         return form;
     }
@@ -80,9 +78,9 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var dto = BlogDataProvider.Create(name: "new", slug:"new-slug", categoryId: categoryId);
-        var key = await CreateEntityAsync(dto);
-        Assert.That(key, Is.Not.Null);
+        var createCommand = BlogDataProvider.Create(name: "new", slug:"new-slug", categoryId: categoryId);
+        var slug = await CreateEntityAsync(createCommand);
+        Assert.That(slug, Is.Not.Null);
     }
 
     [Test]
@@ -164,24 +162,11 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var createBlogCommand = new CreateBlogCommand
-        {
-            name = "test-title",
-            slug = "test-title",
-            image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-            blog_category_id = categoryId,
-            description = "adaddas",
-            estimated_read_time = 2,
-            blog_text = "adasdasdsa",
-            keywords = "a,b,c,d",
-            image_alt = "alt",
-            meta_description = "meta",
-            show_blog = true,
-        };
-        await CreateEntityAsync(createBlogCommand);
+        var createCommand = BlogDataProvider.Create(name:"name", slug: "test-slug", categoryId:categoryId);
+        await CreateEntityAsync(createCommand);
 
         // Act
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-title"); 
+        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-slug"); 
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -192,8 +177,8 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         {
             Assert.That(result?.is_success, Is.True);
             Assert.That(result?.data, Is.Not.Null);
-            Assert.That(result?.data.slug, Is.EqualTo("test-title")); 
-            Assert.That(result?.data.name, Is.EqualTo("test-title"));
+            Assert.That(result?.data.slug, Is.EqualTo("test-slug")); 
+            Assert.That(result?.data.name, Is.EqualTo("name"));
             Assert.That(result?.data.blog_category_id, Is.EqualTo(categoryId));
         });
     }
@@ -219,20 +204,8 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var slug = await CreateEntityAsync(new CreateBlogCommand
-        {
-            name = "test-title",
-            slug = "test-title",
-            image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-            blog_category_id = categoryId,
-            description = "adaddas",
-            estimated_read_time = 2,
-            blog_text = "adasdasdsa",
-            keywords = "a,b,c,d",
-            image_alt = "alt",
-            meta_description = "meta",
-            show_blog = true,
-        });
+        var createCommand = BlogDataProvider.Create(categoryId: categoryId);
+        var slug = await CreateEntityAsync(createCommand);
         var category = await GetBySlugOrIdAsync(slug);
 
         await DeleteEntityAsync(category.id);

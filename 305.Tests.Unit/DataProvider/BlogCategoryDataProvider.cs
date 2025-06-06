@@ -7,29 +7,29 @@ using _305.Domain.Entity;
 namespace _305.Tests.Unit.DataProvider;
 public static class BlogCategoryDataProvider
 {
-	public static CreateCategoryCommand Create(string name = "name")
-		=> new CreateCategoryCommand()
+	public static CreateCategoryCommand Create(string name = "name", string slug = "slug")
+		=> new ()
 		{
 			name = name,
 			created_at = DateTime.Now,
 			description = "description",
-			slug = null,
+			slug = slug,
 			updated_at = DateTime.Now,
 		};
 
-	public static EditCategoryCommand Edit(string name = "name", long id = 1)
-		=> new EditCategoryCommand()
+	public static EditCategoryCommand Edit(string name = "name", long id = 1, string slug = "slug")
+		=> new ()
 		{
 			id = id,
 			name = name,
 			description = "description",
-			slug = null,
+			slug = slug,
 			updated_at = DateTime.Now,
 		};
 
 
 	public static BlogCategory Row(string name = "name", long id = 1, string slug = "slug")
-	=> new BlogCategory()
+	=> new ()
 	{
 		id = id,
 		name = name,
@@ -39,19 +39,19 @@ public static class BlogCategoryDataProvider
 	};
 
 	public static DeleteCategoryCommand Delete(long id = 1)
-		=> new DeleteCategoryCommand()
+		=> new ()
 		{
 			id = id,
 		};
 
 	public static GetCategoryBySlugQuery GetBySlug(string slug = "slug")
-	=> new GetCategoryBySlugQuery()
+	=> new ()
 	{
 		slug = slug,
 	};
 
 	public static BlogCategoryResponse GetOne(string slug = "slug", string name = "name")
-		=> new BlogCategoryResponse()
+		=> new ()
 		{
 			id = 1,
 			name = name,
@@ -60,7 +60,7 @@ public static class BlogCategoryDataProvider
 		};
 
 	public static GetPaginatedCategoryQuery GetByQueryFilter(string searchTerm = "")
-	=> new GetPaginatedCategoryQuery()
+	=> new ()
 	{
 		Page = 1,
 		PageSize = 10,
@@ -68,10 +68,10 @@ public static class BlogCategoryDataProvider
 	};
 
 	public static PaginatedList<BlogCategory> GetPaginatedList()
-	=> new PaginatedList<BlogCategory>(new List<BlogCategory>
+	=> new (new List<BlogCategory>
 		{
-			new BlogCategory { id = 1, name = "Tech" },
-			new BlogCategory { id = 2, name = "Health" }
+			new () { id = 1, name = "Tech" },
+			new () { id = 2, name = "Health" }
 		}
 	, count: 2, page: 1, pageSize: 10);
 }

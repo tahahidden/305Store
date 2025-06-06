@@ -5,6 +5,7 @@ using _305.Tests.Integration.Base.TestController;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Net;
+using _305.Tests.Unit.DataProvider;
 
 namespace _305.Tests.Integration.ControllersTests
 {
@@ -39,9 +40,9 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task Create_Should_Return_Success()
         {
-            var dto = new CreateCategoryCommand { name = "test-title", slug = "test-title" };
-            var key = await CreateEntityAsync(dto);
-            Assert.That(key, Is.Not.Null);
+            var createCommand = BlogCategoryDataProvider.Create(name: "new-category");
+            var slug = await CreateEntityAsync(createCommand);
+            Assert.That(slug, Is.Not.Null);
         }
 
         [Test]
@@ -59,15 +60,12 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task Edit_Should_Return_Success()
         {
-            var slug = await CreateEntityAsync(new CreateCategoryCommand { name = "edit-title", slug = "edit-slug" });
+            var createCommand = BlogCategoryDataProvider.Create(name: "edit-title", slug: "edit-slug");
+            var slug = await CreateEntityAsync(createCommand);
             var category = await GetBySlugOrIdAsync(slug);
 
-            var editForm = CreateEditForm(new EditCategoryCommand()
-            {
-                id = category.id,
-                slug = "edited-slug",
-                name = "edited-title"
-            });
+            var editCommand = BlogCategoryDataProvider.Edit(name: "edited-title", id: category.id, slug:"edited-slug");
+            var editForm = CreateEditForm(editCommand);
             var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
             response.EnsureSuccessStatusCode();
 
@@ -112,10 +110,10 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task GetBySlug_Should_Return_Success()
         {
-            var dto = new CreateCategoryCommand { name = "slug-title", slug = "slug-me" };
-            await CreateEntityAsync(dto);
+            var createCommand = BlogCategoryDataProvider.Create(name: "new name", slug: "new-slug");
+            await CreateEntityAsync(createCommand);
 
-            var response = await _client.GetAsync($"{_baseUrl}/get?slug=slug-me");
+            var response = await _client.GetAsync($"{_baseUrl}/get?slug=new-slug");
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -139,17 +137,11 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task Delete_Should_Return_Success()
         {
-            var slug = await CreateEntityAsync(new CreateCategoryCommand { name = "delete-title", slug = "delete-slug" });
+            var createCommand = BlogCategoryDataProvider.Create(name: "edit-title", slug: "edit-slug");
+            var slug = await CreateEntityAsync(createCommand);
             var category = await GetBySlugOrIdAsync(slug);
 
             await DeleteEntityAsync(category.id);
-        }
-
-        public async Task<long> CreateCategoryAndReturnIdAsync()
-        {
-            var slug = await CreateEntityAsync(new CreateCategoryCommand { name = "delete-title", slug = "delete-slug" });
-            var category = await GetBySlugOrIdAsync(slug);
-            return category.id;
         }
     }
 }

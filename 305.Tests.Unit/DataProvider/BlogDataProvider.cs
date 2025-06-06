@@ -10,7 +10,7 @@ namespace _305.Tests.Unit.DataProvider;
 public static class BlogDataProvider
 {
 	public static CreateBlogCommand Create(string name = "test", string? slug = "slug",long categoryId = 1)
-		=> new CreateBlogCommand()
+		=> new ()
 		{
 			name = name,
 			description = "Test",
@@ -29,7 +29,7 @@ public static class BlogDataProvider
 
 	public static EditBlogCommand Edit(string name = "test", long id = 1, long categoryId = 1,
 		string slug = "slug")
-	=> new EditBlogCommand()
+	=> new ()
 	{
 		id = id,
 		name = name,
@@ -49,7 +49,7 @@ public static class BlogDataProvider
 
 
 	public static Blog Row(string name = "name", long id = 1, string slug = "slug", string image = "image.jpg")
-	=> new Blog()
+	=> new ()
 	{
 		id = id,
 		name = name,
@@ -69,19 +69,19 @@ public static class BlogDataProvider
 	};
 
 	public static DeleteBlogCommand Delete(long id = 1)
-		=> new DeleteBlogCommand()
+		=> new ()
 		{
 			id = id,
 		};
 
 	public static GetBlogBySlugQuery GetBySlug(string slug = "slug")
-	=> new GetBlogBySlugQuery()
+	=> new ()
 	{
 		slug = slug,
 	};
 
 	public static BlogResponse GetOne(string slug = "slug", string name = "name")
-		=> new BlogResponse()
+		=> new ()
 		{
 			id = 1,
 			name = name,
@@ -101,7 +101,7 @@ public static class BlogDataProvider
 		};
 
 	public static GetPaginatedBlogQuery GetByQueryFilter(string searchTerm = "")
-	=> new GetPaginatedBlogQuery()
+	=> new ()
 	{
 		Page = 1,
 		PageSize = 10,
@@ -109,9 +109,9 @@ public static class BlogDataProvider
 	};
 
 	public static PaginatedList<Blog> GetPaginatedList()
-	=> new PaginatedList<Blog>(new List<Blog>
+	=> new (new List<Blog>
 		{
-			new Blog
+			new ()
 			{id = 1,
 			name = "slug 1",
 			description = "Test",
@@ -128,7 +128,7 @@ public static class BlogDataProvider
 			created_at = DateTime.Now,
 			blog_category = BlogCategoryDataProvider.Row()
 			},
-			new Blog
+			new ()
 			{id = 1,
 			name = "slug 2",
 			description = "Test",
