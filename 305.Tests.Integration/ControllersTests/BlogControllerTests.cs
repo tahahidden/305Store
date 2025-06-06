@@ -181,7 +181,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
             slug = "test-title",
             image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
             blog_category_id = categoryId,
-            description = "",
+            description = "adaddas",
             estimated_read_time = 2,
             blog_text = "adasdasdsa",
             keywords = "a,b,c,d",
