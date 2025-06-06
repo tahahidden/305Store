@@ -60,7 +60,8 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 						updated_at = DateTime.Now,
 						permission_id = permission.id,
 						role_id = mainAdminRole.id,
-						slug = slug
+						slug = slug,
+						name = slug
 					});
 				}
 			}

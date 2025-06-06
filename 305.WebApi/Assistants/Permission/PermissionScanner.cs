@@ -23,7 +23,7 @@ public class PermissionScanner
 
         foreach (var method in methods)
         {
-            var permissionAttr = method.GetCustomAttribute<Permission>();
+            var permissionAttr = method.GetCustomAttribute<PermissionAttribute>();
             var permissionName = permissionAttr?.Name ?? $"{controllerName}.{method.Name}";
 
             result.Add((controllerName, method.Name, permissionName));

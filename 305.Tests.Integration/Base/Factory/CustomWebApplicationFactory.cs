@@ -1,5 +1,6 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
+using _305.Application.Features.PermissionFeatures.Query;
 using _305.Application.Features.UserRoleFeatures.Query;
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
@@ -50,7 +51,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllCategoryQuery>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetCategoryBySlugQuery>());
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPaginatedCategoryQuery>());
-
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllPermissionQuery>());
 			// ایجاد سرویس‌پروایدر موقت
 			var sp = services.BuildServiceProvider();
 
