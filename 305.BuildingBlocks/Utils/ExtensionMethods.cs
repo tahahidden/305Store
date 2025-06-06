@@ -17,7 +17,7 @@ public static class ExtensionMethods
 	/// <summary>
 	/// تبدیل تاریخ میلادی به شمسی با فرمت: yyyy/MM/dd HH:mm:ss
 	/// </summary>
-	public static string ToShamsi(this DateTime val)
+	public static string ToSolar(this DateTime val)
 	{
 		return string.Format("{0:0000}/{1:00}/{2:00} {3:00}:{4:00}:{5:00}",
 			PersianCalendar.GetYear(val),
@@ -29,7 +29,7 @@ public static class ExtensionMethods
 	/// <summary>
 	/// نمایش تاریخ شمسی به صورت: "yyyy ماه dd"
 	/// </summary>
-	public static string ToShamsiString(this DateTime val)
+	public static string ToSolarString(this DateTime val)
 	{
 		int monthIndex = PersianCalendar.GetMonth(val) - 1;
 		return string.Format("{0:0000} {1} {2:00}",
@@ -41,7 +41,7 @@ public static class ExtensionMethods
 	/// <summary>
 	/// گرفتن سال شمسی از تاریخ
 	/// </summary>
-	public static string GetYearShamsi(this DateTime val)
+	public static string GetYearSolar(this DateTime val)
 	{
 		return PersianCalendar.GetYear(val).ToString();
 	}
@@ -49,7 +49,7 @@ public static class ExtensionMethods
 	/// <summary>
 	/// گرفتن نام ماه شمسی از تاریخ
 	/// </summary>
-	public static string GetMonthShamsi(this DateTime val)
+	public static string GetMonthSolar(this DateTime val)
 	{
 		return PersianMonthNames[PersianCalendar.GetMonth(val) - 1];
 	}
@@ -88,7 +88,7 @@ public static class ExtensionMethods
 	/// <summary>
 	/// گرفتن مقدار Display یا Description از enum
 	/// </summary>
-	public static string GetEnumDisplayName(this Enum value)
+	public static string? GetEnumDisplayName(this Enum? value)
 	{
 		if (value == null) return null;
 
