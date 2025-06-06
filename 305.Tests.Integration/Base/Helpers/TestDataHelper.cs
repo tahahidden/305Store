@@ -4,15 +4,8 @@ using Newtonsoft.Json;
 
 namespace _305.Tests.Integration.Base.Helpers;
 
-public class TestDataHelper
+public class TestDataHelper(HttpClient client)
 {
-    private readonly HttpClient _client;
-
-    public TestDataHelper(HttpClient client)
-    {
-        _client = client;
-    }
-
     public async Task<long> CreateCategoryAndReturnIdAsync()
     {
         var categoryDto = new MultipartFormDataContent
@@ -21,13 +14,13 @@ public class TestDataHelper
                 { new StringContent("slug"), "slug" }
             };
 
-        var response = await _client.PostAsync("/api/blog-category/create", categoryDto);
+        var response = await client.PostAsync("/api/blog-category/create", categoryDto);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<ResponseDto<string>>(json);
 
-        var getResponse = await _client.GetAsync($"/api/blog-category/get?slug={result.data}");
+        var getResponse = await client.GetAsync($"/api/blog-category/get?slug={result.data}");
 
         var getJson = await getResponse.Content.ReadAsStringAsync();
         var getResult = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(getJson);

@@ -16,7 +16,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
 {
     public BlogControllerTests()
     {
-        _baseUrl = "/api/blog";
+        BaseUrl = "/api/blog";
     }
 
     protected override MultipartFormDataContent CreateCreateForm(CreateBlogCommand dto)
@@ -74,7 +74,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     public async Task Create_Should_Return_Success()
     {
         // Arrange
-        var helper = new TestDataHelper(_client);
+        var helper = new TestDataHelper(Client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
         var createCommand = BlogDataProvider.Create(name: "new", slug: "new-slug", categoryId: categoryId);
@@ -90,7 +90,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
                 { new StringContent("slug-only"), "slug" }
             };
 
-        var response = await _client.PostAsync($"{_baseUrl}/create", form);
+        var response = await Client.PostAsync($"{BaseUrl}/create", form);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
 
@@ -98,7 +98,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     public async Task Edit_Should_Return_Success()
     {
         // Arrange
-        var helper = new TestDataHelper(_client);
+        var helper = new TestDataHelper(Client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
         var createCommand = BlogDataProvider.Create(name: "new", slug: "new-slug", categoryId: categoryId);
@@ -107,7 +107,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
 
         var editCommand = BlogDataProvider.Edit(id: entity.id, name: "edited-name", categoryId: categoryId);
         var editForm = CreateEditForm(editCommand);
-        var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
+        var response = await Client.PostAsync($"{BaseUrl}/edit", editForm);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -118,7 +118,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task GetAll_Should_Return_List()
     {
-        var response = await _client.GetAsync($"{_baseUrl}/all");
+        var response = await Client.GetAsync($"{BaseUrl}/all");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -131,7 +131,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task Index_Paginated_Should_Return_Success()
     {
-        var response = await _client.GetAsync($"{_baseUrl}/list?page=1&pageSize=10");
+        var response = await Client.GetAsync($"{BaseUrl}/list?page=1&pageSize=10");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -144,7 +144,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task List_Should_Return_Correct_PageSize()
     {
-        var response = await _client.GetAsync($"{_baseUrl}/list?page=1&pageSize=5");
+        var response = await Client.GetAsync($"{BaseUrl}/list?page=1&pageSize=5");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -158,14 +158,14 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     public async Task GetBySlug_Should_Return_Success()
     {
         // Arrange
-        var helper = new TestDataHelper(_client);
+        var helper = new TestDataHelper(Client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
         var createCommand = BlogDataProvider.Create(name: "name", slug: "test-slug", categoryId: categoryId);
         await CreateEntityAsync(createCommand);
 
         // Act
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-slug");
+        var response = await Client.GetAsync($"{BaseUrl}/get?slug=test-slug");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -188,7 +188,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task GetBySlug_Should_Return_NotFound_When_Slug_NotExists()
     {
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=not-exists-slug");
+        var response = await Client.GetAsync($"{BaseUrl}/get?slug=not-exists-slug");
         var json = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<ResponseDto<BlogResponse>>(json);
 
@@ -200,7 +200,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     public async Task Delete_Should_Return_Success()
     {
         // Arrange
-        var helper = new TestDataHelper(_client);
+        var helper = new TestDataHelper(Client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
         var createCommand = BlogDataProvider.Create(categoryId: categoryId);

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace _305.Tests.Integration.Base.Factory;
 
@@ -30,7 +31,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
 
             // اتصال به SQL Server محلی (یا Docker)
-            var connectionString = $"Server=.;Database={TestDatabaseName};Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
+            const string connectionString = $"Server=.;Database={TestDatabaseName};Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
             // ثبت مجدد DbContext با SQL Server
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -56,7 +57,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             using var scope = sp.CreateScope();
             var scopedServices = scope.ServiceProvider;
             var db = scopedServices.GetRequiredService<ApplicationDbContext>();
-            var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
 
             try
             {
@@ -68,7 +68,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "خطا در آماده‌سازی دیتابیس تستی: {Message}", ex.Message);
+                Log.Error(ex, "خطا در آماده‌سازی دیتابیس تستی: {Message}", ex.Message);
                 throw;
             }
         });

@@ -15,7 +15,7 @@ namespace _305.Tests.Integration.ControllersTests
     {
         public BlogCategoryControllerTests()
         {
-            _baseUrl = "/api/blog-category";
+            BaseUrl = "/api/blog-category";
         }
 
         protected override MultipartFormDataContent CreateCreateForm(CreateCategoryCommand dto)
@@ -53,7 +53,7 @@ namespace _305.Tests.Integration.ControllersTests
                 { new StringContent("slug-only"), "slug" }
             };
 
-            var response = await _client.PostAsync($"{_baseUrl}/create", form);
+            var response = await Client.PostAsync($"{BaseUrl}/create", form);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
 
@@ -66,7 +66,7 @@ namespace _305.Tests.Integration.ControllersTests
 
             var editCommand = BlogCategoryDataProvider.Edit(name: "edited-title", id: category.id, slug: "edited-slug");
             var editForm = CreateEditForm(editCommand);
-            var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
+            var response = await Client.PostAsync($"{BaseUrl}/edit", editForm);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -77,7 +77,7 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task GetAll_Should_Return_List()
         {
-            var response = await _client.GetAsync($"{_baseUrl}/all");
+            var response = await Client.GetAsync($"{BaseUrl}/all");
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -90,14 +90,14 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task Index_Paginated_Should_Return_Success()
         {
-            var response = await _client.GetAsync($"{_baseUrl}/list?page=1&pageSize=10");
+            var response = await Client.GetAsync($"{BaseUrl}/list?page=1&pageSize=10");
             response.EnsureSuccessStatusCode();
         }
 
         [Test]
         public async Task List_Should_Return_Correct_PageSize()
         {
-            var response = await _client.GetAsync($"{_baseUrl}/list?page=1&pageSize=5");
+            var response = await Client.GetAsync($"{BaseUrl}/list?page=1&pageSize=5");
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -113,7 +113,7 @@ namespace _305.Tests.Integration.ControllersTests
             var createCommand = BlogCategoryDataProvider.Create(name: "new name", slug: "new-slug");
             await CreateEntityAsync(createCommand);
 
-            var response = await _client.GetAsync($"{_baseUrl}/get?slug=new-slug");
+            var response = await Client.GetAsync($"{BaseUrl}/get?slug=new-slug");
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -126,7 +126,7 @@ namespace _305.Tests.Integration.ControllersTests
         [Test]
         public async Task GetBySlug_Should_Return_NotFound_When_Slug_NotExists()
         {
-            var response = await _client.GetAsync($"{_baseUrl}/get?slug=not-exists-slug");
+            var response = await Client.GetAsync($"{BaseUrl}/get?slug=not-exists-slug");
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ResponseDto<BlogCategoryResponse>>(json);
 

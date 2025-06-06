@@ -8,25 +8,25 @@ using NUnit.Framework;
 namespace _305.Tests.Integration.Base.TestController;
 public abstract class BaseControllerTests<TCreateDto, TKey, TEditDto, TResponse>
 {
-    protected HttpClient _client = null!;
-    protected CustomWebApplicationFactory _factory = null!;
-    protected string _baseUrl = null!;
+    protected HttpClient Client = null!;
+    protected CustomWebApplicationFactory Factory = null!;
+    protected string BaseUrl = null!;
     private JwtTestHelper _jwtHelper = null!;
 
     [SetUp]
     public void Setup()
     {
-        _factory = new CustomWebApplicationFactory();
-        _client = _factory.CreateClient();
+        Factory = new CustomWebApplicationFactory();
+        Client = Factory.CreateClient();
         _jwtHelper = new JwtTestHelper();
-        _jwtHelper.AddTokenToClient(_client, roles: new[] { "Admin" });
+        _jwtHelper.AddTokenToClient(Client, roles: ["Admin"]);
     }
 
     [TearDown]
     public void TearDown()
     {
-        _client.Dispose();
-        _factory.Dispose();
+        Client.Dispose();
+        Factory.Dispose();
     }
 
     protected abstract MultipartFormDataContent CreateCreateForm(TCreateDto dto);
@@ -44,7 +44,7 @@ public abstract class BaseControllerTests<TCreateDto, TKey, TEditDto, TResponse>
     public async Task<TKey> CreateEntityAsync(TCreateDto dto)
     {
         var form = CreateCreateForm(dto);
-        var response = await _client.PostAsync($"{_baseUrl}/create", form);
+        var response = await Client.PostAsync($"{BaseUrl}/create", form);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -56,7 +56,7 @@ public abstract class BaseControllerTests<TCreateDto, TKey, TEditDto, TResponse>
 
     public async Task<TResponse> GetBySlugOrIdAsync(string slugOrId)
     {
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug={slugOrId}");
+        var response = await Client.GetAsync($"{BaseUrl}/get?slug={slugOrId}");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ public abstract class BaseControllerTests<TCreateDto, TKey, TEditDto, TResponse>
             {
                 { new StringContent(id.ToString()), "Id" }
             };
-        var response = await _client.PostAsync($"{_baseUrl}/delete", form);
+        var response = await Client.PostAsync($"{BaseUrl}/delete", form);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();

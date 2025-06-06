@@ -23,7 +23,6 @@ public static class GetPaginatedHandlerTestHelper
     /// <param name="repoSelector">اکسپریشن برای انتخاب ریپازیتوری از UnitOfWork</param>
     /// <param name="query">پارامترهای کوئری برای صفحه‌بندی</param>
     /// <param name="expectedList">لیست صفحه‌بندی شده مورد انتظار برای مقایسه</param>
-    /// <param name="includes">آرایه رشته‌ای از includes اختیاری که هنگام فراخوانی GetPagedResultAsync ارسال می‌شود</param>
     public static async Task TestPaginated_Success<TEntity, TRepository, THandler, TQuery>(
     Func<IUnitOfWork, THandler> handlerFactory,
     Func<THandler, TQuery, CancellationToken, Task<ResponseDto<PaginatedList<TEntity>>>> execute,

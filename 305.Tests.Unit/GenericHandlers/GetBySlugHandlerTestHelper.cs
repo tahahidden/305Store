@@ -21,7 +21,6 @@ public static class GetBySlugHandlerTestHelper
     /// <param name="execute">تابعی که هندلر و توکن لغو می‌گیرد و نتیجه اجرای هندلر را برمی‌گرداند</param>
     /// <param name="repoSelector">اکسپریشن برای انتخاب ریپازیتوری از UnitOfWork</param>
     /// <param name="entity">موجودیت نمونه‌ای که باید توسط موک ریپازیتوری برگردانده شود</param>
-    /// <param name="includes">آرایه رشته‌ای از includes اختیاری که باید هنگام فراخوانی FindSingle استفاده شود</param>
     public static async Task TestGetBySlug_Success<TEntity, TDto, TRepository, THandler>(
     Func<IUnitOfWork, THandler> handlerFactory,
     Func<THandler, CancellationToken, Task<ResponseDto<TDto>>> execute,
