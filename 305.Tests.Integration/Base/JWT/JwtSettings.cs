@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace _305.Tests.Integration.Base.JWT;
+﻿namespace _305.Tests.Integration.Base.JWT;
 public class JwtSettings
 {
     public string Key { get; set; } = default!;

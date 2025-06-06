@@ -1,5 +1,4 @@
 ﻿using _305.Application.Base.Response;
-using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Query;
@@ -13,23 +12,23 @@ namespace _305.WebApi.Controllers;
 [ApiController]
 public class BlogController(IMediator mediator) : BaseController(mediator)
 {
-	[HttpGet("list")]
-	public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
-		ExecuteQuery(query, cancellationToken);
+    [HttpGet("list")]
+    public Task<IActionResult> Index([FromQuery] GetPaginatedCategoryQuery query, CancellationToken cancellationToken) =>
+        ExecuteQuery(query, cancellationToken);
 
-	[HttpPost("create")]
-	public Task<IActionResult> Create([FromForm] CreateBlogCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<CreateBlogCommand, ResponseDto<string>>(command, cancellationToken);
+    [HttpPost("create")]
+    public Task<IActionResult> Create([FromForm] CreateBlogCommand command, CancellationToken cancellationToken) =>
+        ExecuteCommand<CreateBlogCommand, ResponseDto<string>>(command, cancellationToken);
 
-	[HttpPost("edit")]
-	public Task<IActionResult> Edit([FromForm] EditBlogCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<EditBlogCommand, ResponseDto<string>>(command, cancellationToken);
+    [HttpPost("edit")]
+    public Task<IActionResult> Edit([FromForm] EditBlogCommand command, CancellationToken cancellationToken) =>
+        ExecuteCommand<EditBlogCommand, ResponseDto<string>>(command, cancellationToken);
 
-	[HttpGet("get")]
-	public Task<IActionResult> GetBySlug([FromQuery] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
-		ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken); 
+    [HttpGet("get")]
+    public Task<IActionResult> GetBySlug([FromQuery] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
+        ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken);
 
-	[HttpPost("delete")]
-	public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
-		ExecuteCommand<DeleteBlogCommand, ResponseDto<string>>(command, cancellationToken);
+    [HttpPost("delete")]
+    public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
+        ExecuteCommand<DeleteBlogCommand, ResponseDto<string>>(command, cancellationToken);
 }

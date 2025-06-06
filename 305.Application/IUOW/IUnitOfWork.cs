@@ -3,8 +3,8 @@
 namespace _305.Application.IUOW;
 public interface IUnitOfWork : IDisposable
 {
-	IBlogCategoryRepository BlogCategoryRepository { get; }
-	IBlogRepository BlogRepository { get; }
-	ITokenBlacklistRepository TokenBlacklistRepository { get; }
-	Task<bool> CommitAsync(CancellationToken cancellationToken);
+    IBlogCategoryRepository BlogCategoryRepository { get; }
+    IBlogRepository BlogRepository { get; }
+    ITokenBlacklistRepository TokenBlacklistRepository { get; }
+    Task<bool> CommitAsync(CancellationToken cancellationToken);
 }

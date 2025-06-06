@@ -2,10 +2,10 @@
 using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Response;
 using _305.Tests.Integration.Base.TestController;
+using _305.Tests.Unit.DataProvider;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Net;
-using _305.Tests.Unit.DataProvider;
 
 namespace _305.Tests.Integration.ControllersTests
 {
@@ -64,7 +64,7 @@ namespace _305.Tests.Integration.ControllersTests
             var slug = await CreateEntityAsync(createCommand);
             var category = await GetBySlugOrIdAsync(slug);
 
-            var editCommand = BlogCategoryDataProvider.Edit(name: "edited-title", id: category.id, slug:"edited-slug");
+            var editCommand = BlogCategoryDataProvider.Edit(name: "edited-title", id: category.id, slug: "edited-slug");
             var editForm = CreateEditForm(editCommand);
             var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
             response.EnsureSuccessStatusCode();

@@ -14,31 +14,31 @@ namespace _305.Application.Base.Command;
 /// </remarks>
 public class CreateCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 {
-	/// <summary>
-	/// نامک (slug) برای ایجاد آدرس‌های یکتا و خوانا در URLها استفاده می‌شود.
-	/// اختیاری است.
-	/// </summary>
-	[Display(Name = "نامک")]
-	public string? slug { get; set; }
+    /// <summary>
+    /// نامک (slug) برای ایجاد آدرس‌های یکتا و خوانا در URLها استفاده می‌شود.
+    /// اختیاری است.
+    /// </summary>
+    [Display(Name = "نامک")]
+    public string? slug { get; set; }
 
-	/// <summary>
-	/// نام موجودیت. مقدار الزامی که نباید خالی باشد.
-	/// </summary>
-	[Display(Name = "نام")]
-	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public string name { get; set; }
+    /// <summary>
+    /// نام موجودیت. مقدار الزامی که نباید خالی باشد.
+    /// </summary>
+    [Display(Name = "نام")]
+    [Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
+    public string name { get; set; }
 
-	/// <summary>
-	/// زمان ایجاد رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
-	/// </summary>
-	[Display(Name = "زمان ایجاد")]
-	public DateTime created_at { get; init; } = DateTime.Now;
+    /// <summary>
+    /// زمان ایجاد رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
+    /// </summary>
+    [Display(Name = "زمان ایجاد")]
+    public DateTime created_at { get; init; } = DateTime.Now;
 
-	/// <summary>
-	/// زمان آخرین ویرایش رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
-	/// </summary>
-	[Display(Name = "زمان ویرایش")]
-	public DateTime updated_at { get; init; } = DateTime.Now;
+    /// <summary>
+    /// زمان آخرین ویرایش رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
+    /// </summary>
+    [Display(Name = "زمان ویرایش")]
+    public DateTime updated_at { get; init; } = DateTime.Now;
 }
 
 // note: برای CreatedAt و UpdatedAt از init استفاده شده تا فقط موقع ساخت مقداردهی بشن (immutable design)

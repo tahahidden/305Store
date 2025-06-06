@@ -2,7 +2,6 @@
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Response;
 using _305.Application.Filters.Pagination;
-using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
 using _305.Tests.Integration.Base.Helpers;
 using _305.Tests.Integration.Base.TestController;
@@ -78,7 +77,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var createCommand = BlogDataProvider.Create(name: "new", slug:"new-slug", categoryId: categoryId);
+        var createCommand = BlogDataProvider.Create(name: "new", slug: "new-slug", categoryId: categoryId);
         var slug = await CreateEntityAsync(createCommand);
         Assert.That(slug, Is.Not.Null);
     }
@@ -106,7 +105,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var slug = await CreateEntityAsync(createCommand);
         var entity = await GetBySlugOrIdAsync(slug);
 
-        var editCommand = BlogDataProvider.Edit(id:entity.id,name: "edited-name", categoryId:categoryId);
+        var editCommand = BlogDataProvider.Edit(id: entity.id, name: "edited-name", categoryId: categoryId);
         var editForm = CreateEditForm(editCommand);
         var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
         response.EnsureSuccessStatusCode();
@@ -162,11 +161,11 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var createCommand = BlogDataProvider.Create(name:"name", slug: "test-slug", categoryId:categoryId);
+        var createCommand = BlogDataProvider.Create(name: "name", slug: "test-slug", categoryId: categoryId);
         await CreateEntityAsync(createCommand);
 
         // Act
-        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-slug"); 
+        var response = await _client.GetAsync($"{_baseUrl}/get?slug=test-slug");
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -177,7 +176,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         {
             Assert.That(result?.is_success, Is.True);
             Assert.That(result?.data, Is.Not.Null);
-            Assert.That(result?.data.slug, Is.EqualTo("test-slug")); 
+            Assert.That(result?.data.slug, Is.EqualTo("test-slug"));
             Assert.That(result?.data.name, Is.EqualTo("name"));
             Assert.That(result?.data.blog_category_id, Is.EqualTo(categoryId));
         });

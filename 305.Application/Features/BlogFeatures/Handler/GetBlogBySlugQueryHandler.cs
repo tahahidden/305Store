@@ -11,22 +11,22 @@ namespace _305.Application.Features.BlogFeatures.Handler;
 
 public class GetBlogBySlugQueryHandler : IRequestHandler<GetBlogBySlugQuery, ResponseDto<BlogResponse>>
 {
-	private readonly IUnitOfWork _unitOfWork;
-	private readonly GetBySlugHandler _handler;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly GetBySlugHandler _handler;
 
-	public GetBlogBySlugQueryHandler(IUnitOfWork unitOfWork)
-	{
-		_unitOfWork = unitOfWork;
-		_handler = new GetBySlugHandler(unitOfWork);
-	}
+    public GetBlogBySlugQueryHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+        _handler = new GetBySlugHandler(unitOfWork);
+    }
 
-	public async Task<ResponseDto<BlogResponse>> Handle(GetBlogBySlugQuery request, CancellationToken cancellationToken)
-	{
-		return await _handler.Handle<Blog, BlogResponse>(
-			async uow => await uow.BlogRepository.FindSingle(x => x.slug == request.slug, 
-			q=>q.Include(x=>x.blog_category)),
-			"مقاله",
-			null
-		);
-	}
+    public async Task<ResponseDto<BlogResponse>> Handle(GetBlogBySlugQuery request, CancellationToken cancellationToken)
+    {
+        return await _handler.Handle<Blog, BlogResponse>(
+            async uow => await uow.BlogRepository.FindSingle(x => x.slug == request.slug,
+            q => q.Include(x => x.blog_category)),
+            "مقاله",
+            null
+        );
+    }
 }

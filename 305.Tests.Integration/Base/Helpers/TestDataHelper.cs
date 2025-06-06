@@ -1,9 +1,6 @@
 ﻿using _305.Application.Base.Response;
-using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Response;
 using Newtonsoft.Json;
-using NUnit.Framework;
-using System.Net.Http.Json;
 
 namespace _305.Tests.Integration.Base.Helpers;
 
