@@ -28,7 +28,7 @@ public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileS
         }
         else
         {
-            return Responses.NotValid<string>(data: default, propName: "تصویر شاخص");
+            return Responses.NotValid<string>(data: null, propName: "تصویر شاخص");
         }
 
         var validations = new List<ValidationItem>
@@ -42,8 +42,13 @@ public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileS
            {
                Rule = async () => await unitOfWork.BlogRepository.ExistsAsync(x => x.slug == slug),
                Value = "نامک"
+           },
+           new ()
+           {
+               Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id),
+               Value = "دسته بندی",
+               IsExistRole = false
            }
-
         };
 
         return await _handler.HandleAsync(

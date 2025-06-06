@@ -51,10 +51,10 @@ public class CreateHandler
             {
                 foreach (var validation in validations)
                 {
-                    if (await validation.Rule())
-                    {
-                        return Responses.Exist<TResult>(default, null, validation.Value);
-                    }
+                    if (!await validation.Rule()) continue;
+                    return validation.IsExistRole ? 
+                        Responses.Exist<TResult>(default, null, validation.Value) : 
+                        Responses.NotFound<TResult>(default, validation.Value);
                 }
             }
 

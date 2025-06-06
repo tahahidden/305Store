@@ -66,9 +66,10 @@ public class EditHandler<TCommand, TEntity>
             {
                 foreach (var validation in validations)
                 {
-                    var isValid = await validation.Rule();
-                    if (isValid)
-                        return Responses.Exist<string>(null, null, validation.Value);
+                    if (!await validation.Rule()) continue;
+                    return validation.IsExistRole ? 
+                        Responses.Exist<string>(null, null, validation.Value) : 
+                        Responses.NotFound<string>(null, validation.Value);
                 }
             }
 

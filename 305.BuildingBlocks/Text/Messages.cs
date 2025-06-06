@@ -66,6 +66,7 @@ public static class Messages
     /// پیام زمانی که آیتمی با موفقیت ایجاد می‌شود
     /// </summary>
     /// <param name="name">نام آیتم (اختیاری)</param>
+    /// TODO: هر چی فرانت خواست
     public static string Created(string? name = null) =>
         !string.IsNullOrWhiteSpace(name) ? $"{name} با موفقیت ایجاد شد" : "آیتم با موفقیت ایجاد شد";
 
@@ -73,6 +74,7 @@ public static class Messages
     /// پیام زمانی که آیتمی با موفقیت حذف می‌شود
     /// </summary>
     /// <param name="name">نام آیتم (اختیاری)</param>
+    /// TODO: هر چی فرانت خواست
     public static string Deleted(string? name = null) =>
         !string.IsNullOrWhiteSpace(name) ? $"{name} با موفقیت حذف شد" : "آیتم با موفقیت حذف شد";
     #endregion

@@ -14,4 +14,10 @@ public record ValidationItem
     /// مقدار یا پیغام مرتبط با این قانون اعتبارسنجی که معمولا برای نمایش به کاربر استفاده می‌شود.
     /// </summary>
     public required string Value { get; set; }
+
+    /// <summary>
+    /// بررسی اینکه اعتبار سنجی از نوع وجود داشتن آیتم است یا وجود نداشتن آن
+    /// و فرستادن پیام مناسب
+    /// </summary>
+    public bool IsExistRole { get; set; } = true;
 }

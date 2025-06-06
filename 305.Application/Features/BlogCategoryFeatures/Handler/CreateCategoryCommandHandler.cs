@@ -22,7 +22,7 @@ public class CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
            new ()
            {
                Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.name == request.name),
-               Value = "نام"
+               Value = "نام",
            },
            new ()
            {

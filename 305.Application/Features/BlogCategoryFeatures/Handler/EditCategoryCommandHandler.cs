@@ -45,13 +45,13 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, R
         return await _handler.HandleAsync(
             id: request.id,
             validations: validations,
-            updateEntity: async entity =>
+            updateEntity: entity =>
             {
                 entity.name = request.name;
                 entity.slug = slug;
                 entity.updated_at = request.updated_at;
                 entity.description = request.description;
-                return slug;
+                return Task.FromResult(slug);
             },
 
             propertyName: "دسته‌بندی",

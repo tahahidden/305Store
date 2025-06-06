@@ -32,6 +32,12 @@ public class EditBlogCommandHandler(IUnitOfWork unitOfWork, IRepository<Blog> re
            {
                Rule = async () => await repository.ExistsAsync(x => x.slug == slug && x.id != request.id),
                Value = "نامک"
+           },
+           new ()
+           {
+               Rule = async () => await unitOfWork.BlogCategoryRepository.ExistsAsync(x => x.id == request.blog_category_id),
+               Value = "دسته بندی",
+               IsExistRole = false
            }
         };
 
