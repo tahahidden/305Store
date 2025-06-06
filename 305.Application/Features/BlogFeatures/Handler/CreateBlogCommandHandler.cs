@@ -54,8 +54,8 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Respo
 
 		};
 
-
-		return await _handler.HandleAsync(
+		var aa = Mapper.Map<CreateBlogCommand, Blog>(request);
+        return await _handler.HandleAsync(
 		   validations: validations,
 		   onCreate: async () =>
 		   {

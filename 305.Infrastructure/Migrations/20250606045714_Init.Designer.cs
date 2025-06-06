@@ -12,7 +12,7 @@ using _305.Infrastructure.Persistence;
 namespace _305.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250530183200_Init")]
+    [Migration("20250606045714_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -43,6 +43,7 @@ namespace _305.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("slug")
@@ -265,6 +266,7 @@ namespace _305.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("permission_id")
@@ -338,6 +340,7 @@ namespace _305.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("password_hash")
@@ -365,8 +368,7 @@ namespace _305.Infrastructure.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("name")
-                        .IsUnique()
-                        .HasFilter("[name] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("slug")
                         .IsUnique();
@@ -413,6 +415,7 @@ namespace _305.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("slug")

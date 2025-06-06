@@ -26,7 +26,7 @@ public class BaseEntity : IBaseEntity
 	/// <summary>
 	/// نام اختیاری موجودیت
 	/// </summary>
-	public string? name { get; set; }
+	public string name { get; set; }
 
 	/// <summary>
 	/// اسلاگ (slug) یکتا برای موجودیت، معمولاً برای URLها یا لینک‌سازی استفاده می‌شود

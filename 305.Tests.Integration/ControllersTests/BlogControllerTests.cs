@@ -28,6 +28,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         { new StringContent(dto.image_alt), "image_alt" },
         { new StringContent(dto.keywords), "keywords" },
         { new StringContent(dto.meta_description), "meta_description" },
+        { new StringContent(dto.blog_category_id.ToString()), "blog_category_id" }
 
     };
 
@@ -55,6 +56,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
             { new StringContent(dto.image_alt), "image_alt" },
             { new StringContent(dto.keywords), "keywords" },
             { new StringContent(dto.meta_description), "meta_description" },
+            { new StringContent(dto.blog_category_id.ToString()), "blog_category_id" }
         };
 
         if (dto.image_file is not null)
