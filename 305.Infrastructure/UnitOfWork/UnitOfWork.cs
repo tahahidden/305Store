@@ -27,7 +27,7 @@ public class UnitOfWork : IUnitOfWork
     public async Task<bool> CommitAsync(CancellationToken cancellationToken = default)
     {
         // شروع یک تراکنش جدید در پایگاه داده
-        using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
         try
         {

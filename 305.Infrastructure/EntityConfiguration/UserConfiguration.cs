@@ -12,12 +12,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(b => b.name).IsUnique();
         builder.Property(x => x.slug).IsRequired();
         builder.HasIndex(x => x.slug).IsUnique();
-        #region Mappings
-
         builder.Property(b => b.mobile)
             .IsRequired();
-
-        #endregion
 
         #region Navigations
 

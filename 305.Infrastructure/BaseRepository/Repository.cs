@@ -24,8 +24,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         DbContext = dbContext;
     }
 
-    #region Queries
-
     /// <summary>
     /// بررسی وجود حداقل یک رکورد در جدول
     /// </summary>
@@ -42,9 +40,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return await DbContext.Set<TEntity>().AnyAsync(predicate);
     }
 
-    #endregion
-
-    #region Sync Commands
 
     /// <summary>
     /// افزودن یک موجودیت به context (منتظر ذخیره نیست)
@@ -93,10 +88,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
     {
         DbContext.Set<TEntity>().UpdateRange(entities);
     }
-
-    #endregion
-
-    #region Async Commands
 
     /// <summary>
     /// افزودن یک موجودیت به صورت async به context
@@ -278,6 +269,4 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return new PaginatedList<TEntity>(items, totalCount, filter.Page, filter.PageSize);
     }
 
-
-    #endregion
 }

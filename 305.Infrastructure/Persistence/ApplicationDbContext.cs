@@ -36,7 +36,7 @@ public class ApplicationDbContext : DbContext
     /// افزودن داده‌های اولیه (Seed Data) به جداول مختلف.
     /// این متد جدا شده برای وضوح بیشتر.
     /// </summary>
-    private void SeedData(ModelBuilder modelBuilder)
+    private static void SeedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasData(UserSeed.All);
         modelBuilder.Entity<Role>().HasData(RoleSeed.All);

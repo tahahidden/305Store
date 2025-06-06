@@ -3,7 +3,7 @@
 namespace _305.Application.IService;
 public interface ISmsService
 {
-    void SendForgotPass(string Phone, string Pass);
+    void SendForgotPass(string phone, string pass);
 
     SendResult SendSms(string recipient, string message);
 

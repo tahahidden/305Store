@@ -120,12 +120,12 @@ public class JwtService : IJwtService
         return principal;
     }
 
+    [Obsolete("Obsolete")]
     public int GetTokenExpiryMinutes(string token)
     {
         var handler = new JwtSecurityTokenHandler();
-        var jwt = handler.ReadToken(token) as JwtSecurityToken;
 
-        if (jwt == null || jwt.Payload.Exp == null)
+        if (handler.ReadToken(token) is not JwtSecurityToken jwt || jwt.Payload.Exp == null)
             return 0;
 
         var expDateTime = DateTimeOffset.FromUnixTimeSeconds(jwt.Payload.Exp.Value).UtcDateTime;

@@ -7,18 +7,18 @@ namespace _305.Infrastructure.Service;
 public class SmsService : ISmsService
 {
     // test api code
-    private const string _apiKey = "7762575A6D727561537779314251716C6B2B6C444B6E38316445357A6B3143306D634C42316A7A2F546C4D3D";
-    private const string number = "9982003589";
+    private const string ApiKey = "7762575A6D727561537779314251716C6B2B6C444B6E38316445357A6B3143306D634C42316A7A2F546C4D3D";
+    private const string Number = "9982003589";
 
-    public void SendForgotPass(string Phone, string Pass)
+    public void SendForgotPass(string phone, string pass)
     {
         //send
     }
 
     public SendResult SendSms(string recipient, string message)
     {
-        var api = new KavenegarApi(_apiKey);
-        var result = api.Send(number, recipient, message);
+        var api = new KavenegarApi(ApiKey);
+        var result = api.Send(Number, recipient, message);
 
         return result;
     }
@@ -27,7 +27,7 @@ public class SmsService : ISmsService
     {
         try
         {
-            var api = new KavenegarApi(_apiKey);
+            var api = new KavenegarApi(ApiKey);
             // ارسال کد OTP با استفاده از قالب کاوه نگار
             api.VerifyLookup(recipient, token, template: "LightGymLogin", type: VerifyLookupType.Sms);
             return "OTP sent successfully.";
@@ -45,8 +45,8 @@ public class SmsService : ISmsService
     {
         try
         {
-            var api = new KavenegarApi(_apiKey);
-            var senders = new List<string> { number };
+            var api = new KavenegarApi(ApiKey);
+            var senders = new List<string> { Number };
             var messages = new List<string> { message };
             // Send the messages
             var results = api.SendArray(senders, recipients, messages);

@@ -10,7 +10,7 @@ namespace _305.Infrastructure.Persistence
             try
             {
                 // رشته اتصال به دیتابیس (کانکشن استرینگ) به صورت دستی تعریف شده است
-                var connectionString = "Server=.;Database=305_db;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
+                const string connectionString = "Server=.;Database=305_db;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
                 // ساخت یک DbContextOptionsBuilder برای تنظیمات DbContext
                 var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
