@@ -13,7 +13,6 @@ namespace _305.WebApi.Controllers.Admin;
 public class AdminBlogCategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet("list")]
-    [PermissionAttribute("لیست دسته بندی های وبلاگ")]
     public Task<IActionResult> Index([FromQuery] GetPaginatedBlogQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 
