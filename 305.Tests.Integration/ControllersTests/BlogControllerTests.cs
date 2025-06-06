@@ -115,21 +115,30 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
             slug = "test-title",
             image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
             blog_category_id = categoryId,
-            description = "",
+            description = "adasda",
             estimated_read_time = 2,
-            blog_text = "",
+            blog_text = "addasd",
             keywords = "a,b,c,d",
             image_alt = "alt",
             meta_description = "meta",
             show_blog = true,
         });
-        var category = await GetBySlugOrIdAsync(slug);
+        var entity = await GetBySlugOrIdAsync(slug);
 
         var editForm = CreateEditForm(new EditBlogCommand()
         {
-            id = category.id,
+            id = entity.id,
             slug = "edited-title",
             name = "edited-slug",
+            blog_category_id=categoryId,
+            blog_text = entity.blog_text,
+            description = entity.description,
+            estimated_read_time = entity.estimated_read_time,
+            image_alt=entity.image_alt,
+            image = entity.image,
+            keywords = entity.keywords,
+            meta_description=entity.meta_description,
+            show_blog = entity.show_blog,
         });
         var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
         response.EnsureSuccessStatusCode();
