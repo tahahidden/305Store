@@ -26,13 +26,13 @@ public class BaseEntity : IBaseEntity
     /// <summary>
     /// نام اختیاری موجودیت
     /// </summary>
-    public string name { get; set; }
+    public string name { get; set; } = null!;
 
     /// <summary>
     /// اسلاگ (slug) یکتا برای موجودیت، معمولاً برای URLها یا لینک‌سازی استفاده می‌شود
     /// </summary>
     [MaxLength(1000)]
-    public string slug { get; set; }
+    public string slug { get; set; } = null!;
 
     /// <summary>
     /// سازنده پیش‌فرض که تاریخ‌های ایجاد و به‌روزرسانی را تنظیم می‌کند
