@@ -24,6 +24,7 @@
     <ProjectReference Include="..\305.Application\305.Application.csproj" />
     <ProjectReference Include="..\305.BuildingBlocks\305.BuildingBlocks.csproj" />
     <ProjectReference Include="..\305.Infrastructure\305.Infrastructure.csproj" />
+    <ProjectReference Include="..\305.Tests.Unit\305.Tests.Unit.csproj" />
     <ProjectReference Include="..\305.WebApi\305.WebApi.csproj" />
   </ItemGroup>
 

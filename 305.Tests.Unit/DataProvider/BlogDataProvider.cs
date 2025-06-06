@@ -9,14 +9,14 @@ using _305.Tests.Unit.Assistant;
 namespace _305.Tests.Unit.DataProvider;
 public static class BlogDataProvider
 {
-	public static CreateBlogCommand Create(string name = "test", string? slug = "slug")
+	public static CreateBlogCommand Create(string name = "test", string? slug = "slug",long categoryId = 1)
 		=> new CreateBlogCommand()
 		{
 			name = name,
 			description = "Test",
 			image_alt = "Test",
 			image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-			blog_category_id = 1,
+			blog_category_id = categoryId,
 			blog_text = "Test",
 			created_at = DateTime.Now,
 			updated_at = DateTime.Now,
@@ -27,7 +27,8 @@ public static class BlogDataProvider
 			slug = slug,
 		};
 
-	public static EditBlogCommand Edit(string name = "test", long id = 1)
+	public static EditBlogCommand Edit(string name = "test", long id = 1, long categoryId = 1,
+		string slug = "slug")
 	=> new EditBlogCommand()
 	{
 		id = id,
@@ -35,15 +36,15 @@ public static class BlogDataProvider
 		description = "Test",
 		image_alt = "Test",
 		image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-		blog_category_id = 1,
+		blog_category_id = categoryId,
 		blog_text = "Test",
 		updated_at = DateTime.Now,
 		estimated_read_time = 5,
 		keywords = "a,b,c",
 		show_blog = true,
 		meta_description = "Test",
-		slug = null,
-		image = null,
+		slug = slug,
+		image = "image.png",
 	};
 
 

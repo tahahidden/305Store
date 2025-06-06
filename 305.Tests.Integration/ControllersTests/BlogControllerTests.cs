@@ -1,9 +1,12 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Response;
+using _305.Application.Filters.Pagination;
 using _305.BuildingBlocks.Helper;
+using _305.Domain.Entity;
 using _305.Tests.Integration.Base.Helpers;
 using _305.Tests.Integration.Base.TestController;
+using _305.Tests.Unit.DataProvider;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Net;
@@ -73,19 +76,11 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     [Test]
     public async Task Create_Should_Return_Success()
     {
-        var dto = new CreateBlogCommand 
-        { name = "test-title",
-          slug = "test-title",
-          image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-          blog_category_id = 1,
-          description = "",
-          estimated_read_time = 2,
-          blog_text = "",
-          keywords = "a,b,c,d",
-          image_alt = "alt",
-          meta_description = "meta",
-          show_blog = true,
-        };
+        // Arrange
+        var helper = new TestDataHelper(_client);
+        var categoryId = await helper.CreateCategoryAndReturnIdAsync();
+
+        var dto = BlogDataProvider.Create(name: "new", slug:"new-slug", categoryId: categoryId);
         var key = await CreateEntityAsync(dto);
         Assert.That(key, Is.Not.Null);
     }
@@ -109,37 +104,12 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
         var helper = new TestDataHelper(_client);
         var categoryId = await helper.CreateCategoryAndReturnIdAsync();
 
-        var slug = await CreateEntityAsync(new CreateBlogCommand
-        {
-            name = "test-title",
-            slug = "test-title",
-            image_file = FakeFileHelper.CreateFakeFormFile("my.jpg", "image/jpeg", "dummy content"),
-            blog_category_id = categoryId,
-            description = "adasda",
-            estimated_read_time = 2,
-            blog_text = "addasd",
-            keywords = "a,b,c,d",
-            image_alt = "alt",
-            meta_description = "meta",
-            show_blog = true,
-        });
+        var createCommand = BlogDataProvider.Create(name: "new", slug: "new-slug", categoryId: categoryId);
+        var slug = await CreateEntityAsync(createCommand);
         var entity = await GetBySlugOrIdAsync(slug);
 
-        var editForm = CreateEditForm(new EditBlogCommand()
-        {
-            id = entity.id,
-            slug = "edited-title",
-            name = "edited-slug",
-            blog_category_id=categoryId,
-            blog_text = entity.blog_text,
-            description = entity.description,
-            estimated_read_time = entity.estimated_read_time,
-            image_alt=entity.image_alt,
-            image = entity.image,
-            keywords = entity.keywords,
-            meta_description=entity.meta_description,
-            show_blog = entity.show_blog,
-        });
+        var editCommand = BlogDataProvider.Edit(id:entity.id,name: "edited-name", categoryId:categoryId);
+        var editForm = CreateEditForm(editCommand);
         var response = await _client.PostAsync($"{_baseUrl}/edit", editForm);
         response.EnsureSuccessStatusCode();
 
@@ -166,6 +136,12 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
     {
         var response = await _client.GetAsync($"{_baseUrl}/list?page=1&pageSize=10");
         response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<ResponseDto<PaginatedList<Blog>>>(json);
+
+        Assert.That(result?.is_success, Is.True);
+        Assert.That(result?.data, Is.Not.Null);
     }
 
     [Test]
