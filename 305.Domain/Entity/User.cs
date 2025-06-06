@@ -3,10 +3,6 @@
 namespace _305.Domain.Entity;
 public class User : BaseEntity
 {
-	public User()
-	{
-		user_roles = new List<UserRole>();
-	}
 	#region identity
 
 	public required string mobile { get; set; }
@@ -40,6 +36,6 @@ public class User : BaseEntity
 	#endregion
 
 	#region Navigations
-	public ICollection<UserRole> user_roles { get; set; }
+	public ICollection<UserRole>? user_roles { get; set; }
 	#endregion
 }
