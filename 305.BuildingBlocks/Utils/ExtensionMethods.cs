@@ -110,7 +110,7 @@ public static class ExtensionMethods
 	/// اصلاح تاریخ برای تبدیل تاریخ شمسی اشتباهی به تاریخ میلادی واقعی (در صورت نیاز)
 	/// توجه: این متد ممکن است گیج‌کننده باشد. پیشنهاد: ورودی را مستقیما به شمسی ندهید
 	/// </summary>
-	public static DateTime FixDate(this DateTime date)
+	public static DateTime ChangeDateToAD(this DateTime date)
 	{
 		// اگر به فرمت yyyy-MM-dd قابل تشخیص نیست، آن را با PersianCalendar تبدیل می‌کنیم
 		var isValidDate = DateTime.TryParseExact(
