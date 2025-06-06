@@ -2,6 +2,7 @@
 using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Query;
 using _305.Application.Features.BlogFeatures.Query;
+using _305.WebApi.Assistants.Permission;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace _305.WebApi.Controllers.Admin;
 public class AdminBlogCategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet("list")]
+    [Permission("لیست دسته بندی های وبلاگ")]
     public Task<IActionResult> Index([FromQuery] GetPaginatedBlogQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 

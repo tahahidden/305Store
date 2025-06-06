@@ -1,6 +1,7 @@
 ﻿using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
+using Serilog;
 
 namespace _305.WebApi.Assistants.Permission;
 
@@ -11,42 +12,69 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 		var scanner = new PermissionScanner();
 		var permissions = scanner.ScanPermissions();
 
-		var existingNames = (unitOfWork.PermissionRepository.FindList()).Select(p => p.name).ToHashSet();
+		var existingSlugs = unitOfWork.PermissionRepository
+			.FindList()
+			.ToList()
+			.Select(p => p.slug)
+			.ToHashSet();
+
 
 		foreach (var p in permissions)
 		{
-			if (!existingNames.Contains(p.Permissionname))
+			var slug = p.Permissionname; // فرض: slug همون name هست
+
+			if (!existingSlugs.Contains(slug))
 			{
 				await unitOfWork.PermissionRepository.AddAsync(new Domain.Entity.Permission
 				{
 					name = p.Permissionname,
-					slug = p.Permissionname,
+					slug = slug,
 					created_at = DateTime.Now,
 				});
 			}
 		}
 
-		await unitOfWork.CommitAsync(CancellationToken.None);
+		try
+		{
+			await unitOfWork.CommitAsync(CancellationToken.None);
+		}
+		catch (Exception ex)
+		{
+			Log.Error(ex, "permissions exist in db");
+		}
+
 		var mainAdminRole = await unitOfWork.RoleRepository.FindSingle(x => x.name == "MainAdmin");
 		var allPermissions = unitOfWork.PermissionRepository.FindList();
-		var allPermissionRoles = (unitOfWork.RolePermissionRepository.FindList()).Select(pr => pr.slug).ToHashSet();
+		var allPermissionRoleSlugs = unitOfWork.RolePermissionRepository.FindList().Select(pr => pr.slug).ToHashSet();
+
 		foreach (var permission in allPermissions)
 		{
 			var slug = SlugHelper.GenerateSlug(permission.name + "MainAdmin");
-			if (!allPermissionRoles.Contains(slug))
+			if (!allPermissionRoleSlugs.Contains(slug))
 			{
 				if (mainAdminRole != null)
+				{
 					await unitOfWork.RolePermissionRepository.AddAsync(new RolePermission()
 					{
 						created_at = DateTime.Now,
+						updated_at = DateTime.Now,
 						permission_id = permission.id,
 						role_id = mainAdminRole.id,
-						updated_at = DateTime.Now,
 						slug = slug
 					});
+				}
 			}
-
 		}
-		await unitOfWork.CommitAsync(CancellationToken.None);
+
+		try
+		{
+			await unitOfWork.CommitAsync(CancellationToken.None);
+		}
+		catch (Exception ex)
+		{
+			Log.Error(ex, "permissions exist in db");
+		}
+
 	}
+
 }

@@ -11,7 +11,7 @@ public class PermissionScanner
     var assembly = Assembly.GetExecutingAssembly();
     
     var controllers = assembly.GetTypes()
-        .Where(type => typeof(ControllerBase).IsAssignableFrom(type) && !type.IsAbstract);
+        .Where(type => typeof(BaseController).IsAssignableFrom(type) && !type.IsAbstract);
 
     var result = new List<(string, string, string)>();
 
@@ -23,7 +23,7 @@ public class PermissionScanner
 
         foreach (var method in methods)
         {
-            var permissionAttr = method.GetCustomAttribute<PermissionAttribute>();
+            var permissionAttr = method.GetCustomAttribute<Permission>();
             var permissionName = permissionAttr?.Name ?? $"{controllerName}.{method.Name}";
 
             result.Add((controllerName, method.Name, permissionName));

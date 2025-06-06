@@ -196,19 +196,20 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Lifetime.ApplicationStarted.Register(async void () =>
+if (!builder.Environment.IsEnvironment("Test"))
 {
-	try
+	app.Lifetime.ApplicationStarted.Register(async void () =>
 	{
-		using var scope = app.Services.CreateScope();
-		var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
-		await seeder.SyncPermissionsAsync();
-	}
-	catch (Exception e)
-	{
-		Log.Error(e, "error during seeding permissions");
-	}
-});
-
-
+		try
+		{
+			using var scope = app.Services.CreateScope();
+			var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
+			await seeder.SyncPermissionsAsync();
+		}
+		catch (Exception e)
+		{
+			Log.Error(e, "error during seeding permissions");
+		}
+	});
+}
 app.Run();

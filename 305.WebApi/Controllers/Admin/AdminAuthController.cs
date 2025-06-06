@@ -19,7 +19,7 @@ public class AdminAuthController(IMediator mediator) : BaseController(mediator)
     public Task<IActionResult> Logout([FromForm] AdminLogoutCommand query, CancellationToken cancellationToken) =>
         ExecuteCommand<AdminLogoutCommand, ResponseDto<string>>(query, cancellationToken);
 
-    [HttpPost("create")]
+    [HttpPost("refresh")]
     public Task<IActionResult> Refresh([FromForm] AdminRefreshCommand command, CancellationToken cancellationToken) =>
         ExecuteCommand<AdminRefreshCommand, ResponseDto<LoginResponse>>(command, cancellationToken);
 
