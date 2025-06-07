@@ -6,12 +6,13 @@ using _305.Domain.Common;
 using Serilog;
 
 namespace _305.Application.Base.Handler;
+
 /// <summary>
 /// هندلر عمومی برای ویرایش (Edit) موجودیت‌ها در لایه داده.
-/// با استفاده از الگوی Generic، Unit of Work و Repository پیاده‌سازی شده است.
+/// از الگوی Generic، Repository و Unit of Work برای به‌روزرسانی موجودیت‌ها استفاده می‌کند.
 /// </summary>
 /// <typeparam name="TCommand">نوع کامند (در صورت نیاز برای توسعه بیشتر)</typeparam>
-/// <typeparam name="TEntity">نوع موجودیت که باید از <see cref="IBaseEntity"/> ارث‌بری کند و شامل شناسه باشد</typeparam>
+/// <typeparam name="TEntity">نوع موجودیت که باید از <see cref="IBaseEntity"/> ارث‌بری کند</typeparam>
 public class EditHandler<TCommand, TEntity>
 	where TEntity : class, IBaseEntity
 {
@@ -22,29 +23,16 @@ public class EditHandler<TCommand, TEntity>
 	/// <summary>
 	/// سازنده کلاس با تزریق وابستگی‌ها
 	/// </summary>
-	/// <param name="unitOfWork">واحد کاری برای مدیریت تراکنش‌ها</param>
-	/// <param name="repository">مخزن داده برای یافتن موجودیت</param>
 	public EditHandler(IUnitOfWork unitOfWork, IRepository<TEntity> repository, ILogger? logger = null)
 	{
 		_unitOfWork = unitOfWork;
 		_repository = repository;
-		// ستفاده از Log.ForContext<T>() برای مشخص شدن منبع لاگ در Serilog
-		_logger = logger ?? Log.ForContext<CreateHandler>(); // Contextual logging
+		_logger = logger ?? Log.ForContext<EditHandler<TCommand, TEntity>>();
 	}
 
 	/// <summary>
-	/// اجرای عملیات ویرایش موجودیت با اعمال اعتبارسنجی، عملیات قبل و بعد از ویرایش، و مدیریت تراکنش.
+	/// اجرای عملیات ویرایش موجودیت.
 	/// </summary>
-	/// <param name="id">شناسه موجودیت برای ویرایش</param>
-	/// <param name="validations">لیست اعتبارسنجی‌های لازم پیش از ویرایش (اختیاری)</param>
-	/// <param name="updateEntity">تابعی که منطق به‌روزرسانی موجودیت را اعمال می‌کند</param>
-	/// <param name="beforeUpdate">تابع اختیاری برای اجرای عملیات قبل از ویرایش (مثلاً آماده‌سازی)</param>
-	/// <param name="afterUpdate">تابع اختیاری برای اجرای عملیات بعد از ویرایش (مثلاً ثبت لاگ)</param>
-	/// <param name="propertyName">نام موجودیت جهت درج در پیام‌ها</param>
-	/// <param name="cancellationToken">توکن لغو عملیات</param>
-	/// <returns>
-	/// شیء <see cref="ResponseDto{string}"/> شامل پیام موفقیت یا خطا و وضعیت عملیات.
-	/// </returns>
 	public async Task<ResponseDto<string>> HandleAsync(
 		long id,
 		List<ValidationItem>? validations,
@@ -56,52 +44,41 @@ public class EditHandler<TCommand, TEntity>
 	{
 		try
 		{
-			// یافتن موجودیت بر اساس شناسه
 			var entity = await _repository.FindSingle(x => x.id == id);
 			if (entity == null)
 				return Responses.NotFound<string>(null, propertyName);
 
-			// بررسی اعتبارسنجی‌ها (در صورت وجود)
 			if (validations != null)
 			{
 				foreach (var validation in validations)
 				{
 					if (!await validation.Rule()) continue;
-					return validation.IsExistRole ?
-						Responses.Exist<string>(null, null, validation.Value) :
-						Responses.NotFound<string>(null, validation.Value);
+					return validation.IsExistRole
+						? Responses.Exist<string>(null, null, validation.Value)
+						: Responses.NotFound<string>(null, validation.Value);
 				}
 			}
 
-			// عملیات اختیاری قبل از ویرایش
-			if (beforeUpdate != null)
+			if (beforeUpdate is not null)
 				await beforeUpdate(entity);
 
-			// اعمال منطق ویرایش روی موجودیت
 			var result = await updateEntity(entity);
 
-			// عملیات اختیاری بعد از ویرایش
-			if (afterUpdate != null)
+			if (afterUpdate is not null)
 				await afterUpdate(entity);
 
-			// ذخیره تغییرات در دیتابیس
 			var committed = await _unitOfWork.CommitAsync(cancellationToken);
-			if (!committed)
-				return Responses.ExceptionFail(result, $"{propertyName} ویرایش نشد", 500);
-
-			return Responses.Success<string>(result, "ویرایش با موفقیت انجام شد", 200);
+			return !committed ? Responses.ExceptionFail(result, $"{propertyName} ویرایش نشد", 500) : Responses.Success(result, $"{propertyName} با موفقیت ویرایش شد");
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
+			_logger.Warning("عملیات ویرایش برای {Entity} لغو شد.", typeof(TEntity).Name);
 			return Responses.Fail<string>(null, "عملیات لغو شد", 499);
 		}
 		catch (Exception ex)
 		{
-			// ثبت خطای احتمالی با Serilog
-			_logger.Error(ex, "خطا در زمان ویرایش موجودیت: {Message}", ex.Message);
-			return Responses.ExceptionFail<string>(null, null);
+			_logger.Error(ex, "خطا در ویرایش {Entity}: {Message}", typeof(TEntity).Name, ex.Message);
+			return Responses.ExceptionFail<string>(null);
 		}
 	}
 }
-

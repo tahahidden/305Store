@@ -11,7 +11,7 @@ namespace _305.Application.Features.BlogCategoryFeatures.Handler;
 public class GetAllCategoryQueryHandler(IUnitOfWork unitOfWork)
 	: IRequestHandler<GetAllCategoryQuery, ResponseDto<List<BlogCategoryResponse>>>
 {
-	private readonly GetAllHandler _handler = new(unitOfWork);
+	private readonly GetAllHandler _handler = new();
 
 	public Task<ResponseDto<List<BlogCategoryResponse>>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
 	{

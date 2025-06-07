@@ -4,65 +4,65 @@ using _305.Application.IUOW;
 using Serilog;
 
 namespace _305.Application.Base.Handler;
+
 /// <summary>
-/// هندلر عمومی برای عملیات ایجاد (Create) موجودیت‌ها در لایه داده.
-/// از الگوی Unit of Work و اعتبارسنجی سفارشی پشتیبانی می‌کند.
+/// هندلر عمومی برای عملیات ایجاد (Create) موجودیت.
+/// این کلاس با استفاده از UnitOfWork و لیستی از قوانین اعتبارسنجی، عملیات ایجاد را با مدیریت تراکنش و لاگ انجام می‌دهد.
 /// </summary>
-/// <remarks>
-/// این هندلر قابلیت استفاده مجدد در سناریوهای مختلف ایجاد (Create) را فراهم می‌کند.
-/// با استفاده از لیستی از <see cref="ValidationItem"/> ابتدا بررسی می‌کند که آیا شرایطی مانع ایجاد موجودیت هست یا خیر.
-/// در صورت اعتبارسنجی موفق، عملیات ایجاد از طریق delegate <paramref name="onCreate"/> انجام شده
-/// و سپس Commit به پایگاه داده صورت می‌گیرد.
-/// </remarks>
 public class CreateHandler
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ILogger _logger;
 
 	/// <summary>
-	/// سازنده کلاس با تزریق UnitOfWork.
+	/// سازنده هندلر ایجاد.
 	/// </summary>
+	/// <param name="unitOfWork">واحد کاری جهت مدیریت تراکنش‌ها</param>
+	/// <param name="logger">لاگر (اختیاری، در صورت عدم ارسال از Serilog ایجاد می‌شود)</param>
 	public CreateHandler(IUnitOfWork unitOfWork, ILogger? logger = null)
 	{
 		_unitOfWork = unitOfWork;
-		// ستفاده از Log.ForContext<T>() برای مشخص شدن منبع لاگ در Serilog
-		_logger = logger ?? Log.ForContext<CreateHandler>(); // Contextual logging
+		_logger = logger ?? Log.ForContext<CreateHandler>();
 	}
 
 	/// <summary>
-	/// اجرای عملیات ایجاد موجودیت با اعتبارسنجی و مدیریت تراکنش.
+	/// اجرای عملیات ایجاد موجودیت به‌همراه اعتبارسنجی و مدیریت تراکنش.
 	/// </summary>
 	/// <typeparam name="TResult">نوع نتیجه خروجی</typeparam>
-	/// <param name="validations">لیست قوانین اعتبارسنجی برای بررسی تکراری بودن یا شرایط خاص</param>
-	/// <param name="onCreate">تابع حاوی منطق ایجاد موجودیت</param>
+	/// <param name="validations">لیستی از قوانین اعتبارسنجی (مانند بررسی تکراری بودن یا موجود بودن آیتم‌ها)</param>
+	/// <param name="onCreate">تابع اصلی حاوی منطق ایجاد موجودیت</param>
 	/// <param name="successMessage">پیام موفقیت در صورت موفق بودن عملیات</param>
 	/// <param name="cancellationToken">توکن کنسل کردن عملیات</param>
-	/// <returns>شیء <see cref="ResponseDto{TResult}"/> شامل نتیجه عملیات</returns>
+	/// <returns>نتیجه عملیات به صورت <see cref="ResponseDto{TResult}"/></returns>
 	public async Task<ResponseDto<TResult>> HandleAsync<TResult>(
-	   IEnumerable<ValidationItem>? validations,
-	   Func<Task<TResult>> onCreate,
-	   string? successMessage = "عملیات با موفقیت انجام شد",
-	   CancellationToken cancellationToken = default)
+		IEnumerable<ValidationItem>? validations,
+		Func<Task<TResult>> onCreate,
+		string? successMessage = "عملیات با موفقیت انجام شد",
+		CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			// اعتبارسنجی اولیه
+			// اجرای اعتبارسنجی‌ها
 			if (validations != null)
 			{
 				foreach (var validation in validations)
 				{
 					if (!await validation.Rule()) continue;
-					return validation.IsExistRole ?
-						Responses.Exist<TResult>(default, null, validation.Value) :
-						Responses.NotFound<TResult>(default, validation.Value);
+
+					// اگر شرط برقرار بود، خطا صادر شود (Exist یا NotFound)
+					return validation.IsExistRole
+						? Responses.Exist<TResult>(default, null, validation.Value)
+						: Responses.NotFound<TResult>(default, validation.Value);
 				}
 			}
 
-			// انجام عملیات ایجاد
+			// اجرای عملیات ایجاد
 			var result = await onCreate();
-			// ذخیره تغییرات
+
+			// ذخیره تغییرات در پایگاه‌داده
 			await _unitOfWork.CommitAsync(cancellationToken);
 
+			// بازگشت نتیجه موفق
 			return Responses.Success(result, successMessage, 201);
 		}
 		catch (OperationCanceledException)
@@ -72,8 +72,8 @@ public class CreateHandler
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در ایجاد موجودیت: {Message}", ex.Message);
-			return Responses.ExceptionFail<TResult>(default, null);
+			_logger.Error(ex, "خطا در عملیات ایجاد: {Message}", ex.Message);
+			return Responses.ExceptionFail<TResult>(default, "خطای غیرمنتظره‌ای در عملیات ایجاد رخ داد");
 		}
 	}
 }

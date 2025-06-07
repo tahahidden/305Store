@@ -11,7 +11,7 @@ namespace _305.Application.Features.PermissionFeatures.Handler;
 public class GetAllPermissionQueryHandler(IUnitOfWork unitOfWork)
 	: IRequestHandler<GetAllPermissionQuery, ResponseDto<List<PermissionResponse>>>
 {
-	private readonly GetAllHandler _handler = new(unitOfWork);
+	private readonly GetAllHandler _handler = new();
 
 	public Task<ResponseDto<List<PermissionResponse>>> Handle(GetAllPermissionQuery request, CancellationToken cancellationToken)
 	{
