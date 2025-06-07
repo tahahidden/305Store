@@ -67,13 +67,11 @@ public class CreateHandler
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات ایجاد لغو شد توسط CancellationToken");
-			return Responses.Fail<TResult>(default, "عملیات لغو شد", 499);
+			return ExceptionHandlers.CancellationException<TResult>(_logger);
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در عملیات ایجاد: {Message}", ex.Message);
-			return Responses.ExceptionFail<TResult>(default, "خطای غیرمنتظره‌ای در عملیات ایجاد رخ داد");
+			return ExceptionHandlers.GeneralException<TResult>(ex, _logger);
 		}
 	}
 }

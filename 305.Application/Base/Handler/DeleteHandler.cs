@@ -1,4 +1,5 @@
 ﻿using _305.Application.Base.Response;
+using _305.Application.Base.Validator;
 using _305.Application.IUOW;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Serilog;
@@ -70,13 +71,11 @@ public class DeleteHandler
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات حذف لغو شد توسط CancellationToken");
-			return Responses.Fail<TResult>(default, "عملیات لغو شد", 499);
+			return ExceptionHandlers.CancellationException<TResult>(_logger);
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در حذف {EntityName}: {Message}", entityName, ex.Message);
-			return Responses.ExceptionFail<TResult>(default, "خطا در حذف " + entityName);
+			return ExceptionHandlers.GeneralException<TResult>(ex, _logger);
 		}
 	}
 }

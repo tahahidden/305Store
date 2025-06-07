@@ -1,4 +1,5 @@
 ﻿using _305.Application.Base.Response;
+using _305.Application.Base.Validator;
 using _305.Application.IUOW;
 using Serilog;
 
@@ -35,14 +36,13 @@ public class GetAllHandler
 
 			return Responses.Data(dtoList, $"{dtoList.Count} آیتم دریافت شد");
 		}
+		catch (OperationCanceledException)
+		{
+			return ExceptionHandlers.CancellationException<List<TDto>>(_logger);
+		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در تبدیل لیست {Entity} به {Dto}: {Message}",
-				typeof(TEntity).Name,
-				typeof(TDto).Name,
-				ex.Message);
-
-			return Responses.ExceptionFail<List<TDto>>(null);
+			return ExceptionHandlers.GeneralException<List<TDto>>(ex, _logger);
 		}
 	}
 }
