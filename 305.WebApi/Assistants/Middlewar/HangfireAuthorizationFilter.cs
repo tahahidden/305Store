@@ -1,32 +1,44 @@
 ﻿using Hangfire.Dashboard;
 
-namespace _305.WebApi.Assistants.Middlewar;
-
-public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+namespace _305.WebApi.Assistants.Middlewar
 {
-	private readonly string[] _allowedRoles;
-
 	/// <summary>
-	/// فیلتر مجوز Hangfire که فقط کاربران احراز هویت‌شده و دارای نقش مجاز را می‌پذیرد.
+	/// فیلتر مجوز برای دسترسی به داشبورد Hangfire، که تنها کاربران احراز هویت‌شده
+	/// و دارای نقش‌های مجاز را می‌پذیرد.
 	/// </summary>
-	/// <param name="allowedRoles">نقش‌های مجاز برای دسترسی به داشبورد</param>
-	public HangfireAuthorizationFilter(params string[] allowedRoles)
+	public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
 	{
-		_allowedRoles = allowedRoles ?? [];
-	}
+		private readonly string[] _allowedRoles;
 
-	public bool Authorize(DashboardContext context)
-	{
-		var httpContext = context.GetHttpContext();
-		var user = httpContext.User;
+		/// <summary>
+		/// سازنده فیلتر مجوز Hangfire.
+		/// </summary>
+		/// <param name="allowedRoles">لیست نقش‌های مجاز. اگر خالی باشد، تنها احراز هویت کافی است.</param>
+		public HangfireAuthorizationFilter(params string[] allowedRoles)
+		{
+			_allowedRoles = allowedRoles ?? [];
+		}
 
-		// بررسی احراز هویت
-		if (user?.Identity?.IsAuthenticated != true)
-			return false;
+		/// <summary>
+		/// بررسی مجوز دسترسی کاربر به داشبورد Hangfire.
+		/// </summary>
+		/// <param name="context">Context داشبورد Hangfire</param>
+		/// <returns>در صورت داشتن مجوز، مقدار true بازمی‌گرداند.</returns>
+		public bool Authorize(DashboardContext context)
+		{
+			var httpContext = context.GetHttpContext();
+			var user = httpContext.User;
 
-		// اگر نقش خاصی تنظیم نشده باشد، فقط احراز هویت کافی است
-		return _allowedRoles.Length == 0 ||
-			   // بررسی نقش‌ها
-			   _allowedRoles.Any(role => user.IsInRole(role));
+			// اگر کاربر احراز هویت نشده باشد، رد شود
+			if (user?.Identity?.IsAuthenticated != true)
+				return false;
+
+			// اگر لیست نقش‌ها خالی باشد، فقط احراز هویت کافی است
+			if (_allowedRoles.Length == 0)
+				return true;
+
+			// بررسی اینکه آیا کاربر حداقل یکی از نقش‌های مجاز را دارد
+			return _allowedRoles.Any(role => user.IsInRole(role));
+		}
 	}
 }
