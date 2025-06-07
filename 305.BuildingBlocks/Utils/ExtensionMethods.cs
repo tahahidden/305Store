@@ -5,9 +5,12 @@ using System.Reflection;
 
 namespace _305.BuildingBlocks.Utils;
 
+/// <summary>
+/// کلاس استاتیک شامل متدهای افزونه‌ای عمومی برای عملیات تاریخ، رشته و enum.
+/// </summary>
 public static class ExtensionMethods
 {
-	private static readonly PersianCalendar PersianCalendar = new PersianCalendar();
+	private static readonly PersianCalendar PersianCalendar = new();
 	private static readonly string[] PersianMonthNames =
 	[
 		"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
@@ -15,7 +18,7 @@ public static class ExtensionMethods
 	];
 
 	/// <summary>
-	/// تبدیل تاریخ میلادی به شمسی با فرمت: yyyy/MM/dd HH:mm:ss
+	/// تبدیل تاریخ میلادی به شمسی با فرمت کامل: yyyy/MM/dd HH:mm:ss
 	/// </summary>
 	public static string ToSolar(this DateTime val)
 	{
@@ -27,7 +30,7 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// نمایش تاریخ شمسی به صورت: "yyyy ماه dd"
+	/// نمایش تاریخ شمسی با نام ماه فارسی: "yyyy ماه dd"
 	/// </summary>
 	public static string ToSolarString(this DateTime val)
 	{
@@ -39,7 +42,7 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// گرفتن سال شمسی از تاریخ
+	/// دریافت فقط سال شمسی از تاریخ
 	/// </summary>
 	public static string GetYearSolar(this DateTime val)
 	{
@@ -47,7 +50,7 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// گرفتن نام ماه شمسی از تاریخ
+	/// دریافت فقط نام ماه شمسی از تاریخ
 	/// </summary>
 	public static string GetMonthSolar(this DateTime val)
 	{
@@ -55,7 +58,7 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// گرفتن نام وضعیت پرداخت بر اساس کد عددی
+	/// تبدیل کد وضعیت پرداخت به متن فارسی معادل آن
 	/// </summary>
 	public static string GetStatus(this int status) =>
 		status switch
@@ -75,8 +78,11 @@ public static class ExtensionMethods
 		};
 
 	/// <summary>
-	/// برش رشته تا طول مشخص، و اضافه کردن "..." در صورت نیاز
+	/// برش رشته تا طول مشخص و اضافه کردن "..." اگر طول بیش از حد باشد
 	/// </summary>
+	/// <param name="input">رشته ورودی</param>
+	/// <param name="length">حداکثر طول مجاز</param>
+	/// <returns>رشته کوتاه‌شده یا اصلی</returns>
 	public static string Truncate(this string input, int length)
 	{
 		if (string.IsNullOrEmpty(input) || input.Length <= length)
@@ -86,8 +92,10 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// گرفتن مقدار Display یا Description از enum
+	/// دریافت مقدار قابل نمایش (Display یا Description) از مقدار enum
 	/// </summary>
+	/// <param name="value">مقدار enum</param>
+	/// <returns>متن نمایشی یا مقدار enum</returns>
 	public static string? GetEnumDisplayName(this Enum? value)
 	{
 		if (value == null) return null;
@@ -95,34 +103,36 @@ public static class ExtensionMethods
 		var field = value.GetType().GetField(value.ToString());
 		if (field == null) return value.ToString();
 
-		// اولویت با DisplayAttribute
+		// اولویت: DisplayAttribute
 		var displayAttr = field.GetCustomAttribute<DisplayAttribute>();
 		if (displayAttr != null) return displayAttr.Name;
 
-		// اگر Display نبود، از Description استفاده می‌کنیم
+		// سپس: DescriptionAttribute
 		var descAttr = field.GetCustomAttribute<DescriptionAttribute>();
-		return descAttr != null ? descAttr.Description :
-			// در غیر این صورت خود مقدار enum برمی‌گردد
-			value.ToString();
+		return descAttr != null ? descAttr.Description : value.ToString();
 	}
 
 	/// <summary>
-	/// اصلاح تاریخ برای تبدیل تاریخ شمسی اشتباهی به تاریخ میلادی واقعی (در صورت نیاز)
-	/// توجه: این متد ممکن است گیج‌کننده باشد. پیشنهاد: ورودی را مستقیما به شمسی ندهید
+	/// اصلاح تاریخ شمسی اشتباه و تبدیل آن به میلادی معتبر (در صورت نیاز)
 	/// </summary>
+	/// <remarks>
+	/// اگر تاریخ میلادی وارد شده به صورت مستقیم قابل تشخیص نباشد، به درستی با PersianCalendar تبدیل می‌شود.
+	/// </remarks>
+	/// <param name="date">تاریخ ورودی</param>
+	/// <returns>تاریخ معتبر به میلادی</returns>
 	public static DateTime ChangeDateToAD(this DateTime date)
 	{
-		// اگر به فرمت yyyy-MM-dd قابل تشخیص نیست، آن را با PersianCalendar تبدیل می‌کنیم
+		// تلاش برای شناسایی صحت فرمت تاریخ
 		var isValidDate = DateTime.TryParseExact(
 			date.ToString("yyyy-MM-dd"),
 			"yyyy-MM-dd",
 			CultureInfo.InvariantCulture,
 			DateTimeStyles.None,
-			out _
-		);
+			out _);
 
 		if (!isValidDate)
 		{
+			// تبدیل دستی به میلادی از روی تقویم شمسی
 			date = PersianCalendar.ToDateTime(
 				date.Year, date.Month, date.Day,
 				date.Hour, date.Minute, date.Second, date.Millisecond);
