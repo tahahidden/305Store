@@ -7,11 +7,11 @@ public class FileService(IHttpContextAccessor contextAccessor) : IFileService
 {
 	public void DeleteImage(string imageUrl)
 	{
-		FileHelper.DeleteImage(imageUrl);
+		FileManager.DeleteImageFile(imageUrl);
 	}
 
 	public async Task<string> UploadImage(IFormFile file)
 	{
-		return await FileHelper.UploadImage(file, contextAccessor.HttpContext.Request);
+		return await FileManager.UploadImageAsync(file, contextAccessor.HttpContext.Request);
 	}
 }

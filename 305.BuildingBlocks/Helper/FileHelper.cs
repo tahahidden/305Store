@@ -1,65 +1,67 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using _305.BuildingBlocks.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace _305.BuildingBlocks.Helper;
 
 /// <summary>
-/// کلاس کمکی برای مدیریت فایل‌ها (آپلود و حذف تصاویر)
+/// ابزار کمکی برای مدیریت فایل‌های آپلود شده مانند تصویر.
 /// </summary>
-public static class FileHelper
+public static class FileManager
 {
 	/// <summary>
-	/// بارگذاری (آپلود) تصویر به مسیر مشخص‌شده در پروژه
+	/// آپلود تصویر به مسیر مشخص‌شده و تولید آدرس اینترنتی آن.
 	/// </summary>
-	/// <param name="file">فایل ارسالی از سمت کلاینت (فرم)</param>
-	/// <param name="request">برای گرفتن baseurl</param>
-	/// <param name="folderName">نام پوشه‌ای که تصویر در آن ذخیره می‌شود (پیش‌فرض: images)</param>
-	/// <returns>مسیر فیزیکی کامل فایل ذخیره‌شده روی سرور</returns>
-	public static async Task<string> UploadImage(IFormFile file, HttpRequest request, string folderName = "images")
+	/// <param name="file">فایل ارسالی از سمت کلاینت</param>
+	/// <param name="request">آبجکت HTTP برای استخراج base URL</param>
+	/// <param name="folderName">نام پوشه ذخیره‌سازی (پیش‌فرض: images)</param>
+	/// <returns>URL نهایی تصویر بارگذاری‌شده</returns>
+	public static async Task<string> UploadImageAsync(
+		IFormFile file,
+		HttpRequest request,
+		string folderName = FileDefaults.DefaultFolderName)
 	{
-		// مسیر کامل پوشه ذخیره‌سازی بر اساس مسیر فعلی پروژه
-		var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+		if (file == null || file.Length == 0)
+			throw new ArgumentException("فایل معتبر نیست.", nameof(file));
 
-		// در صورت نبودن پوشه، آن را ایجاد می‌کنیم
-		if (!Directory.Exists(uploadPath))
-		{
-			Directory.CreateDirectory(uploadPath);
-		}
+		// ساخت مسیر کامل پوشه ذخیره‌سازی (مثلاً /app/images)
+		var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
-		// ساخت نام جدید یکتا برای فایل با استفاده از GUID و پسوند فایل اصلی
-		var newFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-		var imagePath = Path.Combine(uploadPath, newFileName);
+		if (!Directory.Exists(uploadDirectory))
+			Directory.CreateDirectory(uploadDirectory);
 
-		// ذخیره‌سازی فایل در مسیر مشخص‌شده
-		await using (var stream = new FileStream(imagePath, FileMode.Create))
-		{
-			await file.CopyToAsync(stream);
-		}
+		// تولید نام یکتا برای فایل
+		var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+		var filePath = Path.Combine(uploadDirectory, uniqueFileName);
 
+		// ذخیره فایل در مسیر مشخص‌شده
+		await using var fileStream = new FileStream(filePath, FileMode.Create);
+		await file.CopyToAsync(fileStream);
+
+		// تولید آدرس اینترنتی برای فایل
 		var baseUrl = $"{request.Scheme}://{request.Host}";
-		var imageUrl = $"{baseUrl}/images/{newFileName}";
+		var fileUrl = $"{baseUrl}/{folderName}/{uniqueFileName}";
 
-		return imageUrl; // بازگرداندن مسیر فیزیکی تصویر ذخیره‌شده
+		return fileUrl;
 	}
 
 	/// <summary>
-	/// حذف فایل تصویر از مسیر مشخص
+	/// حذف تصویر از مسیر مشخص‌شده.
 	/// </summary>
-	/// <param name="imageUrl">آدرس کامل فایل تصویری که باید حذف شود</param>
-	public static void DeleteImage(string imageUrl)
+	/// <param name="imageUrl">آدرس کامل تصویر (مثلاً http://site.com/images/abc.jpg)</param>
+	public static void DeleteImageFile(string imageUrl)
 	{
 		if (string.IsNullOrWhiteSpace(imageUrl))
 			return;
 
-		// اگر آدرس کامل بود (مثلاً با http شروع شد)، فقط مسیر را استخراج می‌کنیم
+		// استخراج مسیر نسبی از URL
 		var relativePath = imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
 			? new Uri(imageUrl).AbsolutePath.TrimStart('/')
 			: imageUrl.TrimStart('/');
 
 		// ساخت مسیر فیزیکی کامل روی سرور
-		var fullImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+		var fullFilePath = Path.Combine(Directory.GetCurrentDirectory(), FileDefaults.WwwRootFolder, relativePath);
 
-		// اگر فایل وجود داشته باشد، آن را حذف می‌کنیم
-		if (File.Exists(fullImagePath))
-			File.Delete(fullImagePath);
+		if (File.Exists(fullFilePath))
+			File.Delete(fullFilePath);
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace _305.BuildingBlocks.Text;
+﻿namespace _305.BuildingBlocks.Utils;
 
 /// <summary>
 /// کلاس ثابت برای نگهداری پیام‌های عمومی برنامه.
