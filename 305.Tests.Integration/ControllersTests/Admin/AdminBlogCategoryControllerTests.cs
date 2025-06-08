@@ -10,10 +10,10 @@ using System.Net;
 namespace _305.Tests.Integration.ControllersTests.Admin
 {
     [TestFixture]
-    public class BlogCategoryControllerTests
+    public class AdminBlogCategoryControllerTests
         : BaseControllerTests<CreateCategoryCommand, string, EditCategoryCommand, BlogCategoryResponse>
     {
-        public BlogCategoryControllerTests()
+        public AdminBlogCategoryControllerTests()
         {
             BaseUrl = "/api/admin/blog-category";
         }

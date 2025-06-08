@@ -12,9 +12,9 @@ using System.Net;
 
 namespace _305.Tests.Integration.ControllersTests.Admin;
 [TestFixture]
-public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string, EditBlogCommand, BlogResponse>
+public class AdminBlogControllerTests : BaseControllerTests<CreateBlogCommand, string, EditBlogCommand, BlogResponse>
 {
-    public BlogControllerTests()
+    public AdminBlogControllerTests()
     {
         BaseUrl = "/api/admin/blog";
     }
