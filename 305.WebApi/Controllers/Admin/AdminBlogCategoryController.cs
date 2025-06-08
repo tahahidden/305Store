@@ -29,7 +29,7 @@ public class AdminBlogCategoryController(IMediator mediator) : BaseController(me
 
     [HttpGet("get")]
     public Task<IActionResult> GetBySlug([FromQuery] GetCategoryBySlugQuery query, CancellationToken cancellationToken) =>
-        ExecuteCommand<GetCategoryBySlugQuery, ResponseDto<BlogCategoryResponse>>(query, cancellationToken);
+        ExecuteQuery(query, cancellationToken);
 
     [HttpPost("delete")]
     public Task<IActionResult> Delete([FromForm] DeleteCategoryCommand command, CancellationToken cancellationToken) =>

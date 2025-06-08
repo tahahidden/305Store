@@ -26,7 +26,7 @@ public class AdminBlogController(IMediator mediator) : BaseController(mediator)
 
     [HttpGet("get")]
     public Task<IActionResult> GetBySlug([FromQuery] GetBlogBySlugQuery query, CancellationToken cancellationToken) =>
-        ExecuteCommand<GetBlogBySlugQuery, ResponseDto<BlogResponse>>(query, cancellationToken);
+        ExecuteQuery(query, cancellationToken);
 
     [HttpPost("delete")]
     public Task<IActionResult> Delete([FromForm] DeleteBlogCommand command, CancellationToken cancellationToken) =>
