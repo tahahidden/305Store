@@ -15,7 +15,7 @@ namespace _305.Tests.Integration.ControllersTests
 	{
 		public BlogCategoryControllerTests()
 		{
-			BaseUrl = "/api/blog-category";
+			BaseUrl = "/api/admin/blog-category";
 		}
 
 		protected override MultipartFormDataContent CreateCreateForm(CreateCategoryCommand dto)

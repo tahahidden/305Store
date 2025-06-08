@@ -16,7 +16,7 @@ public class BlogControllerTests : BaseControllerTests<CreateBlogCommand, string
 {
 	public BlogControllerTests()
 	{
-		BaseUrl = "/api/blog";
+		BaseUrl = "/api/admin/blog";
 	}
 
 	protected override MultipartFormDataContent CreateCreateForm(CreateBlogCommand dto)
