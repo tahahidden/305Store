@@ -64,7 +64,7 @@ public class CreateAdminUserCommandHandler(IUnitOfWork unitOfWork)
 				   slug = slug,
 			   };
 			   await unitOfWork.UserRepository.AddAsync(entity);
-			   return entity.id.ToString();
+			   return slug;
 		   },
 		   successMessage: null,
 		   cancellationToken: cancellationToken

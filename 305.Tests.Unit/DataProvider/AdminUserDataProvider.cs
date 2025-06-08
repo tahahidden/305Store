@@ -9,25 +9,25 @@ using _305.Domain.Entity;
 namespace _305.Tests.Unit.DataProvider;
 public static class AdminUserDataProvider
 {
-	public static CreateAdminUserCommand Create(string name = "name")
+	public static CreateAdminUserCommand Create(string name = "name", string slug = "slug", string email = "info@305.com")
 => new ()
 {
 	name = name,
 	created_at = DateTime.Now,
-	slug = null,
+	slug = slug,
 	updated_at = DateTime.Now,
-	email = "info@304.com",
+	email = email + Guid.NewGuid(),
 	password = "QAZqaz!@#123",
 };
 
-	public static EditAdminUserCommand Edit(string name = "name", long id = 1)
+	public static EditAdminUserCommand Edit(string name = "name", long id = 1, string slug = "slug")
 		=> new ()
 		{
 			id = id,
 			name = name,
-			slug = null,
+			slug = slug,
 			updated_at = DateTime.Now,
-			email = "info@304.com",
+			email = "info@304.com" + Guid.NewGuid(),
 			password = "QAZqaz!@#123",
 		};
 
