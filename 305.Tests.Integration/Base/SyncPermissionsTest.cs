@@ -40,10 +40,10 @@ public class SyncPermissionsTest
         _factory.Dispose();
     }
     [Test]
-    public void Should_Seed_Permissions_Correctly()
+    public async Task Should_Seed_Permissions_Correctly()
     {
         // Act
-        var permissions = _unitOfWork.PermissionRepository.FindList();
+        var permissions = await _unitOfWork.PermissionRepository.FindListAsync();
 
         // Assert
         Assert.That(permissions, Is.Not.Empty);
