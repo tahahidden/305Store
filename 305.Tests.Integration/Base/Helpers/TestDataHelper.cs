@@ -34,8 +34,8 @@ public class TestDataHelper(HttpClient client)
         };
 
         return (await CreateAndGetIdAsync<BlogCategoryResponse>(
-            "/api/admin/blog-category/create", categoryDto,
-            "/api/admin/blog-category/get?slug="))?.id ?? 0;
+            $"{BaseUrlProvider.AdminApi}blog-category/create", categoryDto,
+            $"{BaseUrlProvider.AdminApi}blog-category/get?slug="))?.id ?? 0;
     }
 
     public async Task<long> CreateUserAndReturnIdAsync()
@@ -49,8 +49,8 @@ public class TestDataHelper(HttpClient client)
         };
 
         return ( await CreateAndGetIdAsync<UserResponse>(
-            "/api/admin/user/create", dto,
-            "/api/admin/user/get?slug="))?.id ?? 0;
+            $"{BaseUrlProvider.AdminApi}user/create", dto,
+            $"{BaseUrlProvider.AdminApi}user/get?slug="))?.id ?? 0;
     }
 
     public async Task<long> CreateRoleAndReturnIdAsync()
@@ -62,8 +62,8 @@ public class TestDataHelper(HttpClient client)
         };
 
         return (await CreateAndGetIdAsync<RoleResponse>(
-            "/api/admin/role/create", dto,
-            "/api/admin/role/get?slug="))?.id ?? 0;
+            $"{BaseUrlProvider.AdminApi}role/create", dto,
+            $"{BaseUrlProvider.AdminApi}role/get?slug="))?.id ?? 0;
     }
 
     public async Task<long> CreatePermissionAndReturnIdAsync()
@@ -75,8 +75,8 @@ public class TestDataHelper(HttpClient client)
         };
 
         return (await CreateAndGetIdAsync<UserResponse>(
-            "/api/admin/permission/create", dto,
-            "/api/admin/permission/get?slug="))?.id ?? 0;
+            $"{BaseUrlProvider.AdminApi}permission/create", dto,
+            $"{BaseUrlProvider.AdminApi}permission/get?slug="))?.id ?? 0;
     }
     // سایر موجودیت‌ها (مثلاً CreateBlogAndReturnIdAsync) هم همین‌جا اضافه می‌کنی
 }
