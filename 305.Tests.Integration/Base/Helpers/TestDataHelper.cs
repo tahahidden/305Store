@@ -6,33 +6,26 @@ using Newtonsoft.Json;
 
 namespace _305.Tests.Integration.Base.Helpers;
 
-public class TestDataHelper
+public class TestDataHelper(HttpClient client)
 {
-    private readonly HttpClient _client;
-
-    public TestDataHelper(HttpClient client)
-    {
-        _client = client;
-    }
-
-    private async Task<long> CreateAndGetIdAsync<TResponse>(string createUrl,
+	private async Task<TResponse?> CreateAndGetIdAsync<TResponse>(string createUrl,
         MultipartFormDataContent content, string getUrlPrefix)
         where TResponse : class
     {
-        var response = await _client.PostAsync(createUrl, content);
+        var response = await client.PostAsync(createUrl, content);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
         var createResult = JsonConvert.DeserializeObject<ResponseDto<string>>(json)!;
 
-        var getResponse = await _client.GetAsync($"{getUrlPrefix}{createResult.data}");
+        var getResponse = await client.GetAsync($"{getUrlPrefix}{createResult.data}");
         var getJson = await getResponse.Content.ReadAsStringAsync();
         var getResult = JsonConvert.DeserializeObject<ResponseDto<TResponse>>(getJson)!;
 
-        return getResult.data.id;
+        return getResult.data;
     }
 
-    public Task<long> CreateCategoryAndReturnIdAsync()
+    public async Task<long> CreateCategoryAndReturnIdAsync()
     {
         var categoryDto = new MultipartFormDataContent
         {
@@ -40,12 +33,12 @@ public class TestDataHelper
             { new StringContent("slug"), "slug" }
         };
 
-        return CreateAndGetIdAsync<BlogCategoryResponse>(
+        return (await CreateAndGetIdAsync<BlogCategoryResponse>(
             "/api/admin/blog-category/create", categoryDto,
-            "/api/admin/blog-category/get?slug=");
+            "/api/admin/blog-category/get?slug="))?.id ?? 0;
     }
 
-    public Task<long> CreateUserAndReturnIdAsync()
+    public async Task<long> CreateUserAndReturnIdAsync()
     {
         var dto = new MultipartFormDataContent
         {
@@ -55,12 +48,12 @@ public class TestDataHelper
             { new StringContent($"email@{Guid.NewGuid()}.com"), "email" },
         };
 
-        return CreateAndGetIdAsync<UserResponse>(
+        return ( await CreateAndGetIdAsync<UserResponse>(
             "/api/admin/user/create", dto,
-            "/api/admin/user/get?slug=");
+            "/api/admin/user/get?slug="))?.id ?? 0;
     }
 
-    public Task<long> CreateRoleAndReturnIdAsync()
+    public async Task<long> CreateRoleAndReturnIdAsync()
     {
         var dto = new MultipartFormDataContent
         {
@@ -68,12 +61,12 @@ public class TestDataHelper
             { new StringContent("slug"), "slug" },
         };
 
-        return CreateAndGetIdAsync<RoleResponse>(
+        return (await CreateAndGetIdAsync<RoleResponse>(
             "/api/admin/role/create", dto,
-            "/api/admin/role/get?slug=");
+            "/api/admin/role/get?slug="))?.id ?? 0;
     }
 
-    public Task<long> CreatePermissionAndReturnIdAsync()
+    public async Task<long> CreatePermissionAndReturnIdAsync()
     {
         var dto = new MultipartFormDataContent
         {
@@ -81,9 +74,9 @@ public class TestDataHelper
             { new StringContent("slug"), "slug" },
         };
 
-        return CreateAndGetIdAsync<UserResponse>(
+        return (await CreateAndGetIdAsync<UserResponse>(
             "/api/admin/permission/create", dto,
-            "/api/admin/permission/get?slug=");
+            "/api/admin/permission/get?slug="))?.id ?? 0;
     }
     // سایر موجودیت‌ها (مثلاً CreateBlogAndReturnIdAsync) هم همین‌جا اضافه می‌کنی
 }
