@@ -9,7 +9,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     {
 
         builder.HasKey(x => new { x.userid, x.roleid, x.id });
-        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);;
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);
         builder.HasIndex(x => x.slug).IsUnique();
         builder
             .HasOne(x => x.user)

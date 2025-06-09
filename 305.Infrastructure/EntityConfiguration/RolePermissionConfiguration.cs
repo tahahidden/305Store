@@ -8,7 +8,7 @@ public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissi
     public void Configure(EntityTypeBuilder<RolePermission> builder)
     {
         builder.HasKey(x => x.id);
-        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);;
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);
         builder.HasIndex(x => x.slug).IsUnique();
         builder
             .HasOne(x => x.role)

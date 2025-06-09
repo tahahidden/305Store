@@ -10,7 +10,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(x => x.id);
 
         builder.HasIndex(b => b.name).IsUnique();
-        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);;
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);
         builder.HasIndex(x => x.slug).IsUnique();
         builder.Property(b => b.mobile)
             .IsRequired();
