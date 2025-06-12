@@ -32,13 +32,13 @@ public class CreateCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 	/// زمان ایجاد رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
 	/// </summary>
 	[Display(Name = "زمان ایجاد")]
-	public DateTime created_at { get; init; } = DateTime.Now;
+        public DateTime created_at { get; init; } = DateTime.UtcNow;
 
 	/// <summary>
 	/// زمان آخرین ویرایش رکورد. به صورت پیش‌فرض برابر با زمان فعلی است.
 	/// </summary>
 	[Display(Name = "زمان ویرایش")]
-	public DateTime updated_at { get; init; } = DateTime.Now;
+        public DateTime updated_at { get; init; } = DateTime.UtcNow;
 }
 
 // note: برای CreatedAt و UpdatedAt از init استفاده شده تا فقط موقع ساخت مقداردهی بشن (immutable design)

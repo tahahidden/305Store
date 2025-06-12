@@ -11,10 +11,10 @@ public static class BlogCategoryDataProvider
 		=> new()
 		{
 			name = name,
-			created_at = DateTime.Now,
+                        created_at = DateTime.UtcNow,
 			description = "description",
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 	public static EditCategoryCommand Edit(string name = "name", long id = 1, string slug = "slug")
@@ -24,7 +24,7 @@ public static class BlogCategoryDataProvider
 			name = name,
 			description = "description",
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 
@@ -35,7 +35,7 @@ public static class BlogCategoryDataProvider
 		name = name,
 		description = "description",
 		slug = slug,
-		updated_at = DateTime.Now,
+                updated_at = DateTime.UtcNow,
 	};
 
 	public static DeleteCategoryCommand Delete(long id = 1)

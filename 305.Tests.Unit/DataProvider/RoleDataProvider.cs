@@ -20,7 +20,7 @@ public class RoleDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 
@@ -30,7 +30,7 @@ public class RoleDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 	public static DeleteRoleCommand Delete(long id = 1)

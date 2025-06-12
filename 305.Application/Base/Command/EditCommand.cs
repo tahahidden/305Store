@@ -40,6 +40,6 @@ public class EditCommand<TResponse> : IRequest<ResponseDto<TResponse>>
 	/// به صورت پیش‌فرض برابر با زمان فعلی تنظیم می‌شود.
 	/// </summary>
 	[Display(Name = "زمان ویرایش")]
-	public DateTime updated_at { get; init; } = DateTime.Now;
+        public DateTime updated_at { get; init; } = DateTime.UtcNow;
 }
 

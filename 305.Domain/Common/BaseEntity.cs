@@ -37,9 +37,9 @@ public class BaseEntity : IBaseEntity
 	/// <summary>
 	/// سازنده پیش‌فرض که تاریخ‌های ایجاد و به‌روزرسانی را تنظیم می‌کند
 	/// </summary>
-	public BaseEntity()
-	{
-		created_at = DateTime.Now;
-		updated_at = DateTime.Now;
-	}
+        public BaseEntity()
+        {
+                created_at = DateTime.UtcNow;
+                updated_at = DateTime.UtcNow;
+        }
 }

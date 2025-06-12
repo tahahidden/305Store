@@ -13,9 +13,9 @@ public static class AdminUserDataProvider
 => new ()
 {
 	name = name,
-	created_at = DateTime.Now,
+        created_at = DateTime.UtcNow,
 	slug = slug,
-	updated_at = DateTime.Now,
+        updated_at = DateTime.UtcNow,
 	email = email + Guid.NewGuid(),
 	password = "QAZqaz!@#123",
 };
@@ -26,7 +26,7 @@ public static class AdminUserDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 			email = "info@304.com" + Guid.NewGuid(),
 			password = "QAZqaz!@#123",
 		};

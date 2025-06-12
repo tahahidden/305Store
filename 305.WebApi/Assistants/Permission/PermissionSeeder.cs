@@ -35,7 +35,7 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 				{
 					name = p.PermissionName,
 					slug = slug,
-					created_at = DateTime.Now,
+                                        created_at = DateTime.UtcNow,
 				});
 			}
 		}
@@ -76,8 +76,8 @@ public class PermissionSeeder(IUnitOfWork unitOfWork)
 					permission_id = permission.id,
 					slug = slug,
 					name = slug,
-					created_at = DateTime.Now,
-					updated_at = DateTime.Now,
+                                        created_at = DateTime.UtcNow,
+                                        updated_at = DateTime.UtcNow,
 				});
 			}
 		}
