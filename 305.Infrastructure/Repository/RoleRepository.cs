@@ -6,10 +6,8 @@ using _305.Infrastructure.Persistence;
 namespace _305.Infrastructure.Repository;
 public class RoleRepository : Repository<Role>, IRoleRepository
 {
-	private readonly IQueryable<Role> _queryable;
-
 	public RoleRepository(ApplicationDbContext context) : base(context)
 	{
-		_queryable = DbContext.Set<Role>();
+		DbContext.Set<Role>();
 	}
 }

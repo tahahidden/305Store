@@ -4,62 +4,112 @@ using System.Security.Cryptography;
 namespace _305.BuildingBlocks.Security;
 
 /// <summary>
-/// کلاس ایستا برای هش کردن رمز عبور و بررسی اعتبار آن با استفاده از الگوریتم PBKDF2
+/// کلاس ایستا برای هش کردن رمز عبور و بررسی اعتبار آن با الگوریتم PBKDF2.
+/// فرمت هش خروجی: iterations.algorithm.derivedKey.salt (به صورت Base64)
 /// </summary>
 public static class PasswordHasher
 {
 	/// <summary>
-	/// هش کردن رمز عبور به همراه ذخیره نمک و پارامترها در خروجی نهایی
+	/// هش کردن یک رمز عبور خام با استفاده از الگوریتم PBKDF2.
+	/// هش خروجی شامل پارامترهای مورد نیاز برای اعتبارسنجی آینده است.
 	/// </summary>
-	/// <param name="password">رمز عبور خام</param>
-	/// <returns>رشته هش شامل پارامترها: iterations.algorithm.key.salt</returns>
-	public static string Hash(string password)
+	/// <param name="rawPassword">رمز عبور خام (بدون هش)</param>
+	/// <returns>
+	/// رشته‌ای از هش شامل: iterations.algorithm.key.salt به صورت base64
+	/// </returns>
+	public static string Hash(string rawPassword)
 	{
-		var salt = RandomNumberGenerator.GetBytes(HashConfig.SaltSize); // تولید نمک تصادفی
+		if (string.IsNullOrWhiteSpace(rawPassword))
+			throw new ArgumentException("رمز عبور نمی‌تواند خالی یا null باشد.", nameof(rawPassword));
 
-		// اجرای الگوریتم مشتق‌سازی کلید
-		var key = Rfc2898DeriveBytes.Pbkdf2(
-			password,
+		// تولید یک نمک تصادفی با اندازه مشخص
+		var salt = RandomNumberGenerator.GetBytes(HashConfig.SaltSize);
+
+		// اجرای الگوریتم مشتق‌سازی کلید (PBKDF2) با پارامترهای پیش‌فرض
+		var derivedKey = Rfc2898DeriveBytes.Pbkdf2(
+			rawPassword,
 			salt,
 			HashConfig.DefaultIterations,
 			HashConfig.DefaultAlgorithm,
 			HashConfig.KeySize);
 
-		// تبدیل کلید و نمک به base64 و قالب‌بندی با پارامترها
-		return $"{HashConfig.DefaultIterations}.{HashConfig.DefaultAlgorithm}.{Convert.ToBase64String(key)}.{Convert.ToBase64String(salt)}";
+		// تبدیل کلید و نمک به رشته‌های base64 برای ذخیره در دیتابیس یا فایل
+		var base64Key = Convert.ToBase64String(derivedKey);
+		var base64Salt = Convert.ToBase64String(salt);
+
+		// قالب نهایی: iterations.algorithm.key.salt
+		return $"{HashConfig.DefaultIterations}.{HashConfig.DefaultAlgorithm}.{base64Key}.{base64Salt}";
 	}
 
 	/// <summary>
-	/// بررسی صحت رمز عبور با استفاده از هش ذخیره‌شده
+	/// بررسی تطابق رمز عبور خام با هش ذخیره‌شده.
+	/// با استخراج پارامترها از هش ذخیره‌شده و اجرای دوباره PBKDF2 انجام می‌شود.
 	/// </summary>
-	/// <param name="hash">هش ذخیره شده شامل iterations.algorithm.key.salt</param>
-	/// <param name="password">رمز عبور خام ورودی</param>
-	/// <returns>درستی یا نادرستی رمز عبور</returns>
-	public static bool Check(string hash, string password)
+	/// <param name="storedHash">هش ذخیره‌شده شامل پارامترها</param>
+	/// <param name="rawPassword">رمز عبور خام برای بررسی</param>
+	/// <returns>اگر رمز عبور صحیح باشد: true، در غیر این صورت: false</returns>
+	public static bool Check(string storedHash, string rawPassword)
 	{
-		if (string.IsNullOrWhiteSpace(hash))
+		// چک اولیه: هر دو مقدار باید معتبر باشند
+		if (string.IsNullOrWhiteSpace(storedHash) || string.IsNullOrWhiteSpace(rawPassword))
 			return false;
 
-		// جدا کردن قسمت‌های هش: تکرار، الگوریتم، کلید، نمک
-		var parts = hash.Split('.', 4);
-		if (parts.Length != 4)
-			throw new FormatException("فرمت هش نامعتبر است. ساختار صحیح: iterations.algorithm.key.salt");
+		// تلاش برای پارس کردن هش ذخیره‌شده
+		var isParsed = TryParseHash(storedHash, out var iterations, out var algorithm, out var originalKey, out var salt);
+		if (!isParsed)
+			throw new FormatException("فرمت هش نامعتبر است. ساختار باید به صورت: iterations.algorithm.key.salt باشد.");
 
-		// بازیابی پارامترها
-		var iterations = int.Parse(parts[0]);
-		var algorithm = new HashAlgorithmName(parts[1]);
-		var key = Convert.FromBase64String(parts[2]);
-		var salt = Convert.FromBase64String(parts[3]);
-
-		// اجرای مشتق‌سازی مجدد با همان پارامترها
-		var keyToCheck = Rfc2898DeriveBytes.Pbkdf2(
-			password,
+		// تولید مجدد کلید با همان پارامترها و رمز عبور جدید
+		var derivedKey = Rfc2898DeriveBytes.Pbkdf2(
+			rawPassword,
 			salt,
 			iterations,
 			algorithm,
 			HashConfig.KeySize);
 
-		// مقایسه زمان-ثابت برای جلوگیری از حمله‌های تایمینگ
-		return CryptographicOperations.FixedTimeEquals(key, keyToCheck);
+		// مقایسه امن کلیدها برای جلوگیری از حمله تایمینگ
+		return CryptographicOperations.FixedTimeEquals(originalKey, derivedKey);
+	}
+
+	/// <summary>
+	/// پارس کردن رشته هش‌شده و استخراج پارامترها
+	/// </summary>
+	/// <param name="hash">رشته هش‌شده به فرمت: iterations.algorithm.key.salt</param>
+	/// <param name="iterations">تعداد تکرار الگوریتم مشتق‌سازی</param>
+	/// <param name="algorithm">نام الگوریتم هش (مثلاً: SHA256)</param>
+	/// <param name="key">کلید هش‌شده اصلی</param>
+	/// <param name="salt">نمک استفاده‌شده</param>
+	/// <returns>در صورت موفقیت: true، در غیر این صورت: false</returns>
+	private static bool TryParseHash(
+		string hash,
+		out int iterations,
+		out HashAlgorithmName algorithm,
+		out byte[] key,
+		out byte[] salt)
+	{
+		iterations = default;
+		algorithm = default;
+		key = salt = null;
+
+		var parts = hash.Split('.', 4);
+		if (parts.Length != 4)
+			return false;
+
+		if (!int.TryParse(parts[0], out iterations))
+			return false;
+
+		algorithm = new HashAlgorithmName(parts[1]);
+
+		try
+		{
+			key = Convert.FromBase64String(parts[2]);
+			salt = Convert.FromBase64String(parts[3]);
+			return true;
+		}
+		catch
+		{
+			// در صورت خطا در تبدیل Base64 (برای کلید یا نمک)
+			return false;
+		}
 	}
 }

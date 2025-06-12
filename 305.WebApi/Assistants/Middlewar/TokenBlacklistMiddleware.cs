@@ -1,9 +1,9 @@
 ﻿using _305.Application.IUOW;
+using Serilog;
 
 namespace _305.WebApi.Assistants.Middlewar;
 public class TokenBlacklistMiddleware(
 	RequestDelegate next,
-	ILogger<TokenBlacklistMiddleware> logger,
 	IUnitOfWork unitOfWork)
 {
 	public async Task InvokeAsync(HttpContext context)
@@ -14,11 +14,11 @@ public class TokenBlacklistMiddleware(
 		if (!string.IsNullOrEmpty(token))
 		{
 			// Check if the token is blacklisted
-			var isBlacklisted = await unitOfWork.TokenBlacklistRepository.IsTokenBlacklisted(token);
+			var isBlacklisted = await unitOfWork.TokenBlacklistRepository.AnyAsync(x => x.token == token && x.expiry_date > DateTime.UtcNow);
 
 			if (isBlacklisted)
 			{
-				logger.LogWarning("Blacklisted token used: {Token}", token);
+				Log.Warning("Blacklisted token used: {Token}", token);
 
 				context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 				await context.Response.WriteAsync("Token is invalid or expired.");

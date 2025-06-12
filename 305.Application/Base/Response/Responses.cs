@@ -1,12 +1,11 @@
-﻿using _305.BuildingBlocks.Enums;
-using _305.BuildingBlocks.Text;
+﻿using _305.BuildingBlocks.Utils;
 using Serilog;
 
 namespace _305.Application.Base.Response;
 
 /// <summary>
-/// کلاس کمکی استاتیک برای ساخت پاسخ‌های استاندارد (ResponseDto) در عملیات‌های مختلف.
-/// شامل پاسخ‌های موفقیت‌آمیز، خطا، عدم وجود داده، وجود تکراری و ...
+/// کلاس کمکی استاتیک برای ساخت پاسخ‌های استاندارد (<see cref="ResponseDto"/>) در عملیات‌های مختلف.
+/// شامل پاسخ‌های موفقیت‌آمیز، خطا، عدم وجود داده، وجود تکراری و ... 
 /// </summary>
 public static class Responses
 {

@@ -7,11 +7,8 @@ namespace _305.Infrastructure.Repository;
 
 public class PermissionRepository : Repository<Permission>, IPermissionRepository
 {
-	private readonly IQueryable<Permission> _queryable;
-
-
 	public PermissionRepository(ApplicationDbContext context) : base(context)
 	{
-		_queryable = DbContext.Set<Permission>();
+		DbContext.Set<Permission>();
 	}
 }

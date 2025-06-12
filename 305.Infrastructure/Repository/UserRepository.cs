@@ -6,10 +6,8 @@ using _305.Infrastructure.Persistence;
 namespace _305.Infrastructure.Repository;
 public class UserRepository : Repository<User>, IUserRepository
 {
-	private readonly IQueryable<User> _queryable;
-
 	public UserRepository(ApplicationDbContext context) : base(context)
 	{
-		_queryable = DbContext.Set<User>();
+		DbContext.Set<User>();
 	}
 }

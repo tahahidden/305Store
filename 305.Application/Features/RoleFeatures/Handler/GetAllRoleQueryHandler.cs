@@ -10,7 +10,7 @@ namespace _305.Application.Features.RoleFeatures.Handler;
 public class GetAllRoleQueryHandler(IUnitOfWork unitOfWork)
 	: IRequestHandler<GetAllRoleQuery, ResponseDto<List<RoleResponse>>>
 {
-	private readonly GetAllHandler _handler = new(unitOfWork);
+	private readonly GetAllHandler _handler = new();
 
 	public Task<ResponseDto<List<RoleResponse>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
 	{

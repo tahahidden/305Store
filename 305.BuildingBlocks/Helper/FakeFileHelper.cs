@@ -1,41 +1,47 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using _305.BuildingBlocks.Constants;
+using Microsoft.AspNetCore.Http;
 using System.Text;
 
 namespace _305.BuildingBlocks.Helper;
 
 /// <summary>
-/// ابزار ساخت فایل جعلی برای تست.
-/// با استفاده از این کلاس می‌توانید فایل‌های تستی از نوع <see cref="IFormFile"/> بسازید.
+/// ابزار ساخت فایل جعلی <see cref="IFormFile"/> برای استفاده در تست‌ها.
 /// </summary>
-public static class FakeFileHelper
+public static class FakeFileFactory
 {
 	/// <summary>
-	/// ساخت فایل تستی <see cref="IFormFile"/> از محتوای متنی.
+	/// ایجاد فایل تستی از محتوای متنی پیش‌فرض یا سفارشی.
 	/// </summary>
-	/// <param name="fileName">نام فایل (پیش‌فرض: "test.jpg")</param>
-	/// <param name="contentType">نوع فایل (پیش‌فرض: "image/jpeg")</param>
-	/// <param name="content">محتوای رشته‌ای فایل (پیش‌فرض: "fake image content")</param>
-	/// <returns>فایل جعلی قابل استفاده در تست‌ها</returns>
-	public static IFormFile CreateFakeFormFile(string fileName = "test.jpg", string contentType = "image/jpeg", string content = "fake image content")
+	/// <param name="fileName">نام فایل. پیش‌فرض: "test.jpg"</param>
+	/// <param name="contentType">نوع فایل. پیش‌فرض: "image/jpeg"</param>
+	/// <param name="textContent">محتوای متنی داخل فایل. پیش‌فرض: "fake image content"</param>
+	/// <returns>فایل جعلی از نوع <see cref="IFormFile"/></returns>
+	public static IFormFile FromText(
+		string fileName = FileDefaults.DefaultFileName,
+		string contentType = FileDefaults.DefaultContentType,
+		string textContent = FileDefaults.DefaultTextContent)
 	{
-		var bytes = Encoding.UTF8.GetBytes(content);
-		return CreateFakeFormFile(bytes, fileName, contentType);
+		var bytes = Encoding.UTF8.GetBytes(textContent);
+		return FromBytes(bytes, fileName, contentType);
 	}
 
 	/// <summary>
-	/// ساخت فایل تستی <see cref="IFormFile"/> از آرایه بایت.
+	/// ایجاد فایل تستی از محتوای باینری (byte array).
 	/// </summary>
-	/// <param name="bytes">محتوای فایل به صورت آرایه بایت</param>
+	/// <param name="fileBytes">محتوای فایل به صورت آرایه‌ای از بایت</param>
 	/// <param name="fileName">نام فایل</param>
-	/// <param name="contentType">نوع فایل</param>
-	/// <returns>فایل جعلی قابل استفاده در تست‌ها</returns>
-	public static IFormFile CreateFakeFormFile(byte[] bytes, string fileName, string contentType)
+	/// <param name="contentType">نوع فایل (مثلاً "image/jpeg")</param>
+	/// <returns>فایل جعلی از نوع <see cref="IFormFile"/></returns>
+	public static IFormFile FromBytes(byte[] fileBytes, string fileName, string contentType)
 	{
-		var stream = new MemoryStream(bytes);
-		return new FormFile(stream, 0, stream.Length, name: "file", fileName: fileName)
+		var stream = new MemoryStream(fileBytes);
+
+		var formFile = new FormFile(stream, 0, stream.Length, name: "file", fileName: fileName)
 		{
 			Headers = new HeaderDictionary(),
 			ContentType = contentType
 		};
+
+		return formFile;
 	}
 }
