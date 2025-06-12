@@ -22,7 +22,7 @@ public class PermissionDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 
@@ -32,7 +32,7 @@ public class PermissionDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 		};
 
 	public static DeletePermissionCommand Delete(long id = 1)

@@ -24,7 +24,7 @@ public class UserRoleDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 			userid = userId,
 			roleid = roleId
 		};
@@ -36,7 +36,7 @@ public class UserRoleDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 			userid = userId,
 			roleid = roleId
 		};

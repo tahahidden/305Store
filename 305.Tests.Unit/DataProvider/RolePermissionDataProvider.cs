@@ -28,7 +28,7 @@ public class RolePermissionDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 			permission_id = permissionId,
 			role_id = roleId
 		};
@@ -40,7 +40,7 @@ public class RolePermissionDataProvider
 			id = id,
 			name = name,
 			slug = slug,
-			updated_at = DateTime.Now,
+                        updated_at = DateTime.UtcNow,
 			permission_id = permissionId,
 			role_id = roleId
 		};
