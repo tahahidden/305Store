@@ -5,7 +5,7 @@ using _305.BuildingBlocks.IService;
 using _305.BuildingBlocks.Service;
 using _305.Infrastructure.Persistence;
 using _305.Infrastructure.Service;
-using _305.WebApi.Assistants.Middlewar;
+using _305.WebApi.Assistants.Middleware;
 using _305.WebApi.Assistants.Permission;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
