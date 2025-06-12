@@ -1,4 +1,5 @@
 ﻿using _305.BuildingBlocks.Constants;
+using _305.BuildingBlocks.IService;
 using Microsoft.AspNetCore.Http;
 
 namespace _305.BuildingBlocks.Helper;
@@ -6,7 +7,7 @@ namespace _305.BuildingBlocks.Helper;
 /// <summary>
 /// ابزار کمکی برای مدیریت فایل‌های آپلود شده مانند تصویر.
 /// </summary>
-public class FileManager : _305.BuildingBlocks.IService.IFileManager
+public class FileManager : IFileManager
 {
     /// <summary>
     /// آپلود تصویر به مسیر مشخص‌شده و تولید آدرس اینترنتی آن.
