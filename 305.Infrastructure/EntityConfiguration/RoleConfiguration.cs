@@ -5,23 +5,23 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace _305.Infrastructure.EntityConfiguration;
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
-	public void Configure(EntityTypeBuilder<Role> builder)
-	{
-		builder.HasKey(x => x.id);
-		builder.Property(x => x.slug).IsRequired();
-		builder.HasIndex(x => x.slug).IsUnique();
-		builder.Property(b => b.name).IsRequired();
+    public void Configure(EntityTypeBuilder<Role> builder)
+    {
+        builder.HasKey(x => x.id);
+        builder.Property(x => x.slug).IsRequired();
+        builder.HasIndex(x => x.slug).IsUnique();
+        builder.Property(b => b.name).IsRequired();
 
-		#region Navigations
+        #region Navigations
 
-		builder
-			.HasMany(x => x.user_roles)
-			.WithOne(x => x.role)
-			.HasForeignKey(x => x.roleid)
-			.OnDelete(DeleteBehavior.Restrict);
+        builder
+            .HasMany(x => x.user_roles)
+            .WithOne(x => x.role)
+            .HasForeignKey(x => x.roleid)
+            .OnDelete(DeleteBehavior.Restrict);
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
 

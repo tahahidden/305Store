@@ -7,8 +7,8 @@
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public sealed class PermissionAttribute(string name) : Attribute
 {
-	/// <summary>
-	/// نام مجوز مورد نیاز برای اجرای این متد.
-	/// </summary>
-	public string Name { get; } = name;
+    /// <summary>
+    /// نام مجوز مورد نیاز برای اجرای این متد.
+    /// </summary>
+    public string Name { get; } = name;
 }

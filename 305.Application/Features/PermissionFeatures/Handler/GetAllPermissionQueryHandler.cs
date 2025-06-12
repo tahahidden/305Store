@@ -9,17 +9,17 @@ using MediatR;
 namespace _305.Application.Features.PermissionFeatures.Handler;
 
 public class GetAllPermissionQueryHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<GetAllPermissionQuery, ResponseDto<List<PermissionResponse>>>
+    : IRequestHandler<GetAllPermissionQuery, ResponseDto<List<PermissionResponse>>>
 {
-	private readonly GetAllHandler _handler = new();
+    private readonly GetAllHandler _handler = new();
 
-	public Task<ResponseDto<List<PermissionResponse>>> Handle(GetAllPermissionQuery request, CancellationToken cancellationToken)
-	{
-		var aa = unitOfWork.PermissionRepository.FindList();
-		return Task.FromResult(
-			_handler.Handle<Permission, PermissionResponse>(
-				unitOfWork.PermissionRepository.FindList()
-			)
-		);
-	}
+    public Task<ResponseDto<List<PermissionResponse>>> Handle(GetAllPermissionQuery request, CancellationToken cancellationToken)
+    {
+        var aa = unitOfWork.PermissionRepository.FindList();
+        return Task.FromResult(
+            _handler.Handle<Permission, PermissionResponse>(
+                unitOfWork.PermissionRepository.FindList()
+            )
+        );
+    }
 }

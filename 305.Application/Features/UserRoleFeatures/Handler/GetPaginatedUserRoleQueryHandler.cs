@@ -10,27 +10,27 @@ using Microsoft.EntityFrameworkCore;
 namespace _305.Application.Features.UserRoleFeatures.Handler;
 
 public class GetPaginatedUserRoleQueryHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<GetPaginatedUserRoleQuery, ResponseDto<PaginatedList<UserRole>>>
+    : IRequestHandler<GetPaginatedUserRoleQuery, ResponseDto<PaginatedList<UserRole>>>
 {
-	private readonly GetPaginatedHandler _handler = new(unitOfWork);
+    private readonly GetPaginatedHandler _handler = new(unitOfWork);
 
-	public Task<ResponseDto<PaginatedList<UserRole>>> Handle(GetPaginatedUserRoleQuery request, CancellationToken cancellationToken)
-	{
-		var filter = new DefaultPaginationFilter
-		{
-			Page = request.Page,
-			PageSize = request.PageSize,
-			SearchTerm = request.SearchTerm,
-			SortBy = request.SortBy
-		};
+    public Task<ResponseDto<PaginatedList<UserRole>>> Handle(GetPaginatedUserRoleQuery request, CancellationToken cancellationToken)
+    {
+        var filter = new DefaultPaginationFilter
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            SearchTerm = request.SearchTerm,
+            SortBy = request.SortBy
+        };
 
-		return _handler.Handle(
-			uow => uow.UserRoleRepository.GetPagedResultAsync(
-				filter,
-				predicate: null,
-				includeFunc: x=>x.Include(y => y.role).Include(y => y.user)
-			)
-		);
-	}
+        return _handler.Handle(
+            uow => uow.UserRoleRepository.GetPagedResultAsync(
+                filter,
+                predicate: null,
+                includeFunc: x => x.Include(y => y.role).Include(y => y.user)
+            )
+        );
+    }
 }
 

@@ -3,10 +3,10 @@
 namespace _305.Domain.Entity;
 public class Role : BaseEntity
 {
-	#region Navigations
+    #region Navigations
 
-	public ICollection<UserRole>? user_roles { get; set; }
-	public ICollection<RolePermission>? role_permissions { get; set; }
+    public ICollection<UserRole>? user_roles { get; set; }
+    public ICollection<RolePermission>? role_permissions { get; set; }
 
-	#endregion
+    #endregion
 }

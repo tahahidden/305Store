@@ -8,37 +8,37 @@ using _305.Tests.Unit.GenericHandlers;
 namespace _305.Tests.Unit.TestHandlers.RolePermissionTests;
 public class DeleteRolePermissionCommandHandlerTests
 {
-	[Fact]
-	public async Task Handle_ShouldDeleteRolePermission_WhenExists()
-	{
-		var command = RolePermissionDataProvider.Delete();
+    [Fact]
+    public async Task Handle_ShouldDeleteRolePermission_WhenExists()
+    {
+        var command = RolePermissionDataProvider.Delete();
 
-		await DeleteHandlerTestHelper.TestDelete<
-			DeleteRolePermissionCommand,
-			RolePermission,
-			IRepository<RolePermission>,
-			DeleteRolePermissionCommandHandler>(
-			handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
-			execute: (handler, cmd, token) => handler.Handle(cmd, token),
-			command: command,
-			repoSelector: uow => uow.RolePermissionRepository
-		);
-	}
+        await DeleteHandlerTestHelper.TestDelete<
+            DeleteRolePermissionCommand,
+            RolePermission,
+            IRepository<RolePermission>,
+            DeleteRolePermissionCommandHandler>(
+            handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
+            execute: (handler, cmd, token) => handler.Handle(cmd, token),
+            command: command,
+            repoSelector: uow => uow.RolePermissionRepository
+        );
+    }
 
-	[Fact]
-	public async Task Handle_ShouldReturnNotFound_WhenRolePermissionDoesNotExist()
-	{
-		var command = RolePermissionDataProvider.Delete(id: 99);
+    [Fact]
+    public async Task Handle_ShouldReturnNotFound_WhenRolePermissionDoesNotExist()
+    {
+        var command = RolePermissionDataProvider.Delete(id: 99);
 
-		await DeleteHandlerTestHelper.TestDeleteNotFound<
-			DeleteRolePermissionCommand,
-			RolePermission,
-			IRepository<RolePermission>,
-			DeleteRolePermissionCommandHandler>(
-			handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
-			execute: (handler, cmd, token) => handler.Handle(cmd, token),
-			command: command,
-			repoSelector: uow => uow.RolePermissionRepository
-		);
-	}
+        await DeleteHandlerTestHelper.TestDeleteNotFound<
+            DeleteRolePermissionCommand,
+            RolePermission,
+            IRepository<RolePermission>,
+            DeleteRolePermissionCommandHandler>(
+            handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
+            execute: (handler, cmd, token) => handler.Handle(cmd, token),
+            command: command,
+            repoSelector: uow => uow.RolePermissionRepository
+        );
+    }
 }

@@ -8,16 +8,16 @@ using MediatR;
 
 namespace _305.Application.Features.RoleFeatures.Handler;
 public class GetAllRoleQueryHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<GetAllRoleQuery, ResponseDto<List<RoleResponse>>>
+    : IRequestHandler<GetAllRoleQuery, ResponseDto<List<RoleResponse>>>
 {
-	private readonly GetAllHandler _handler = new();
+    private readonly GetAllHandler _handler = new();
 
-	public Task<ResponseDto<List<RoleResponse>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
-	{
-		return Task.FromResult(
-			_handler.Handle<Role, RoleResponse>(
-				unitOfWork.RoleRepository.FindList()
-			)
-		);
-	}
+    public Task<ResponseDto<List<RoleResponse>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(
+            _handler.Handle<Role, RoleResponse>(
+                unitOfWork.RoleRepository.FindList()
+            )
+        );
+    }
 }

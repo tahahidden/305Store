@@ -11,65 +11,65 @@ using MediatR;
 namespace _305.Application.Features.AdminUserFeatures.Handler;
 
 public class CreateAdminUserCommandHandler(IUnitOfWork unitOfWork)
-	: IRequestHandler<CreateAdminUserCommand, ResponseDto<string>>
+    : IRequestHandler<CreateAdminUserCommand, ResponseDto<string>>
 {
-	private readonly CreateHandler _handler = new(unitOfWork);
+    private readonly CreateHandler _handler = new(unitOfWork);
 
-	public async Task<ResponseDto<string>> Handle(CreateAdminUserCommand request, CancellationToken cancellationToken)
-	{
+    public async Task<ResponseDto<string>> Handle(CreateAdminUserCommand request, CancellationToken cancellationToken)
+    {
 
-		var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
-		var validations = new List<ValidationItem>
-		{
-		   new ()
-		   {
-			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.email == request.email),
-			   Value = "ایمیل"
-		   },
-		   new ()
-		   {
-			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.name == request.name),
-			   Value = "نام کاربری"
-		   },
-		   new ()
-		   {
-			   Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.slug == slug),
-			   Value = "نامک"
-		   }
+        var slug = request.slug ?? SlugHelper.GenerateSlug(request.name);
+        var validations = new List<ValidationItem>
+        {
+           new ()
+           {
+               Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.email == request.email),
+               Value = "ایمیل"
+           },
+           new ()
+           {
+               Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.name == request.name),
+               Value = "نام کاربری"
+           },
+           new ()
+           {
+               Rule = async () => await unitOfWork.UserRepository.ExistsAsync(x => x.slug == slug),
+               Value = "نامک"
+           }
 
-		};
+        };
 
 
-		return await _handler.HandleAsync(
-		   validations: validations,
-		   onCreate: async () =>
-		   {
-			   var entity = new User()
-			   {
-				   name = request.name,
-				   email = request.email,
-				   password_hash = PasswordHasher.Hash(request.password),
-				   concurrency_stamp = StampGenerator.CreateSecurityStamp(32),
-				   security_stamp = StampGenerator.CreateSecurityStamp(32),
-                                   created_at = DateTime.UtcNow,
-                                   updated_at = DateTime.UtcNow,
-				   failed_login_count = 0,
-				   is_active = true,
-				   is_delete_able = true,
-				   is_locked_out = false,
-				   is_mobile_confirmed = true,
-				   last_login_date_time = DateTime.Now,
-				   lock_out_end_time = DateTime.Now,
-				   mobile = "",
-				   slug = slug,
-			   };
-			   await unitOfWork.UserRepository.AddAsync(entity);
-			   return slug;
-		   },
-		   successMessage: null,
-		   cancellationToken: cancellationToken
-	   );
-	}
+        return await _handler.HandleAsync(
+           validations: validations,
+           onCreate: async () =>
+           {
+               var entity = new User()
+               {
+                   name = request.name,
+                   email = request.email,
+                   password_hash = PasswordHasher.Hash(request.password),
+                   concurrency_stamp = StampGenerator.CreateSecurityStamp(32),
+                   security_stamp = StampGenerator.CreateSecurityStamp(32),
+                   created_at = DateTime.UtcNow,
+                   updated_at = DateTime.UtcNow,
+                   failed_login_count = 0,
+                   is_active = true,
+                   is_delete_able = true,
+                   is_locked_out = false,
+                   is_mobile_confirmed = true,
+                   last_login_date_time = DateTime.Now,
+                   lock_out_end_time = DateTime.Now,
+                   mobile = "",
+                   slug = slug,
+               };
+               await unitOfWork.UserRepository.AddAsync(entity);
+               return slug;
+           },
+           successMessage: null,
+           cancellationToken: cancellationToken
+       );
+    }
 }
 
 

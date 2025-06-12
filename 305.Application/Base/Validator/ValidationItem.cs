@@ -5,19 +5,19 @@
 /// </summary>
 public record ValidationItem
 {
-	/// <summary>
-	/// قانون اعتبارسنجی به صورت یک تابع async که نتیجه آن true به معنی عدم اعتبار یا تکراری بودن است.
-	/// </summary>
-	public required Func<Task<bool>> Rule { get; set; }
+    /// <summary>
+    /// قانون اعتبارسنجی به صورت یک تابع async که نتیجه آن true به معنی عدم اعتبار یا تکراری بودن است.
+    /// </summary>
+    public required Func<Task<bool>> Rule { get; set; }
 
-	/// <summary>
-	/// مقدار یا پیغام مرتبط با این قانون اعتبارسنجی که معمولا برای نمایش به کاربر استفاده می‌شود.
-	/// </summary>
-	public required string Value { get; set; }
+    /// <summary>
+    /// مقدار یا پیغام مرتبط با این قانون اعتبارسنجی که معمولا برای نمایش به کاربر استفاده می‌شود.
+    /// </summary>
+    public required string Value { get; set; }
 
-	/// <summary>
-	/// بررسی اینکه اعتبار سنجی از نوع وجود داشتن آیتم است یا وجود نداشتن آن
-	/// و فرستادن پیام مناسب
-	/// </summary>
-	public bool IsExistRole { get; set; } = true;
+    /// <summary>
+    /// بررسی اینکه اعتبار سنجی از نوع وجود داشتن آیتم است یا وجود نداشتن آن
+    /// و فرستادن پیام مناسب
+    /// </summary>
+    public bool IsExistRole { get; set; } = true;
 }

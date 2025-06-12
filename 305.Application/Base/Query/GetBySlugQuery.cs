@@ -10,11 +10,11 @@ namespace _305.Application.Base.Query;
 /// <typeparam name="TResponse">نوع داده‌ای که قرار است بازیابی شود.</typeparam>
 public class GetBySlugQuery<TResponse> : IRequest<ResponseDto<TResponse>>
 {
-	/// <summary>
-	/// نامک (Slug) مورد نظر برای جستجو.
-	/// این فیلد اجباری است و باید مقداردهی شود.
-	/// </summary>
-	[Display(Name = "نامک")]
-	[Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
-	public string slug { get; set; }
+    /// <summary>
+    /// نامک (Slug) مورد نظر برای جستجو.
+    /// این فیلد اجباری است و باید مقداردهی شود.
+    /// </summary>
+    [Display(Name = "نامک")]
+    [Required(ErrorMessage = "لطفا مقدار {0} را وارد کنید")]
+    public string slug { get; set; }
 }
