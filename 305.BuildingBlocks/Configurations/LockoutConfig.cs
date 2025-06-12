@@ -16,8 +16,8 @@ public class LockoutConfig
 	/// </summary>
 	public int FailedLoginLimit { get; set; } = 4;
 
-	/// <summary>
-	/// مدت‌زمان قفل شدن حساب پس از رسیدن به حد مجاز تلاش‌های ناموفق
-	/// </summary>
-	public DateTime Duration { get; set; } = DateTime.Now.AddMinutes(1);
+        /// <summary>
+        /// مدت‌زمان قفل شدن حساب پس از رسیدن به حد مجاز تلاش‌های ناموفق
+        /// </summary>
+        public TimeSpan LockoutDuration { get; set; } = TimeSpan.FromMinutes(1);
 }
