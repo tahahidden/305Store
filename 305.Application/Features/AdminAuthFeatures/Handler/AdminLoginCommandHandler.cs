@@ -5,6 +5,7 @@ using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
 using _305.BuildingBlocks.Security;
+using _305.Application.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -28,38 +29,22 @@ public class AdminLoginCommandHandler(
                 return Responses.NotFound<LoginResponse>(null, name: "کاربر");
 
             // بررسی قفل شدن کاربر
-            if (user.is_locked_out || user.lock_out_end_time > DateTime.Now)
+            if (IsAccountLocked(user))
                 return Responses.Fail<LoginResponse>(null, message: "اکانت شما موقتا قفل شده است", code: 401);
             // بررسی رمز عبور
             if (!PasswordHasher.Check(user.password_hash, request.password))
-            {
-                user.failed_login_count++;
-                if (user.failed_login_count >= lockOutConfig.FailedLoginLimit)
-                {
-                    user.is_locked_out = true;
-                    user.lock_out_end_time = DateTime.Now.Add(lockOutConfig.LockoutDuration); // قفل موقت
-                }
-                unitOfWork.UserRepository.Update(user);
-                await unitOfWork.CommitAsync(cancellationToken);
-                return Responses.Fail<LoginResponse>(null, message: "رمز عبور یا نام کاربری اشتباه است.", code: 401);
-            }
+                return await HandleInvalidPassword(user, cancellationToken);
 
             // موفقیت در ورود
             user.failed_login_count = 0;
             user.last_login_date_time = DateTime.Now;
             var role = unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
-            var token = "";
-            do
-            {
-                token = jwtService.GenerateAccessToken(user, role.Select(x => x.role.name).ToList());
-            }
-            while (await unitOfWork.TokenBlacklistRepository.ExistsAsync(x => x.token == token));
-            var refreshToken = "";
-            do
-            {
-                refreshToken = jwtService.GenerateRefreshToken();
-            }
-            while (await unitOfWork.UserRepository.ExistsAsync(x => x.refresh_token == refreshToken));
+            var token = await JwtTokenHelper.GenerateUniqueAccessToken(
+                jwtService,
+                unitOfWork,
+                user,
+                role.Select(x => x.role.name).ToList());
+            var refreshToken = await JwtTokenHelper.GenerateUniqueRefreshToken(jwtService, unitOfWork);
 
 
             user.refresh_token = refreshToken;
@@ -101,5 +86,28 @@ public class AdminLoginCommandHandler(
             Log.Error(ex, "خطا در زمان ایجاد موجودیت: {Message}", ex.Message);
             return Responses.ExceptionFail<LoginResponse>(null, null);
         }
+    }
+
+    /// <summary>
+    /// بررسی وضعیت قفل بودن حساب
+    /// </summary>
+    private static bool IsAccountLocked(User user) =>
+        user.is_locked_out || user.lock_out_end_time > DateTime.Now;
+
+    /// <summary>
+    /// مدیریت خطا در صورت وارد کردن رمز نادرست
+    /// </summary>
+    private async Task<ResponseDto<LoginResponse>> HandleInvalidPassword(User user, CancellationToken cancellationToken)
+    {
+        user.failed_login_count++;
+        if (user.failed_login_count >= lockOutConfig.FailedLoginLimit)
+        {
+            user.is_locked_out = true;
+            user.lock_out_end_time = DateTime.Now.Add(lockOutConfig.LockoutDuration); // قفل موقت
+        }
+
+        unitOfWork.UserRepository.Update(user);
+        await unitOfWork.CommitAsync(cancellationToken);
+        return Responses.Fail<LoginResponse>(null, message: "رمز عبور یا نام کاربری اشتباه است.", code: 401);
     }
 }
