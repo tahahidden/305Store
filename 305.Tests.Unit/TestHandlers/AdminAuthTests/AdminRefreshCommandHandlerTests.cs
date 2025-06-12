@@ -59,10 +59,12 @@ public class AdminRefreshCommandHandlerTests
 		// Act
 		var result = await handler.Handle(new AdminRefreshCommand(), CancellationToken.None);
 
-		// Assert
-		Assert.True(result.is_success);
-		Assert.Equal(accessToken, result.data.access_token);
-	}
+                // Assert
+                Assert.True(result.is_success);
+                Assert.Equal(accessToken, result.data.access_token);
+                tokenServiceMock.Verify(t => t.GenerateAccessToken(user, It.IsAny<List<string>>(), null), Times.Once);
+                unitOfWorkMock.Verify(u => u.TokenBlacklistRepository.ExistsAsync(It.IsAny<Expression<Func<BlacklistedToken, bool>>>()), Times.Once);
+        }
 
 	[Fact]
 	public async Task Handle_ShouldFail_WhenNoRefreshTokenInCookie()
