@@ -1,7 +1,7 @@
 ﻿using _305.Application.IUOW;
 using Serilog;
 
-namespace _305.WebApi.Assistants.Middlewar;
+namespace _305.WebApi.Assistants.Middleware;
 
 /// <summary>
 /// Middleware برای جلوگیری از استفاده توکن‌هایی که در لیست سیاه قرار گرفته‌اند.

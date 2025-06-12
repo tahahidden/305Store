@@ -1,6 +1,6 @@
 ﻿using Hangfire.Dashboard;
 
-namespace _305.WebApi.Assistants.Middlewar
+namespace _305.WebApi.Assistants.Middleware
 {
 	/// <summary>
 	/// فیلتر مجوز برای دسترسی به داشبورد Hangfire، که تنها کاربران احراز هویت‌شده

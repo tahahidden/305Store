@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Text;
 
-namespace _305.WebApi.Assistants.Middlewar;
+namespace _305.WebApi.Assistants.Middleware;
 
 /// <summary>
 /// Middleware برای لاگ گرفتن درخواست‌ها در فایل متنی.
