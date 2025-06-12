@@ -6,7 +6,7 @@ namespace _305.BuildingBlocks.Helper;
 /// <summary>
 /// ابزار کمکی برای مدیریت فایل‌های آپلود شده مانند تصویر.
 /// </summary>
-public static class FileManager
+public class FileManager : _305.BuildingBlocks.IService.IFileManager
 {
     /// <summary>
     /// آپلود تصویر به مسیر مشخص‌شده و تولید آدرس اینترنتی آن.
@@ -15,7 +15,7 @@ public static class FileManager
     /// <param name="request">آبجکت HTTP برای استخراج base URL</param>
     /// <param name="folderName">نام پوشه ذخیره‌سازی (پیش‌فرض: images)</param>
     /// <returns>URL نهایی تصویر بارگذاری‌شده</returns>
-    public static async Task<string> UploadImageAsync(
+    public async Task<string> UploadImageAsync(
         IFormFile file,
         HttpRequest request,
         string folderName = FileDefaults.DefaultFolderName)
@@ -48,7 +48,7 @@ public static class FileManager
     /// حذف تصویر از مسیر مشخص‌شده.
     /// </summary>
     /// <param name="imageUrl">آدرس کامل تصویر (مثلاً http://site.com/images/abc.jpg)</param>
-    public static void DeleteImageFile(string imageUrl)
+    public void DeleteImageFile(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))
             return;

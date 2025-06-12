@@ -1,4 +1,4 @@
-﻿using _305.BuildingBlocks.Helper;
+using _305.BuildingBlocks.Helper;
 using _305.BuildingBlocks.IService;
 using Microsoft.AspNetCore.Http;
 
@@ -8,8 +8,11 @@ namespace _305.BuildingBlocks.Service;
 /// سرویس فایل برای بارگذاری و حذف تصاویر.
 /// وابسته به HttpContext برای دسترسی به اطلاعات درخواست (مانند آدرس Base).
 /// </summary>
-public class FileService(IHttpContextAccessor contextAccessor) : IFileService
+public class FileService(IHttpContextAccessor contextAccessor, IFileManager fileManager) : IFileService
 {
+    private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
+    private readonly IFileManager _fileManager = fileManager;
+
     /// <summary>
     /// حذف فایل تصویر از مسیر مشخص‌شده در URL
     /// </summary>
@@ -17,7 +20,7 @@ public class FileService(IHttpContextAccessor contextAccessor) : IFileService
     public void DeleteImage(string imageUrl)
     {
         // استفاده از کلاس FileManager برای حذف امن فایل
-        FileManager.DeleteImageFile(imageUrl);
+        _fileManager.DeleteImageFile(imageUrl);
     }
 
     /// <summary>
@@ -28,10 +31,11 @@ public class FileService(IHttpContextAccessor contextAccessor) : IFileService
     public async Task<string> UploadImage(IFormFile file)
     {
         // دریافت شیء HttpRequest برای استخراج مسیر دامنه جهت تولید URL کامل
-        var request = contextAccessor.HttpContext?.Request
+        var request = _contextAccessor.HttpContext?.Request
                       ?? throw new InvalidOperationException("HttpContext در دسترس نیست.");
 
         // استفاده از FileManager برای ذخیره تصویر و تولید URL نهایی
-        return await FileManager.UploadImageAsync(file, request);
+        return await _fileManager.UploadImageAsync(file, request);
     }
 }
+

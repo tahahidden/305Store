@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace _305.WebApi.Assistants.Middleware;
 
@@ -8,12 +10,14 @@ namespace _305.WebApi.Assistants.Middleware;
 public class LoggingMiddleware
 {
     private readonly RequestDelegate _next;
-    private static readonly string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "requests.txt");
+    private readonly string _logPath;
 
-    public LoggingMiddleware(RequestDelegate next)
+    public LoggingMiddleware(RequestDelegate next, IConfiguration configuration)
     {
         _next = next;
-        EnsureLogDirectoryExists();
+        _logPath = configuration["RequestLogging:FilePath"] ??
+                    Path.Combine(Directory.GetCurrentDirectory(), "logs", "requests.txt");
+        EnsureLogDirectoryExists(_logPath);
     }
 
     /// <summary>
@@ -31,9 +35,9 @@ public class LoggingMiddleware
     /// <summary>
     /// اطمینان از وجود پوشه لاگ.
     /// </summary>
-    private static void EnsureLogDirectoryExists()
+    private static void EnsureLogDirectoryExists(string logPath)
     {
-        var directory = Path.GetDirectoryName(LogPath);
+        var directory = Path.GetDirectoryName(logPath);
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory!);
     }
@@ -41,9 +45,9 @@ public class LoggingMiddleware
     /// <summary>
     /// نوشتن لاگ در فایل به صورت async.
     /// </summary>
-    private static async Task WriteLogAsync(byte[] logBytes)
+    private async Task WriteLogAsync(byte[] logBytes)
     {
-        await using var stream = new FileStream(LogPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, useAsync: true);
+        await using var stream = new FileStream(_logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, useAsync: true);
         await stream.WriteAsync(logBytes, 0, logBytes.Length);
     }
 }

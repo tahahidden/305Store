@@ -3,6 +3,7 @@ using _305.Application.IService;
 using _305.BuildingBlocks.Configurations;
 using _305.BuildingBlocks.IService;
 using _305.BuildingBlocks.Service;
+using _305.BuildingBlocks.Helper;
 using _305.Infrastructure.Persistence;
 using _305.Infrastructure.Service;
 using _305.WebApi.Assistants.Middleware;
@@ -39,6 +40,7 @@ builder.Services.Configure<LockoutConfig>(
 
 // ─────────────── Services and Repositories ───────────────
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IFileManager, FileManager>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
