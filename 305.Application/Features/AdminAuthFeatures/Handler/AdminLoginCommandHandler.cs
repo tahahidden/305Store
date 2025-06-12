@@ -36,8 +36,8 @@ public class AdminLoginCommandHandler(
 				user.failed_login_count++;
 				if (user.failed_login_count >= lockOutConfig.FailedLoginLimit)
 				{
-					user.is_locked_out = true;
-					user.lock_out_end_time = lockOutConfig.Duration; // قفل موقت
+                                        user.is_locked_out = true;
+                                        user.lock_out_end_time = DateTime.Now.Add(lockOutConfig.LockoutDuration); // قفل موقت
 				}
 				unitOfWork.UserRepository.Update(user);
 				await unitOfWork.CommitAsync(cancellationToken);
