@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.UserRoleFeatures.Command;
 using _305.Application.Features.UserRoleFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -16,11 +16,11 @@ public class EditUserRoleCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldEditUserRole_WhenEntityExists()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var userRepoMock = new Mock<IUserRepository>();
+		var userRepoMock = new Mock<IRepository<User>>();
 		userRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<User, bool>>>()))
 			.ReturnsAsync(true);
@@ -59,11 +59,11 @@ public class EditUserRoleCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnCommitFail_WhenCommitFails()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var userRepoMock = new Mock<IUserRepository>();
+		var userRepoMock = new Mock<IRepository<User>>();
 		userRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<User, bool>>>()))
 			.ReturnsAsync(true);

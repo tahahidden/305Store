@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.PermissionFeatures.Command;
 using _305.Application.Features.PermissionFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -16,7 +16,7 @@ public class DeletePermissionCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDelete<
 			DeletePermissionCommand,
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			DeletePermissionCommandHandler>(
 			handlerFactory: uow => new DeletePermissionCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
@@ -33,7 +33,7 @@ public class DeletePermissionCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDeleteNotFound<
 			DeletePermissionCommand,
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			DeletePermissionCommandHandler>(
 			handlerFactory: uow => new DeletePermissionCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),

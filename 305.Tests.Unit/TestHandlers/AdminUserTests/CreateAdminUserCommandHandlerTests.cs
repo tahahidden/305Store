@@ -3,7 +3,7 @@ using _305.Tests.Unit.DataProvider;
 using Moq;
 using System.Linq.Expressions;
 using _305.Application.Features.AdminUserFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.GenericHandlers;
 
@@ -16,7 +16,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateAdminUserCommand,                 // Command Type
 			User,                          // Entity Type
-			IUserRepository,               // Repository Interface
+			IRepository<User>,               // Repository Interface
 			CreateAdminUserCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -32,7 +32,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepository,               // Repository Interface
+			IRepository<User>,               // Repository Interface
 			CreateAdminUserCommandHandler
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -56,7 +56,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepository,               // Repository Interface
+			IRepository<User>,               // Repository Interface
 			CreateAdminUserCommandHandler
 		>(
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),
@@ -84,7 +84,7 @@ public class CreateAdminUserCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateAdminUserCommand,
 			User,                          // Entity Type
-			IUserRepository,               // Repository Interface
+			IRepository<User>,               // Repository Interface
 			CreateAdminUserCommandHandler>(
 
 			handlerFactory: uow => new CreateAdminUserCommandHandler(uow),

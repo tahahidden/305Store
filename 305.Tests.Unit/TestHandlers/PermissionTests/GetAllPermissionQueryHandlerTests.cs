@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.PermissionFeatures.Handler;
 using _305.Application.Features.PermissionFeatures.Query;
 using _305.Application.Features.PermissionFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -19,7 +19,7 @@ public class GetAllPermissionQueryHandlerTests
 		};
 
 		await GetAllHandlerTestHelper.TestHandle_Success
-			<Permission, PermissionResponse, IPermissionRepository, GetAllPermissionQueryHandler>(
+			<Permission, PermissionResponse, IRepository<Permission>, GetAllPermissionQueryHandler>(
 				handlerFactory: unitOfWork => new GetAllPermissionQueryHandler(unitOfWork),
 				execute: (handler, ct) => handler.Handle(new GetAllPermissionQuery(), ct),
 				repoSelector: u => u.PermissionRepository,
@@ -29,7 +29,7 @@ public class GetAllPermissionQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnFail_WhenExceptionThrown()
 	{
-		await GetAllHandlerTestHelper.TestHandle_FailOnException<Permission, PermissionResponse, IPermissionRepository, GetAllPermissionQueryHandler>(
+		await GetAllHandlerTestHelper.TestHandle_FailOnException<Permission, PermissionResponse, IRepository<Permission>, GetAllPermissionQueryHandler>(
 			handlerFactory: uow => new GetAllPermissionQueryHandler(uow),
 			execute: (handler, ct) => handler.Handle(new GetAllPermissionQuery(), ct),
 			repoSelector: uow => uow.PermissionRepository);

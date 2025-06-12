@@ -2,7 +2,7 @@
 using Moq;
 using System.Linq.Expressions;
 using _305.Application.Features.RoleFeatures.Command;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.GenericHandlers;
 using _305.Application.Features.RoleFeatures.Handler;
@@ -16,7 +16,7 @@ public class CreateRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateRoleCommand,                 // Command Type
 			Role,                          // Entity Type
-			IRoleRepository,               // Repository Interface
+			IRepository<Role>,               // Repository Interface
 			CreateRoleCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateRoleCommandHandler(uow),
@@ -35,7 +35,7 @@ public class CreateRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateRoleCommand,
 			Role,
-			IRoleRepository,
+			IRepository<Role>,
 			CreateRoleCommandHandler>(
 
 			handlerFactory: uow => new CreateRoleCommandHandler(uow),

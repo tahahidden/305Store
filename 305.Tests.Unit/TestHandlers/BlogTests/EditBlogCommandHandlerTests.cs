@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
@@ -20,7 +20,7 @@ public class EditBlogCommandHandlerTests
 					   .ReturnsAsync("images/test.jpg");
 
 		// 🛠️ تعریف اولیه mock دسته‌بندی بلاگ
-		var blogCategoryRepoMock = new Mock<IBlogCategoryRepository>();
+		var blogCategoryRepoMock = new Mock<IRepository<BlogCategory>>();
 		blogCategoryRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<BlogCategory, bool>>>()))
 			.ReturnsAsync(true); // فرض می‌گیریم دسته‌بندی وجود داره
@@ -67,7 +67,7 @@ public class EditBlogCommandHandlerTests
 					   .ReturnsAsync("uploads/test-image.jpg");
 
 		// 🛠️ تعریف اولیه mock دسته‌بندی بلاگ
-		var blogCategoryRepoMock = new Mock<IBlogCategoryRepository>();
+		var blogCategoryRepoMock = new Mock<IRepository<BlogCategory>>();
 		blogCategoryRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<BlogCategory, bool>>>()))
 			.ReturnsAsync(true); // فرض می‌گیریم دسته‌بندی وجود داره

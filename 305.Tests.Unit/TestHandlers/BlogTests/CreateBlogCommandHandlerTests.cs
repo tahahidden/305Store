@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
@@ -26,7 +26,7 @@ public class CreateBlogCommandHandlerTests
 		var command = BlogDataProvider.Create(); // این مقدار blog_category_id معتبر داره
 
 		// 🛠️ تعریف اولیه mock دسته‌بندی بلاگ
-		var blogCategoryRepoMock = new Mock<IBlogCategoryRepository>();
+		var blogCategoryRepoMock = new Mock<IRepository<BlogCategory>>();
 		blogCategoryRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<BlogCategory, bool>>>()))
 			.ReturnsAsync(true); // فرض می‌گیریم دسته‌بندی وجود داره
@@ -34,7 +34,7 @@ public class CreateBlogCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			CreateBlogCommandHandler
 		>(
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
@@ -60,7 +60,7 @@ public class CreateBlogCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			CreateBlogCommandHandler
 		>(
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
@@ -87,7 +87,7 @@ public class CreateBlogCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			CreateBlogCommandHandler
 		>(
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
@@ -116,7 +116,7 @@ public class CreateBlogCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			CreateBlogCommandHandler>(
 
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),
@@ -149,7 +149,7 @@ public class CreateBlogCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			CreateBlogCommandHandler
 		>(
 			handlerFactory: uow => new CreateBlogCommandHandler(uow, fileServiceMock.Object),

@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.UserRoleFeatures.Command;
 using _305.Application.Features.UserRoleFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -19,7 +19,7 @@ public class DeleteUserRoleCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDelete<
 			DeleteUserRoleCommand,
 			UserRole,
-			IUserRoleRepository,
+			IRepository<UserRole>,
 			DeleteUserRoleCommandHandler>(
 			handlerFactory: uow => new DeleteUserRoleCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
@@ -36,7 +36,7 @@ public class DeleteUserRoleCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDeleteNotFound<
 			DeleteUserRoleCommand,
 			UserRole,
-			IUserRoleRepository,
+			IRepository<UserRole>,
 			DeleteUserRoleCommandHandler>(
 			handlerFactory: uow => new DeleteUserRoleCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),

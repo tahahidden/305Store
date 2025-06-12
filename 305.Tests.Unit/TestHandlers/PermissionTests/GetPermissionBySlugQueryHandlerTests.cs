@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.PermissionFeatures.Handler;
 using _305.Application.Features.PermissionFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -17,7 +17,7 @@ public class GetPermissionBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
 			Permission,
 			PermissionResponse,
-			IPermissionRepository,
+			IRepository<Permission>,
 			GetPermissionBySlugQueryHandler>(
 			uow => new GetPermissionBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(PermissionDataProvider.GetBySlug(slug: "slug"), token),
@@ -32,7 +32,7 @@ public class GetPermissionBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_NotFound<
 			Permission,
 			PermissionResponse,
-			IPermissionRepository,
+			IRepository<Permission>,
 			GetPermissionBySlugQueryHandler>(
 			uow => new GetPermissionBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(PermissionDataProvider.GetBySlug(slug: "not-found"), token),

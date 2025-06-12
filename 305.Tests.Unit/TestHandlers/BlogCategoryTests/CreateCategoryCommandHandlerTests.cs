@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.Features.BlogCategoryFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -18,7 +18,7 @@ public class CreateCategoryCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateCategoryCommand,                 // Command Type
 			BlogCategory,                          // Entity Type
-			IBlogCategoryRepository,               // Repository Interface
+			IRepository<BlogCategory>,               // Repository Interface
 			CreateCategoryCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
@@ -35,7 +35,7 @@ public class CreateCategoryCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateCategoryCommand,
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			CreateCategoryCommandHandler
 		>(
 			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
@@ -59,7 +59,7 @@ public class CreateCategoryCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateFailure<
 			CreateCategoryCommand,
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			CreateCategoryCommandHandler
 		>(
 			handlerFactory: uow => new CreateCategoryCommandHandler(uow),
@@ -87,7 +87,7 @@ public class CreateCategoryCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateCategoryCommand,
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			CreateCategoryCommandHandler>(
 
 			handlerFactory: uow => new CreateCategoryCommandHandler(uow),

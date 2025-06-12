@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.RolePermissionFeatures.Command;
 using _305.Application.Features.RolePermissionFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -16,7 +16,7 @@ public class DeleteRolePermissionCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDelete<
 			DeleteRolePermissionCommand,
 			RolePermission,
-			IRolePermissionRepository,
+			IRepository<RolePermission>,
 			DeleteRolePermissionCommandHandler>(
 			handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
@@ -33,7 +33,7 @@ public class DeleteRolePermissionCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDeleteNotFound<
 			DeleteRolePermissionCommand,
 			RolePermission,
-			IRolePermissionRepository,
+			IRepository<RolePermission>,
 			DeleteRolePermissionCommandHandler>(
 			handlerFactory: uow => new DeleteRolePermissionCommandHandler(uow),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),

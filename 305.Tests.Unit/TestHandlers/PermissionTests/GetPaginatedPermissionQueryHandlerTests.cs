@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.PermissionFeatures.Handler;
 using _305.Application.Features.PermissionFeatures.Query;
 using _305.Application.Filters.Pagination;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -22,7 +22,7 @@ public class GetPaginatedPermissionQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			GetPaginatedPermissionQueryHandler,
 			GetPaginatedPermissionQuery>(
 				uow => new GetPaginatedPermissionQueryHandler(uow),
@@ -53,7 +53,7 @@ public class GetPaginatedPermissionQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			GetPaginatedPermissionQueryHandler,
 			GetPaginatedPermissionQuery>(
 				uow => new GetPaginatedPermissionQueryHandler(uow),
@@ -73,7 +73,7 @@ public class GetPaginatedPermissionQueryHandlerTests
 
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			GetPaginatedPermissionQueryHandler,
 			GetPaginatedPermissionQuery>(
 				uow => new GetPaginatedPermissionQueryHandler(uow),

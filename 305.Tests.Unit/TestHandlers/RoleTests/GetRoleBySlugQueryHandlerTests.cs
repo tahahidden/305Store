@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.RoleFeatures.Handler;
 using _305.Application.Features.RoleFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -17,7 +17,7 @@ public class GetRoleBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
 			Role,
 			RoleResponse,
-			IRoleRepository,
+			IRepository<Role>,
 			GetRoleBySlugQueryHandler>(
 			uow => new GetRoleBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(RoleDataProvider.GetBySlug(slug: "slug"), token),
@@ -32,7 +32,7 @@ public class GetRoleBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_NotFound<
 			Role,
 			RoleResponse,
-			IRoleRepository,
+			IRepository<Role>,
 			GetRoleBySlugQueryHandler>(
 			uow => new GetRoleBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(RoleDataProvider.GetBySlug(slug: "not-found"), token),

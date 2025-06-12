@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.RolePermissionFeatures.Handler;
 using _305.Application.Features.RolePermissionFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -17,7 +17,7 @@ public class GetRolePermissionBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
 			RolePermission,
 			RolePermissionResponse,
-			IRolePermissionRepository,
+			IRepository<RolePermission>,
 			GetRolePermissionBySlugQueryHandler>(
 			uow => new GetRolePermissionBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(RolePermissionDataProvider.GetBySlug(slug: "slug"), token),
@@ -32,7 +32,7 @@ public class GetRolePermissionBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_NotFound<
 			RolePermission,
 			RolePermissionResponse,
-			IRolePermissionRepository,
+			IRepository<RolePermission>,
 			GetRolePermissionBySlugQueryHandler>(
 			uow => new GetRolePermissionBySlugQueryHandler(uow),
 			(handler, token) => handler.Handle(RolePermissionDataProvider.GetBySlug(slug: "not-found"), token),

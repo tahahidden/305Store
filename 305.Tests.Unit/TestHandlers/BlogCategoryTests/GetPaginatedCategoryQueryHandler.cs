@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Handler;
 using _305.Application.Features.BlogCategoryFeatures.Query;
 using _305.Application.Filters.Pagination;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -20,7 +20,7 @@ public class GetPaginatedCategoryQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			GetPaginatedCategoryQueryHandler,
 			GetPaginatedCategoryQuery>(
 				uow => new GetPaginatedCategoryQueryHandler(uow),
@@ -51,7 +51,7 @@ public class GetPaginatedCategoryQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			GetPaginatedCategoryQueryHandler,
 			GetPaginatedCategoryQuery>(
 				uow => new GetPaginatedCategoryQueryHandler(uow),
@@ -71,7 +71,7 @@ public class GetPaginatedCategoryQueryHandlerTests
 
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			BlogCategory,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			GetPaginatedCategoryQueryHandler,
 			GetPaginatedCategoryQuery>(
 				uow => new GetPaginatedCategoryQueryHandler(uow),

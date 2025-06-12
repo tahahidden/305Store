@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.AdminUserFeatures.Handler;
 using _305.Application.Features.AdminUserFeatures.Query;
 using _305.Application.Filters.Pagination;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -19,7 +19,7 @@ public class GetPaginatedAdminUserQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			User,
-			IUserRepository,
+			IRepository<User>,
 			GetPaginatedAdminUserQueryHandler,
 			GetPaginatedAdminUserQuery>(
 				uow => new GetPaginatedAdminUserQueryHandler(uow),
@@ -50,7 +50,7 @@ public class GetPaginatedAdminUserQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			User,
-			IUserRepository,
+			IRepository<User>,
 			GetPaginatedAdminUserQueryHandler,
 			GetPaginatedAdminUserQuery>(
 				uow => new GetPaginatedAdminUserQueryHandler(uow),
@@ -70,7 +70,7 @@ public class GetPaginatedAdminUserQueryHandlerTests
 
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			User,
-			IUserRepository,
+			IRepository<User>,
 			GetPaginatedAdminUserQueryHandler,
 			GetPaginatedAdminUserQuery>(
 				uow => new GetPaginatedAdminUserQueryHandler(uow),

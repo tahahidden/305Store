@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Handler;
 using _305.Application.Features.BlogCategoryFeatures.Query;
 using _305.Application.Features.BlogCategoryFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -19,7 +19,7 @@ public class GetAllCategoryQueryHandlerTests
 		};
 
 		await GetAllHandlerTestHelper.TestHandle_Success
-			   <BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllCategoryQueryHandler>(
+			   <BlogCategory, BlogCategoryResponse, IRepository<BlogCategory>, GetAllCategoryQueryHandler>(
 			   handlerFactory: unitOfWork => new GetAllCategoryQueryHandler(unitOfWork),
 			   execute: (handler, ct) => handler.Handle(new GetAllCategoryQuery(), ct),
 			   repoSelector: u => u.BlogCategoryRepository,
@@ -29,7 +29,7 @@ public class GetAllCategoryQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnFail_WhenExceptionThrown()
 	{
-		await GetAllHandlerTestHelper.TestHandle_FailOnException<BlogCategory, BlogCategoryResponse, IBlogCategoryRepository, GetAllCategoryQueryHandler>(
+		await GetAllHandlerTestHelper.TestHandle_FailOnException<BlogCategory, BlogCategoryResponse, IRepository<BlogCategory>, GetAllCategoryQueryHandler>(
 			handlerFactory: uow => new GetAllCategoryQueryHandler(uow),
 			execute: (handler, ct) => handler.Handle(new GetAllCategoryQuery(), ct),
 			repoSelector: uow => uow.BlogCategoryRepository);

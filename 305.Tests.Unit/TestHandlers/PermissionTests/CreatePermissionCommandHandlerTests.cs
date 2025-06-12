@@ -2,7 +2,7 @@
 using Moq;
 using System.Linq.Expressions;
 using _305.Application.Features.PermissionFeatures.Command;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.GenericHandlers;
 using _305.Application.Features.PermissionFeatures.Handler;
@@ -16,7 +16,7 @@ public class CreatePermissionCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreatePermissionCommand,                 // Command Type
 			Permission,                          // Entity Type
-			IPermissionRepository,               // Repository Interface
+			IRepository<Permission>,               // Repository Interface
 			CreatePermissionCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreatePermissionCommandHandler(uow),
@@ -35,7 +35,7 @@ public class CreatePermissionCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreatePermissionCommand,
 			Permission,
-			IPermissionRepository,
+			IRepository<Permission>,
 			CreatePermissionCommandHandler>(
 
 			handlerFactory: uow => new CreatePermissionCommandHandler(uow),

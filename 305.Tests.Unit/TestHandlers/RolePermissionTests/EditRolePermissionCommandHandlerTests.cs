@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.RolePermissionFeatures.Command;
 using _305.Application.Features.RolePermissionFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -16,11 +16,11 @@ public class EditRolePermissionCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldEditRolePermission_WhenEntityExists()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var permissionRepoMock = new Mock<IPermissionRepository>();
+		var permissionRepoMock = new Mock<IRepository<Permission>>();
 		permissionRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
 			.ReturnsAsync(true);
@@ -58,11 +58,11 @@ public class EditRolePermissionCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnCommitFail_WhenCommitFails()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var permissionRepoMock = new Mock<IPermissionRepository>();
+		var permissionRepoMock = new Mock<IRepository<Permission>>();
 		permissionRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
 			.ReturnsAsync(true);

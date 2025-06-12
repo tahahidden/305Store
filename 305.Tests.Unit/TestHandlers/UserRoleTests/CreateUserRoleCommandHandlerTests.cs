@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.UserRoleFeatures.Command;
 using _305.Application.Features.UserRoleFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -16,11 +16,11 @@ public class CreateUserRoleCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldCreateUserRole_WhenNameAndSlugAreUnique()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var userRepoMock = new Mock<IUserRepository>();
+		var userRepoMock = new Mock<IRepository<User>>();
 		userRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<User, bool>>>()))
 			.ReturnsAsync(true);
@@ -28,7 +28,7 @@ public class CreateUserRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateUserRoleCommand,                 // Command Type
 			UserRole,                          // Entity Type
-			IUserRoleRepository,               // Repository Interface
+			IRepository<UserRole>,               // Repository Interface
 			CreateUserRoleCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
@@ -52,7 +52,7 @@ public class CreateUserRoleCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateUserRoleCommand,
 			UserRole,
-			IUserRoleRepository,
+			IRepository<UserRole>,
 			CreateUserRoleCommandHandler>(
 
 			handlerFactory: uow => new CreateUserRoleCommandHandler(uow),
