@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.BlogCategoryFeatures.Handler;
 using _305.Application.Features.BlogCategoryFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -17,7 +17,7 @@ public class GetCategoryBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
 			BlogCategory,
 			BlogCategoryResponse,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			GetCategoryBySlugQueryHandler>(
 				uow => new GetCategoryBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(BlogCategoryDataProvider.GetBySlug(slug: "slug"), token),
@@ -32,7 +32,7 @@ public class GetCategoryBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_NotFound<
 			BlogCategory,
 			BlogCategoryResponse,
-			IBlogCategoryRepository,
+			IRepository<BlogCategory>,
 			GetCategoryBySlugQueryHandler>(
 				uow => new GetCategoryBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(BlogCategoryDataProvider.GetBySlug(slug: "not-found"), token),

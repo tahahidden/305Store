@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.AdminUserFeatures.Handler;
 using _305.Application.Features.AdminUserFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -17,7 +17,7 @@ public class GetAdminUserBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
 			User,
 			AdminUserResponse,
-			IUserRepository,
+			IRepository<User>,
 			GetAdminUserBySlugQueryHandler>(
 				uow => new GetAdminUserBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(AdminUserDataProvider.GetBySlug(slug: "slug"), token),
@@ -32,7 +32,7 @@ public class GetAdminUserBySlugQueryHandlerTests
 		await GetBySlugHandlerTestHelper.TestGetBySlug_NotFound<
 			User,
 			AdminUserResponse,
-			IUserRepository,
+			IRepository<User>,
 			GetAdminUserBySlugQueryHandler>(
 				uow => new GetAdminUserBySlugQueryHandler(uow),
 				(handler, token) => handler.Handle(AdminUserDataProvider.GetBySlug(slug: "not-found"), token),

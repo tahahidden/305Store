@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.AdminAuthFeatures.Command;
 using _305.Application.Features.AdminAuthFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Security;
@@ -128,7 +128,7 @@ public class AdminLoginCommandHandlerTests
 		// Arrange
 		var user = AdminUserDataProvider.Row();
 
-		var userRepoMock = new Mock<IUserRepository>();
+		var userRepoMock = new Mock<IRepository<User>>();
 		userRepoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync(user);
 
@@ -157,7 +157,7 @@ public class AdminLoginCommandHandlerTests
 		// Arrange
 		var user = AdminUserDataProvider.Row(failedLoginCount:4);
 
-		var userRepoMock = new Mock<IUserRepository>();
+		var userRepoMock = new Mock<IRepository<User>>();
 		userRepoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
 			.ReturnsAsync(user);
 

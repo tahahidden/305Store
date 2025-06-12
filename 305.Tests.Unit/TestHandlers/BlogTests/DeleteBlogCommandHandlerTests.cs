@@ -1,6 +1,6 @@
 ﻿using _305.Application.Features.BlogFeatures.Command;
 using _305.Application.Features.BlogFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.BuildingBlocks.IService;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
@@ -21,7 +21,7 @@ public class DeleteBlogCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDelete<
 			DeleteBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			DeleteBlogCommandHandler>(
 			handlerFactory: uow => new DeleteBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),
@@ -40,7 +40,7 @@ public class DeleteBlogCommandHandlerTests
 		await DeleteHandlerTestHelper.TestDeleteNotFound<
 			DeleteBlogCommand,
 			Blog,
-			IBlogRepository,
+			IRepository<Blog>,
 			DeleteBlogCommandHandler>(
 			handlerFactory: uow => new DeleteBlogCommandHandler(uow, fileServiceMock.Object),
 			execute: (handler, cmd, token) => handler.Handle(cmd, token),

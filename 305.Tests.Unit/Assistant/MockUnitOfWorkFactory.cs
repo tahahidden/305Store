@@ -1,5 +1,6 @@
-﻿using _305.Application.IRepository;
+﻿using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
+using _305.Domain.Entity;
 using Moq;
 
 namespace _305.Tests.Unit.Assistant;
@@ -14,21 +15,21 @@ public static class MockUnitOfWorkFactory
 	/// ایجاد نمونه موک‌شده از IUnitOfWork با امکان ارسال موک‌های سفارشی برای ریپازیتوری‌ها.
 	/// اگر موک خاصی ارسال نشود، خودش موک جدید می‌سازد.
 	/// </summary>
-	/// <param name="blogRepositoryMock">موک سفارشی IBlogRepository (اختیاری)</param>
-	/// <param name="blogCategoryRepositoryMock">موک سفارشی IBlogCategoryRepository (اختیاری)</param>
+	/// <param name="blogRepositoryMock">موک سفارشی IRepository<Blog> (اختیاری)</param>
+	/// <param name="blogCategoryRepositoryMock">موک سفارشی IRepository<BlogCategory> (اختیاری)</param>
 	/// <returns>نمونه موک‌شده IUnitOfWork با ریپازیتوری‌های تنظیم شده</returns>
 	public static Mock<IUnitOfWork> Create(
-		Mock<IBlogRepository>? blogRepositoryMock = null,
-		Mock<IBlogCategoryRepository>? blogCategoryRepositoryMock = null)
+		Mock<IRepository<Blog>>? blogRepositoryMock = null,
+		Mock<IRepository<BlogCategory>>? blogCategoryRepositoryMock = null)
 	{
 		// ساخت موک از IUnitOfWork
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 
 		// اگر موک ریپازیتوری بلاگ ارسال نشده بود، یک موک جدید بساز
-		blogRepositoryMock ??= new Mock<IBlogRepository>();
+		blogRepositoryMock ??= new Mock<IRepository<Blog>>();
 
 		// اگر موک ریپازیتوری دسته‌بندی بلاگ ارسال نشده بود، یک موک جدید بساز
-		blogCategoryRepositoryMock ??= new Mock<IBlogCategoryRepository>();
+		blogCategoryRepositoryMock ??= new Mock<IRepository<BlogCategory>>();
 
 		// تنظیم ریپازیتوری‌ها در موک IUnitOfWork
 		unitOfWorkMock.Setup(u => u.BlogRepository).Returns(blogRepositoryMock.Object);

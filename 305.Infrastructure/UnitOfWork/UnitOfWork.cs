@@ -1,7 +1,8 @@
-﻿using _305.Application.IRepository;
+﻿using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
+using _305.Domain.Entity;
 using _305.Infrastructure.Persistence;
-using _305.Infrastructure.Repository;
+using _305.Infrastructure.BaseRepository;
 
 namespace _305.Infrastructure.UnitOfWork;
 public class UnitOfWork : IUnitOfWork, IAsyncDisposable
@@ -10,38 +11,38 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
 	private readonly ApplicationDbContext _context;
 
 	//Lazy Initialization * (توضیحات پایین صفحه)
-	private readonly Lazy<IBlogCategoryRepository> _blogCategoryRepository;
-	private readonly Lazy<IBlogRepository> _blogRepository;
-	private readonly Lazy<ITokenBlacklistRepository> _tokenBlacklistRepository;
-	private readonly Lazy<IPermissionRepository> _permissionRepository;
-	private readonly Lazy<IRolePermissionRepository> _rolePermissionRepository;
-	private readonly Lazy<IRoleRepository> _roleRepository;
-	private readonly Lazy<IUserRepository> _userRepository;
-	private readonly Lazy<IUserRoleRepository> _userRoleRepository;
+	private readonly Lazy<IRepository<BlogCategory>> _blogCategoryRepository;
+	private readonly Lazy<IRepository<Blog>> _blogRepository;
+	private readonly Lazy<IRepository<BlacklistedToken>> _tokenBlacklistRepository;
+	private readonly Lazy<IRepository<Permission>> _permissionRepository;
+	private readonly Lazy<IRepository<RolePermission>> _rolePermissionRepository;
+	private readonly Lazy<IRepository<Role>> _roleRepository;
+	private readonly Lazy<IRepository<User>> _userRepository;
+	private readonly Lazy<IRepository<UserRole>> _userRoleRepository;
 
 	public UnitOfWork(ApplicationDbContext context)
 	{
 		_context = context;
 
-		_blogCategoryRepository = new Lazy<IBlogCategoryRepository>(() => new BlogCategoryRepository(_context));
-		_blogRepository = new Lazy<IBlogRepository>(() => new BlogRepository(_context));
-		_tokenBlacklistRepository = new Lazy<ITokenBlacklistRepository>(() => new TokenBlacklistRepository(_context));
-		_permissionRepository = new Lazy<IPermissionRepository>(() => new PermissionRepository(_context));
-		_rolePermissionRepository = new Lazy<IRolePermissionRepository>(() => new RolePermissionRepository(_context));
-		_roleRepository = new Lazy<IRoleRepository>(() => new RoleRepository(_context));
-		_userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context));
-		_userRoleRepository = new Lazy<IUserRoleRepository>(() => new UserRoleRepository(_context));
+		_blogCategoryRepository = new Lazy<IRepository<BlogCategory>>(() => new Repository<BlogCategory>(_context));
+		_blogRepository = new Lazy<IRepository<Blog>>(() => new Repository<Blog>(_context));
+		_tokenBlacklistRepository = new Lazy<IRepository<BlacklistedToken>>(() => new Repository<BlacklistedToken>(_context));
+		_permissionRepository = new Lazy<IRepository<Permission>>(() => new Repository<Permission>(_context));
+		_rolePermissionRepository = new Lazy<IRepository<RolePermission>>(() => new Repository<RolePermission>(_context));
+		_roleRepository = new Lazy<IRepository<Role>>(() => new Repository<Role>(_context));
+		_userRepository = new Lazy<IRepository<User>>(() => new Repository<User>(_context));
+		_userRoleRepository = new Lazy<IRepository<UserRole>>(() => new Repository<UserRole>(_context));
 	}
 
 	// Properties که فقط مقدار Lazy.Value رو برمی‌گردونن
-	public IBlogCategoryRepository BlogCategoryRepository => _blogCategoryRepository.Value;
-	public IBlogRepository BlogRepository => _blogRepository.Value;
-	public ITokenBlacklistRepository TokenBlacklistRepository => _tokenBlacklistRepository.Value;
-	public IPermissionRepository PermissionRepository => _permissionRepository.Value;
-	public IRolePermissionRepository RolePermissionRepository => _rolePermissionRepository.Value;
-	public IRoleRepository RoleRepository => _roleRepository.Value;
-	public IUserRepository UserRepository => _userRepository.Value;
-	public IUserRoleRepository UserRoleRepository => _userRoleRepository.Value;
+	public IRepository<BlogCategory> BlogCategoryRepository => _blogCategoryRepository.Value;
+	public IRepository<Blog> BlogRepository => _blogRepository.Value;
+	public IRepository<BlacklistedToken> TokenBlacklistRepository => _tokenBlacklistRepository.Value;
+	public IRepository<Permission> PermissionRepository => _permissionRepository.Value;
+	public IRepository<RolePermission> RolePermissionRepository => _rolePermissionRepository.Value;
+	public IRepository<Role> RoleRepository => _roleRepository.Value;
+	public IRepository<User> UserRepository => _userRepository.Value;
+	public IRepository<UserRole> UserRoleRepository => _userRoleRepository.Value;
 
 	/// <summary>
 	/// تلاش برای ذخیره‌سازی تمامی تغییرات در پایگاه داده در قالب یک تراکنش.

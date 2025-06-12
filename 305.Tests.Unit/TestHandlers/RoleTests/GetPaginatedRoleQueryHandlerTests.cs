@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.RoleFeatures.Handler;
 using _305.Application.Features.RoleFeatures.Query;
 using _305.Application.Filters.Pagination;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -22,7 +22,7 @@ public class GetPaginatedRoleQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Role,
-			IRoleRepository,
+			IRepository<Role>,
 			GetPaginatedRoleQueryHandler,
 			GetPaginatedRoleQuery>(
 				uow => new GetPaginatedRoleQueryHandler(uow),
@@ -53,7 +53,7 @@ public class GetPaginatedRoleQueryHandlerTests
 		// Act + Assert
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Role,
-			IRoleRepository,
+			IRepository<Role>,
 			GetPaginatedRoleQueryHandler,
 			GetPaginatedRoleQuery>(
 				uow => new GetPaginatedRoleQueryHandler(uow),
@@ -73,7 +73,7 @@ public class GetPaginatedRoleQueryHandlerTests
 
 		await GetPaginatedHandlerTestHelper.TestPaginated_Success<
 			Role,
-			IRoleRepository,
+			IRepository<Role>,
 			GetPaginatedRoleQueryHandler,
 			GetPaginatedRoleQuery>(
 				uow => new GetPaginatedRoleQueryHandler(uow),

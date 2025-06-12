@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using _305.Application.Features.RolePermissionFeatures.Command;
 using _305.Application.Features.RolePermissionFeatures.Handler;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -13,18 +13,18 @@ public class CreateRolePermissionCommandHandlerTests
 	[Fact]
 	public async Task Handle_ShouldCreateRolePermission_WhenNameAndSlugAreUnique()
 	{
-		var roleRepoMock = new Mock<IRoleRepository>();
+		var roleRepoMock = new Mock<IRepository<Role>>();
 		roleRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Role, bool>>>()))
 			.ReturnsAsync(true);
-		var permissionRepoMock = new Mock<IPermissionRepository>();
+		var permissionRepoMock = new Mock<IRepository<Permission>>();
 		permissionRepoMock
 			.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
 			.ReturnsAsync(true);
 		await CreateHandlerTestHelper.TestCreateSuccess<
 			CreateRolePermissionCommand,                 // Command Type
 			RolePermission,                          // Entity Type
-			IRolePermissionRepository,               // Repository Interface
+			IRepository<RolePermission>,               // Repository Interface
 			CreateRolePermissionCommandHandler           // Handler Type
 		>(
 			handlerFactory: uow => new CreateRolePermissionCommandHandler(uow),
@@ -48,7 +48,7 @@ public class CreateRolePermissionCommandHandlerTests
 		await CreateHandlerTestHelper.TestCreateException<
 			CreateRolePermissionCommand,
 			RolePermission,
-			IRolePermissionRepository,
+			IRepository<RolePermission>,
 			CreateRolePermissionCommandHandler>(
 
 			handlerFactory: uow => new CreateRolePermissionCommandHandler(uow),

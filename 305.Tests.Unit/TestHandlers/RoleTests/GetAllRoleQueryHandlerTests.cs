@@ -1,7 +1,7 @@
 ﻿using _305.Application.Features.RoleFeatures.Handler;
 using _305.Application.Features.RoleFeatures.Query;
 using _305.Application.Features.RoleFeatures.Response;
-using _305.Application.IRepository;
+using _305.Application.IBaseRepository;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
 using _305.Tests.Unit.GenericHandlers;
@@ -19,7 +19,7 @@ public class GetAllRoleQueryHandlerTests
 		};
 
 		await GetAllHandlerTestHelper.TestHandle_Success
-			<Role, RoleResponse, IRoleRepository, GetAllRoleQueryHandler>(
+			<Role, RoleResponse, IRepository<Role>, GetAllRoleQueryHandler>(
 				handlerFactory: unitOfWork => new GetAllRoleQueryHandler(unitOfWork),
 				execute: (handler, ct) => handler.Handle(new GetAllRoleQuery(), ct),
 				repoSelector: u => u.RoleRepository,
@@ -29,7 +29,7 @@ public class GetAllRoleQueryHandlerTests
 	[Fact]
 	public async Task Handle_ShouldReturnFail_WhenExceptionThrown()
 	{
-		await GetAllHandlerTestHelper.TestHandle_FailOnException<Role, RoleResponse, IRoleRepository, GetAllRoleQueryHandler>(
+		await GetAllHandlerTestHelper.TestHandle_FailOnException<Role, RoleResponse, IRepository<Role>, GetAllRoleQueryHandler>(
 			handlerFactory: uow => new GetAllRoleQueryHandler(uow),
 			execute: (handler, ct) => handler.Handle(new GetAllRoleQuery(), ct),
 			repoSelector: uow => uow.RoleRepository);
