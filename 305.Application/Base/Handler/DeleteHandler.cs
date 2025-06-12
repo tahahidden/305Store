@@ -66,8 +66,10 @@ public class DeleteHandler
 			// عملیات حذف (در صورت نیاز)
 			onDeleteAsync?.Invoke(entity);
 
-			var committed = await _unitOfWork.CommitAsync(cancellationToken);
-			return !committed ? Responses.ExceptionFail<TResult>(default, $"{entityName} ویرایش نشد", 500) : Responses.ChangeOrDelete<TResult>(default, $"{entityName} با موفقیت ویرایش شد");
+                        var committed = await _unitOfWork.CommitAsync(cancellationToken);
+                        return !committed
+                                ? Responses.ExceptionFail<TResult>(default, $"{entityName} حذف نشد", 500)
+                                : Responses.ChangeOrDelete<TResult>(default, $"{entityName} با موفقیت حذف شد");
 		}
 		catch (OperationCanceledException)
 		{
