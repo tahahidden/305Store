@@ -1,4 +1,5 @@
 ﻿using _305.Application.Base.Response;
+using _305.Application.Base.Validator;
 using _305.Application.IUOW;
 using Serilog;
 
@@ -56,13 +57,11 @@ public class GetBySlugHandler
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات لغو شد توسط CancellationToken");
-			return Responses.Fail<TDto>(null, "عملیات لغو شد", 499);
+			return ExceptionHandlers.CancellationException<TDto>(_logger);
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در دریافت موجودیت بر اساس Slug: {Message}", ex.Message);
-			return Responses.ExceptionFail<TDto>(null);
+			return ExceptionHandlers.GeneralException<TDto>(ex, _logger);
 		}
 	}
 }

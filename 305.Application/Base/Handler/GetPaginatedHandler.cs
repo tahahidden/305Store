@@ -1,4 +1,5 @@
 ﻿using _305.Application.Base.Response;
+using _305.Application.Base.Validator;
 using _305.Application.Filters.Pagination;
 using _305.Application.IUOW;
 using Serilog;
@@ -43,13 +44,11 @@ public class GetPaginatedHandler
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات لغو شد توسط CancellationToken");
-			return Responses.Fail<PaginatedList<TEntity>>(null, "عملیات لغو شد", 499);
+			return ExceptionHandlers.CancellationException<PaginatedList<TEntity>>(_logger);
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در دریافت داده‌های صفحه‌بندی شده: {Message}", ex.Message);
-			return Responses.ExceptionFail<PaginatedList<TEntity>>();
+			return ExceptionHandlers.GeneralException<PaginatedList<TEntity>>(ex, _logger);
 		}
 	}
 }

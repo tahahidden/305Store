@@ -9,7 +9,7 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
 	
 	private readonly ApplicationDbContext _context;
 
-	//Lazy Initialization * (توضیحاتت پایین صفحه)
+	//Lazy Initialization * (توضیحات پایین صفحه)
 	private readonly Lazy<IBlogCategoryRepository> _blogCategoryRepository;
 	private readonly Lazy<IBlogRepository> _blogRepository;
 	private readonly Lazy<ITokenBlacklistRepository> _tokenBlacklistRepository;

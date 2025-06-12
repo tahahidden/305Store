@@ -4,42 +4,39 @@ using Moq;
 
 namespace _305.Tests.Unit.Assistant;
 
-// todo
+/// <summary>
+/// کلاس کمکی برای ساخت نمونه‌های موک‌شده از IUnitOfWork و ریپازیتوری‌های مرتبط.
+/// این متد به راحتی امکان جایگزینی موک‌های دلخواه ریپازیتوری‌ها را دارد.
+/// </summary>
 public static class MockUnitOfWorkFactory
 {
 	/// <summary>
-	/// این متد یک نمونه موک‌شده از IUnitOfWork می‌سازد که در تست‌های واحد کاربرد دارد.
-	/// می‌توانید موک‌های سفارشی از ریپازیتوری‌ها را به عنوان پارامتر به این متد ارسال کنید،
-	/// یا اگر ارسال نکنید، خودش به صورت پیش‌فرض موک جدید می‌سازد.
+	/// ایجاد نمونه موک‌شده از IUnitOfWork با امکان ارسال موک‌های سفارشی برای ریپازیتوری‌ها.
+	/// اگر موک خاصی ارسال نشود، خودش موک جدید می‌سازد.
 	/// </summary>
-	/// <param name="blogRepositoryMock">موک دلخواه از IBlogRepository (اختیاری)</param>
-	/// <param name="blogCategoryRepositoryMock">موک دلخواه از IBlogCategoryRepository (اختیاری)</param>
-	/// <returns>نمونه موک شده IUnitOfWork با ریپازیتوری‌های تنظیم شده</returns>
-	/// TODO : USE THIS MAYBE
+	/// <param name="blogRepositoryMock">موک سفارشی IBlogRepository (اختیاری)</param>
+	/// <param name="blogCategoryRepositoryMock">موک سفارشی IBlogCategoryRepository (اختیاری)</param>
+	/// <returns>نمونه موک‌شده IUnitOfWork با ریپازیتوری‌های تنظیم شده</returns>
 	public static Mock<IUnitOfWork> Create(
 		Mock<IBlogRepository>? blogRepositoryMock = null,
 		Mock<IBlogCategoryRepository>? blogCategoryRepositoryMock = null)
 	{
-		// ایجاد یک موک جدید از IUnitOfWork
+		// ساخت موک از IUnitOfWork
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-		// اگر موک ریپازیتوری برای بلاگ ارسال نشده بود، یک موک جدید بساز
+		// اگر موک ریپازیتوری بلاگ ارسال نشده بود، یک موک جدید بساز
 		blogRepositoryMock ??= new Mock<IBlogRepository>();
 
-		// اگر موک ریپازیتوری برای دسته‌بندی بلاگ ارسال نشده بود، یک موک جدید بساز
+		// اگر موک ریپازیتوری دسته‌بندی بلاگ ارسال نشده بود، یک موک جدید بساز
 		blogCategoryRepositoryMock ??= new Mock<IBlogCategoryRepository>();
 
-		// تنظیم مقدار برگشتی پراپرتی BlogRepository روی موک ارسال شده یا ساخته شده
+		// تنظیم ریپازیتوری‌ها در موک IUnitOfWork
 		unitOfWorkMock.Setup(u => u.BlogRepository).Returns(blogRepositoryMock.Object);
-
-		// تنظیم مقدار برگشتی پراپرتی BlogCategoryRepository روی موک ارسال شده یا ساخته شده
 		unitOfWorkMock.Setup(u => u.BlogCategoryRepository).Returns(blogCategoryRepositoryMock.Object);
 
-		// تنظیم متد CommitAsync که در زمان صدا زدن با هر CancellationToken، مقدار true برمی‌گرداند
-		unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>()))
-					  .ReturnsAsync(true);
+		// تنظیم متد CommitAsync برای بازگرداندن مقدار true برای هر CancellationToken
+		unitOfWorkMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-		// بازگرداندن نمونه موک‌شده IUnitOfWork
 		return unitOfWorkMock;
 	}
 }

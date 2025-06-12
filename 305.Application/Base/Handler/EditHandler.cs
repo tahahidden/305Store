@@ -72,13 +72,11 @@ public class EditHandler<TCommand, TEntity>
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.Warning("عملیات ویرایش برای {Entity} لغو شد.", typeof(TEntity).Name);
-			return Responses.Fail<string>(null, "عملیات لغو شد", 499);
+			return ExceptionHandlers.CancellationException<string>(_logger);
 		}
 		catch (Exception ex)
 		{
-			_logger.Error(ex, "خطا در ویرایش {Entity}: {Message}", typeof(TEntity).Name, ex.Message);
-			return Responses.ExceptionFail<string>(null);
+			return ExceptionHandlers.GeneralException<string>(ex, _logger);
 		}
 	}
 }

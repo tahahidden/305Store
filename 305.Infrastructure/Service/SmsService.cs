@@ -2,71 +2,99 @@
 using Kavenegar;
 using Kavenegar.Models;
 using Kavenegar.Models.Enums;
+using System.Text;
+using _305.BuildingBlocks.Configurations;
 
-namespace _305.Infrastructure.Service;
-public class SmsService : ISmsService
+namespace _305.Infrastructure.Service
 {
-	// test api code
-	private const string ApiKey = "7762575A6D727561537779314251716C6B2B6C444B6E38316445357A6B3143306D634C42316A7A2F546C4D3D";
-	private const string Number = "9982003589";
-
-	public void SendForgotPass(string phone, string pass)
+	/// <summary>
+	/// سرویس ارسال پیامک با استفاده از سرویس کاوه نگار (Kavenegar).
+	/// </summary>
+	public class SmsService : ISmsService
 	{
-		//send
-	}
+		private readonly KavenegarApi _api;
 
-	public SendResult SendSms(string recipient, string message)
-	{
-		var api = new KavenegarApi(ApiKey);
-		var result = api.Send(Number, recipient, message);
-
-		return result;
-	}
-	// ارسال کد OTP
-	public string SendOtp(string recipient, string token)
-	{
-		try
+		/// <summary>
+		/// سازنده سرویس، اینجا اتصال به API کاوه نگار ایجاد می‌شود.
+		/// </summary>
+		public SmsService()
 		{
-			var api = new KavenegarApi(ApiKey);
-			// ارسال کد OTP با استفاده از قالب کاوه نگار
-			api.VerifyLookup(recipient, token, template: "LightGymLogin", type: VerifyLookupType.Sms);
-			return "OTP sent successfully.";
+			_api = new KavenegarApi(SmsConfig.ApiKey);
 		}
-		catch (Kavenegar.Exceptions.ApiException ex)
-		{
-			return $"API Error: {ex.Message}";
-		}
-		catch (Exception ex)
-		{
-			return $"General Error: {ex.Message}";
-		}
-	}
-	public string SendBulkSms(List<string> recipients, string message)
-	{
-		try
-		{
-			var api = new KavenegarApi(ApiKey);
-			var senders = new List<string> { Number };
-			var messages = new List<string> { message };
-			// Send the messages
-			var results = api.SendArray(senders, recipients, messages);
 
-			// Build the response for logging or display
-			var response = "Bulk SMS Results:\n";
-			foreach (var result in results)
+		/// <summary>
+		/// ارسال پیامک بازیابی رمز عبور (متد فعلاً خالی است، جای توسعه دارد).
+		/// </summary>
+		public void SendForgotPass(string phone, string pass)
+		{
+			// TODO: پیاده‌سازی ارسال پیام بازیابی رمز عبور
+		}
+
+		/// <summary>
+		/// ارسال یک پیامک معمولی به یک شماره مشخص.
+		/// </summary>
+		/// <param name="recipient">شماره دریافت کننده</param>
+		/// <param name="message">متن پیامک</param>
+		/// <returns>نتیجه ارسال پیامک</returns>
+		public SendResult SendSms(string recipient, string message)
+		{
+			return _api.Send(SmsConfig.SenderNumber, recipient, message);
+		}
+
+		/// <summary>
+		/// ارسال کد OTP با استفاده از قالب آماده کاوه نگار.
+		/// </summary>
+		/// <param name="recipient">شماره دریافت کننده</param>
+		/// <param name="token">کد OTP</param>
+		/// <returns>پیغام نتیجه ارسال</returns>
+		public string SendOtp(string recipient, string token)
+		{
+			try
 			{
-				response += $"Recipient: {result.Receptor}, Status: {result.StatusText}, Message ID: {result.Messageid}\n";
+				_api.VerifyLookup(recipient, token, template: "LightGymLogin", type: VerifyLookupType.Sms);
+				return "OTP sent successfully.";
 			}
+			catch (Kavenegar.Exceptions.ApiException ex)
+			{
+				return $"API Error: {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				return $"General Error: {ex.Message}";
+			}
+		}
 
-			return response;
-		}
-		catch (Kavenegar.Exceptions.ApiException ex)
+		/// <summary>
+		/// ارسال پیامک به چندین شماره به صورت Bulk.
+		/// </summary>
+		/// <param name="recipients">لیست شماره‌های دریافت کننده</param>
+		/// <param name="message">متن پیامک</param>
+		/// <returns>خروجی شامل وضعیت ارسال هر پیام</returns>
+		public string SendBulkSms(List<string> recipients, string message)
 		{
-			return $"API Error: {ex.Message}";
-		}
-		catch (Exception ex)
-		{
-			return $"General Error: {ex.Message}";
+			try
+			{
+				var senders = new List<string> { SmsConfig.SenderNumber };
+				var messages = new List<string> { message };
+
+				var results = _api.SendArray(senders, recipients, messages);
+
+				var response = new StringBuilder("Bulk SMS Results:\n");
+				foreach (var result in results)
+				{
+					response.AppendLine($"Recipient: {result.Receptor}, Status: {result.StatusText}, Message ID: {result.Messageid}");
+				}
+
+				return response.ToString();
+			}
+			catch (Kavenegar.Exceptions.ApiException ex)
+			{
+				return $"API Error: {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				return $"General Error: {ex.Message}";
+			}
 		}
 	}
 }
