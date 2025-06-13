@@ -38,4 +38,17 @@ public class User : BaseEntity
     #region Navigations
     public ICollection<UserRole>? user_roles { get; set; }
     #endregion
+
+    /// <summary>
+    /// سازنده برای ایجاد کاربر با مقادیر ضروری
+    /// </summary>
+    public User(string name, string slug, string mobile, string email, string security_stamp, string concurrency_stamp) : base(name, slug)
+    {
+        this.mobile = mobile;
+        this.email = email;
+        this.security_stamp = security_stamp;
+        this.concurrency_stamp = concurrency_stamp;
+    }
+
+    public User() { }
 }

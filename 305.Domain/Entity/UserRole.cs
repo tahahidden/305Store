@@ -9,4 +9,14 @@ public class UserRole : BaseEntity
     public User? user { get; set; }
     public Role? role { get; set; }
 
+    /// <summary>
+    /// سازنده برای ایجاد ارتباط کاربر و نقش
+    /// </summary>
+    public UserRole(long userid, long roleid) : base()
+    {
+        this.userid = userid;
+        this.roleid = roleid;
+    }
+
+    public UserRole() { }
 }
