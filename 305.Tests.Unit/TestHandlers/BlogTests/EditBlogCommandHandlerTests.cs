@@ -16,7 +16,7 @@ public class EditBlogCommandHandlerTests
     public async Task Handle_ShouldEditBlog_WhenEntityExists()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("images/test.jpg");
 
         // 🛠️ تعریف اولیه mock دسته‌بندی بلاگ
@@ -49,7 +49,7 @@ public class EditBlogCommandHandlerTests
     public async Task Handle_ShouldReturnNotFound_WhenEntityDoesNotExist()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await EditHandlerTestHelper.TestEditNotFound<EditBlogCommand, Blog, EditBlogCommandHandler>(
             handlerFactory: (repo, uow) => new EditBlogCommandHandler(uow, repo, fileServiceMock.Object),
@@ -63,7 +63,7 @@ public class EditBlogCommandHandlerTests
     public async Task Handle_ShouldReturnCommitFail_WhenCommitFails()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
 
         // 🛠️ تعریف اولیه mock دسته‌بندی بلاگ

@@ -22,11 +22,8 @@ public static class ExtensionMethods
     /// </summary>
     public static string ToSolar(this DateTime val)
     {
-        return string.Format("{0:0000}/{1:00}/{2:00} {3:00}:{4:00}:{5:00}",
-            PersianCalendar.GetYear(val),
-            PersianCalendar.GetMonth(val),
-            PersianCalendar.GetDayOfMonth(val),
-            val.Hour, val.Minute, val.Second);
+        return
+            $"{PersianCalendar.GetYear(val):0000}/{PersianCalendar.GetMonth(val):00}/{PersianCalendar.GetDayOfMonth(val):00} {val.Hour:00}:{val.Minute:00}:{val.Second:00}";
     }
 
     /// <summary>
@@ -34,11 +31,9 @@ public static class ExtensionMethods
     /// </summary>
     public static string ToSolarString(this DateTime val)
     {
-        int monthIndex = PersianCalendar.GetMonth(val) - 1;
-        return string.Format("{0:0000} {1} {2:00}",
-            PersianCalendar.GetYear(val),
-            PersianMonthNames[monthIndex],
-            PersianCalendar.GetDayOfMonth(val));
+        var monthIndex = PersianCalendar.GetMonth(val) - 1;
+        return
+            $"{PersianCalendar.GetYear(val):0000} {PersianMonthNames[monthIndex]} {PersianCalendar.GetDayOfMonth(val):00}";
     }
 
     /// <summary>
@@ -120,7 +115,7 @@ public static class ExtensionMethods
     /// </remarks>
     /// <param name="date">تاریخ ورودی</param>
     /// <returns>تاریخ معتبر به میلادی</returns>
-    public static DateTime ChangeDateToAD(this DateTime date)
+    public static DateTime ChangeDateToAd(this DateTime date)
     {
         // تلاش برای شناسایی صحت فرمت تاریخ
         var isValidDate = DateTime.TryParseExact(

@@ -1,6 +1,6 @@
-﻿using _305.BuildingBlocks.Text;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using _305.BuildingBlocks.Constants;
 
 namespace _305.BuildingBlocks.Helper;
 

@@ -1,4 +1,4 @@
-﻿namespace _305.BuildingBlocks.Text;
+﻿namespace _305.BuildingBlocks.Constants;
 
 /// <summary>
 /// مجموعه‌ای از کاراکترهای از پیش تعریف‌شده برای استفاده در تولید رشته‌های تصادفی

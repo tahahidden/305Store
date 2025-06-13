@@ -52,9 +52,9 @@ public class EditBlogCommandHandler(IUnitOfWork unitOfWork, IRepository<Blog> re
                 if (request.image_file is { Length: > 0 })
                 {
                     if (!string.IsNullOrEmpty(entity.image))
-                        fileService.DeleteImage(entity.image);
+                        fileService.DeleteFile(entity.image);
 
-                    var result = await fileService.UploadImage(request.image_file);
+                    var result = await fileService.UploadFile(request.image_file);
                     if (!string.IsNullOrEmpty(result))
                         request.image = result;
                 }

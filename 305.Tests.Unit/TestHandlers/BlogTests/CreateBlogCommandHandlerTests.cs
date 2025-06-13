@@ -19,7 +19,7 @@ public class CreateBlogCommandHandlerTests
         // Arrange
         var fileServiceMock = new Mock<IFileService>();
         fileServiceMock
-            .Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+            .Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
             .ReturnsAsync("uploads/test-image.jpg");
 
         var command = BlogDataProvider.Create(); // این مقدار blog_category_id معتبر داره
@@ -54,7 +54,7 @@ public class CreateBlogCommandHandlerTests
     public async Task Handle_ShouldFail_WhenNameIsDuplicate()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await CreateHandlerTestHelper.TestCreateFailure<
             CreateBlogCommand,
@@ -81,7 +81,7 @@ public class CreateBlogCommandHandlerTests
     public async Task Handle_ShouldFail_WhenSlugIsDuplicate()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await CreateHandlerTestHelper.TestCreateFailure<
             CreateBlogCommand,
@@ -110,7 +110,7 @@ public class CreateBlogCommandHandlerTests
     {
         var command = BlogDataProvider.Create();
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await CreateHandlerTestHelper.TestCreateException<
             CreateBlogCommand,
@@ -143,7 +143,7 @@ public class CreateBlogCommandHandlerTests
     public async Task Handle_ShouldFail_WhenImageFileIsNull()
     {
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await CreateHandlerTestHelper.TestCreateFailure<
             CreateBlogCommand,

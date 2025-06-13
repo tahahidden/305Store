@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 public interface IFileManager
 {
-    Task<string> UploadImageAsync(IFormFile file, HttpRequest request, string folderName = FileDefaults.DefaultFolderName);
-    void DeleteImageFile(string imageUrl);
+    Task<string> UploadFileAsync(IFormFile file, HttpRequest request, string folderName = FileDefaults.DefaultFolderName);
+    void DeleteFile(string imageUrl);
 }
 

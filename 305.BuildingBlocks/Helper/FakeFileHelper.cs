@@ -12,9 +12,9 @@ public static class FakeFileFactory
     /// <summary>
     /// ایجاد فایل تستی از محتوای متنی پیش‌فرض یا سفارشی.
     /// </summary>
-    /// <param name="fileName">نام فایل. پیش‌فرض: "test.jpg"</param>
-    /// <param name="contentType">نوع فایل. پیش‌فرض: "image/jpeg"</param>
-    /// <param name="textContent">محتوای متنی داخل فایل. پیش‌فرض: "fake image content"</param>
+    /// <param name="fileName">نام فایل. پیش‌فرض: FileDefaults.DefaultFileName</param>
+    /// <param name="contentType">نوع فایل. پیش‌فرض: FileDefaults.DefaultContentType</param>
+    /// <param name="textContent">محتوای متنی داخل فایل. پیش‌فرض: FileDefaults.DefaultTextContent</param>
     /// <returns>فایل جعلی از نوع <see cref="IFormFile"/></returns>
     public static IFormFile FromText(
         string fileName = FileDefaults.DefaultFileName,

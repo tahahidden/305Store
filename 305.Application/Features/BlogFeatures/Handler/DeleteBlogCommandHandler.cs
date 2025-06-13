@@ -17,7 +17,7 @@ public class DeleteBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileS
     {
         return await _handler.HandleAsync<Blog, string>(
             findEntityAsync: () => unitOfWork.BlogRepository.FindSingle(x => x.id == request.id),
-            onBeforeDeleteAsync: entity => fileService.DeleteImage(entity.image),
+            onBeforeDeleteAsync: entity => fileService.DeleteFile(entity.image),
             onDeleteAsync: entity => unitOfWork.BlogRepository.Remove(entity),
             entityName: "مقاله",
             notFoundMessage: "مقاله پیدا نشد",
