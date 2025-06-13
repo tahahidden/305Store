@@ -31,11 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "305.BuildingBlocks", "..\30
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6-ApiTests", "6-ApiTests", "{7B7FBF44-98DA-4714-86E3-D81B0A5991A9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		ReadMe.md = ReadMe.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
