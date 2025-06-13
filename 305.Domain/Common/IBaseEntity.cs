@@ -1,4 +1,5 @@
-﻿namespace _305.Domain.Common;
+﻿using System.Collections.Generic;
+namespace _305.Domain.Common;
 
 /// <summary>
 /// اینترفیس پایه برای تمام موجودیت‌ها (Entities) در سیستم
@@ -30,4 +31,9 @@ public interface IBaseEntity
     /// زمان آخرین بروزرسانی موجودیت (UTC)
     /// </summary>
     DateTime updated_at { get; }
+
+    /// <summary>
+    /// لیست رویدادهای دامنه مرتبط با این موجودیت
+    /// </summary>
+    IReadOnlyCollection<IDomainEvent> DomainEvents { get; }
 }
