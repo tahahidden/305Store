@@ -14,6 +14,22 @@ namespace _305.Infrastructure.Service
     {
         private readonly KavenegarApi _api;
 
+        private static string HandleExceptions(Func<string> action)
+        {
+            try
+            {
+                return action();
+            }
+            catch (Kavenegar.Exceptions.ApiException ex)
+            {
+                return $"API Error: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                return $"General Error: {ex.Message}";
+            }
+        }
+
         /// <summary>
         /// سازنده سرویس، اینجا اتصال به API کاوه نگار ایجاد می‌شود.
         /// </summary>
@@ -23,12 +39,14 @@ namespace _305.Infrastructure.Service
         }
 
         /// <summary>
-        /// ارسال پیامک بازیابی رمز عبور (متد فعلاً خالی است، جای توسعه دارد).
+        /// ارسال پیامک بازیابی رمز عبور.
         /// </summary>
         public void SendForgotPass(string phone, string pass)
-        {
-            // TODO: پیاده‌سازی ارسال پیام بازیابی رمز عبور
-        }
+            => HandleExceptions(() =>
+            {
+                _api.VerifyLookup(phone, pass, template: "ForgotPassword", type: VerifyLookupType.Sms);
+                return string.Empty;
+            });
 
         /// <summary>
         /// ارسال یک پیامک معمولی به یک شماره مشخص.
@@ -48,21 +66,11 @@ namespace _305.Infrastructure.Service
         /// <param name="token">کد OTP</param>
         /// <returns>پیغام نتیجه ارسال</returns>
         public string SendOtp(string recipient, string token)
-        {
-            try
+            => HandleExceptions(() =>
             {
                 _api.VerifyLookup(recipient, token, template: "LightGymLogin", type: VerifyLookupType.Sms);
                 return "OTP sent successfully.";
-            }
-            catch (Kavenegar.Exceptions.ApiException ex)
-            {
-                return $"API Error: {ex.Message}";
-            }
-            catch (Exception ex)
-            {
-                return $"General Error: {ex.Message}";
-            }
-        }
+            });
 
         /// <summary>
         /// ارسال پیامک به چندین شماره به صورت Bulk.
@@ -71,8 +79,7 @@ namespace _305.Infrastructure.Service
         /// <param name="message">متن پیامک</param>
         /// <returns>خروجی شامل وضعیت ارسال هر پیام</returns>
         public string SendBulkSms(List<string> recipients, string message)
-        {
-            try
+            => HandleExceptions(() =>
             {
                 var senders = new List<string> { SmsConfig.SenderNumber };
                 var messages = new List<string> { message };
@@ -86,15 +93,6 @@ namespace _305.Infrastructure.Service
                 }
 
                 return response.ToString();
-            }
-            catch (Kavenegar.Exceptions.ApiException ex)
-            {
-                return $"API Error: {ex.Message}";
-            }
-            catch (Exception ex)
-            {
-                return $"General Error: {ex.Message}";
-            }
-        }
+            });
     }
 }
