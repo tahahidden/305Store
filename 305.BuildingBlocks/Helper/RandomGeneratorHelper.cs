@@ -62,6 +62,9 @@ public static class RandomGenerator
         if (max <= min)
             throw new ArgumentOutOfRangeException(nameof(max), "max باید بزرگتر از min باشد.");
 
+        if (min < 0)
+            throw new ArgumentOutOfRangeException(nameof(min), "min نمی‌تواند منفی باشد.");
+
         return RandomNumberGenerator.GetInt32(min, max);
     }
 

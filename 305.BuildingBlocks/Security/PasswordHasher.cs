@@ -1,4 +1,5 @@
 ﻿using _305.BuildingBlocks.Configurations;
+using System;
 using System.Security.Cryptography;
 
 namespace _305.BuildingBlocks.Security;
@@ -89,7 +90,8 @@ public static class PasswordHasher
     {
         iterations = default;
         algorithm = default;
-        key = salt = null;
+        key = Array.Empty<byte>();
+        salt = Array.Empty<byte>();
 
         var parts = hash.Split('.', 4);
         if (parts.Length != 4)

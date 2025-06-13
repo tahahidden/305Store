@@ -30,6 +30,9 @@ public class FileService(IHttpContextAccessor contextAccessor, IFileManager file
     /// <returns>مسیر URL فایل آپلودشده</returns>
     public async Task<string> UploadFile(IFormFile file)
     {
+        if (file == null)
+            throw new ArgumentNullException(nameof(file));
+
         // دریافت شیء HttpRequest برای استخراج مسیر دامنه جهت تولید URL کامل
         var request = _contextAccessor.HttpContext?.Request
                       ?? throw new InvalidOperationException("HttpContext در دسترس نیست.");

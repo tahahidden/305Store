@@ -24,25 +24,38 @@ public class FileManager : IFileManager
         if (file == null || file.Length == 0)
             throw new ArgumentException("فایل معتبر نیست.", nameof(file));
 
-        // ساخت مسیر کامل پوشه ذخیره‌سازی (مثلاً /app/images)
-        var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
 
-        if (!Directory.Exists(uploadDirectory))
-            Directory.CreateDirectory(uploadDirectory);
+        var uploadDirectory = GetUploadDirectory(folderName);
 
-        // تولید نام یکتا برای فایل
-        var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        var uniqueFileName = GenerateUniqueFileName(file.FileName);
         var filePath = Path.Combine(uploadDirectory, uniqueFileName);
 
-        // ذخیره فایل در مسیر مشخص‌شده
-        await using var fileStream = new FileStream(filePath, FileMode.Create);
+        await using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
         await file.CopyToAsync(fileStream);
 
-        // تولید آدرس اینترنتی برای فایل
-        var baseUrl = $"{request.Scheme}://{request.Host}";
-        var fileUrl = $"{baseUrl}/{folderName}/{uniqueFileName}";
+        return BuildFileUrl(request, folderName, uniqueFileName);
+    }
 
-        return fileUrl;
+    private static string GetUploadDirectory(string folderName)
+    {
+        var directory = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+
+        return directory;
+    }
+
+    private static string GenerateUniqueFileName(string originalFileName)
+    {
+        return $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+    }
+
+    private static string BuildFileUrl(HttpRequest request, string folderName, string fileName)
+    {
+        var baseUrl = $"{request.Scheme}://{request.Host}";
+        return $"{baseUrl}/{folderName}/{fileName}";
     }
 
     /// <summary>
