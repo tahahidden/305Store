@@ -23,7 +23,7 @@ public class CreateBlogCommandHandler(IUnitOfWork unitOfWork, IFileService fileS
 
         if (request.image_file != null)
         {
-            var result = await fileService.UploadImage(request.image_file);
+            var result = await fileService.UploadFile(request.image_file);
             request.image = result;
         }
         else

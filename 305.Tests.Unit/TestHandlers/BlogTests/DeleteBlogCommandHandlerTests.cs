@@ -16,7 +16,7 @@ public class DeleteBlogCommandHandlerTests
     {
         var command = BlogDataProvider.Delete();
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await DeleteHandlerTestHelper.TestDelete<
             DeleteBlogCommand,
@@ -35,7 +35,7 @@ public class DeleteBlogCommandHandlerTests
     {
         var command = BlogDataProvider.Delete(id: 99);
         var fileServiceMock = new Mock<IFileService>();
-        fileServiceMock.Setup(fs => fs.UploadImage(It.IsAny<IFormFile>()))
+        fileServiceMock.Setup(fs => fs.UploadFile(It.IsAny<IFormFile>()))
                        .ReturnsAsync("uploads/test-image.jpg");
         await DeleteHandlerTestHelper.TestDeleteNotFound<
             DeleteBlogCommand,

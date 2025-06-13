@@ -5,18 +5,18 @@ using Microsoft.AspNetCore.Http;
 namespace _305.BuildingBlocks.Helper;
 
 /// <summary>
-/// ابزار کمکی برای مدیریت فایل‌های آپلود شده مانند تصویر.
+/// ابزار کمکی برای مدیریت فایل‌های آپلود شده مانند فایل.
 /// </summary>
 public class FileManager : IFileManager
 {
     /// <summary>
-    /// آپلود تصویر به مسیر مشخص‌شده و تولید آدرس اینترنتی آن.
+    /// آپلود فایل به مسیر مشخص‌شده و تولید آدرس اینترنتی آن.
     /// </summary>
     /// <param name="file">فایل ارسالی از سمت کلاینت</param>
     /// <param name="request">آبجکت HTTP برای استخراج base URL</param>
-    /// <param name="folderName">نام پوشه ذخیره‌سازی (پیش‌فرض: images)</param>
-    /// <returns>URL نهایی تصویر بارگذاری‌شده</returns>
-    public async Task<string> UploadImageAsync(
+    /// <param name="folderName">نام پوشه ذخیره‌سازی (پیش‌فرض: FileDefaults.DefaultFolderName)</param>
+    /// <returns>URL نهایی فایل بارگذاری‌شده</returns>
+    public async Task<string> UploadFileAsync(
         IFormFile file,
         HttpRequest request,
         string folderName = FileDefaults.DefaultFolderName)
@@ -46,10 +46,10 @@ public class FileManager : IFileManager
     }
 
     /// <summary>
-    /// حذف تصویر از مسیر مشخص‌شده.
+    /// حذف فایل از مسیر مشخص‌شده.
     /// </summary>
-    /// <param name="imageUrl">آدرس کامل تصویر (مثلاً http://site.com/images/abc.jpg)</param>
-    public void DeleteImageFile(string imageUrl)
+    /// <param name="imageUrl">آدرس کامل فایل (مثلاً http://site.com/images/abc.jpg)</param>
+    public void DeleteFile(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))
             return;
