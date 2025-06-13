@@ -171,6 +171,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Cr
 var app = builder.Build();
 
 // ─────────────── Middlewares ───────────────
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
 
