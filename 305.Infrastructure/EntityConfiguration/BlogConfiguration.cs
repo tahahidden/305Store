@@ -10,7 +10,7 @@ public class BlogConfiguration : IEntityTypeConfiguration<Blog>
         builder.HasKey(x => x.id);
         builder.Property(x => x.description).IsRequired();
         builder.Property(x => x.name).IsRequired();
-        builder.Property(x => x.slug).IsRequired();
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);;
         builder.Property(x => x.image).IsRequired();
         builder.Property(x => x.blog_text).IsRequired();
         builder.Property(x => x.keywords).IsRequired();

@@ -9,7 +9,7 @@ public class BlogCategoryConfiguration : IEntityTypeConfiguration<BlogCategory>
     {
         builder.HasKey(x => x.id);
         builder.Property(x => x.name).IsRequired();
-        builder.Property(x => x.slug).IsRequired();
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);;
         builder.HasIndex(x => x.slug).IsUnique();
     }
 }

@@ -12,7 +12,7 @@ public class BlacklistedTokenConfiguration : IEntityTypeConfiguration<Blackliste
         builder.Property(x => x.black_listed_on).IsRequired();
 
         builder.HasKey(x => x.id);
-        builder.Property(x => x.slug).IsRequired();
+        builder.Property(x => x.slug).IsRequired().HasMaxLength(1000);
         builder.HasIndex(x => x.slug).IsUnique();
     }
 }
