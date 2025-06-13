@@ -9,7 +9,7 @@ public interface IBaseEntity
     /// <summary>
     /// شناسه یکتا (Primary Key)
     /// </summary>
-    public long id { get; set; }
+    long id { get; }
 
     /// <summary>
     /// نام اختیاری موجودیت
