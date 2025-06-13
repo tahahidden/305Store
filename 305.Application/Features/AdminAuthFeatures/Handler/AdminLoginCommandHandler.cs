@@ -6,6 +6,7 @@ using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
 using _305.BuildingBlocks.Security;
 using _305.Application.Helpers;
+using _305.Domain.Entity;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
