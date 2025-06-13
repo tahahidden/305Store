@@ -9,4 +9,11 @@ public class Role : BaseEntity
     public ICollection<RolePermission>? role_permissions { get; set; }
 
     #endregion
+
+    /// <summary>
+    /// سازنده برای ایجاد نقش با مقادیر اولیه
+    /// </summary>
+    public Role(string name, string slug) : base(name, slug) { }
+
+    public Role() { }
 }

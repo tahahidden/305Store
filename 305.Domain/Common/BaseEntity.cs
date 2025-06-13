@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+// حذف وابستگی به EF Core برای رعایت اصل SRP
 
 namespace _305.Domain.Common;
 
@@ -31,7 +31,6 @@ public class BaseEntity : IBaseEntity
     /// <summary>
     /// اسلاگ (slug) یکتا برای موجودیت، معمولاً برای URLها یا لینک‌سازی استفاده می‌شود
     /// </summary>
-    [MaxLength(1000)]
     public string slug { get; set; } = null!;
 
     /// <summary>
@@ -41,5 +40,16 @@ public class BaseEntity : IBaseEntity
     {
         created_at = DateTime.UtcNow;
         updated_at = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// سازنده‌ای که مقدار اولیه نام و اسلاگ را دریافت می‌کند
+    /// </summary>
+    /// <param name="name">نام موجودیت</param>
+    /// <param name="slug">اسلاگ یکتا</param>
+    public BaseEntity(string name, string slug) : this()
+    {
+        this.name = name;
+        this.slug = slug;
     }
 }
