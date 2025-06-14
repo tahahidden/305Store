@@ -3,6 +3,7 @@ using _305.BuildingBlocks.Configurations;
 using Kavenegar;
 using Kavenegar.Models;
 using Kavenegar.Models.Enums;
+using Microsoft.Extensions.Options;
 using System.Text;
 
 namespace _305.Infrastructure.Service
@@ -13,6 +14,7 @@ namespace _305.Infrastructure.Service
     public class SmsService : ISmsService
     {
         private readonly KavenegarApi _api;
+        private readonly SmsConfig _config;
 
         private static string HandleExceptions(Func<string> action)
         {
@@ -33,9 +35,10 @@ namespace _305.Infrastructure.Service
         /// <summary>
         /// سازنده سرویس، اینجا اتصال به API کاوه نگار ایجاد می‌شود.
         /// </summary>
-        public SmsService()
+        public SmsService(IOptions<SmsConfig> options)
         {
-            _api = new KavenegarApi(SmsConfig.ApiKey);
+            _config = options.Value;
+            _api = new KavenegarApi(_config.ApiKey);
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace _305.Infrastructure.Service
         /// <returns>نتیجه ارسال پیامک</returns>
         public SendResult SendSms(string recipient, string message)
         {
-            return _api.Send(SmsConfig.SenderNumber, recipient, message);
+            return _api.Send(_config.SenderNumber, recipient, message);
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace _305.Infrastructure.Service
         public string SendBulkSms(List<string> recipients, string message)
             => HandleExceptions(() =>
             {
-                var senders = new List<string> { SmsConfig.SenderNumber };
+                var senders = new List<string> { _config.SenderNumber };
                 var messages = new List<string> { message };
 
                 var results = _api.SendArray(senders, recipients, messages);
