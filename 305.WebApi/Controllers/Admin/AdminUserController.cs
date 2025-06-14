@@ -30,3 +30,4 @@ public class AdminUserController(IMediator mediator) : BaseController(mediator)
     public Task<IActionResult> Delete([FromForm] DeleteAdminUserCommand command, CancellationToken cancellationToken) =>
         ExecuteCommand<DeleteAdminUserCommand, ResponseDto<string>>(command, cancellationToken);
 }
+

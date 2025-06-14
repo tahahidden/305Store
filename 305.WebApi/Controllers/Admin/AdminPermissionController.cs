@@ -34,3 +34,4 @@ public class AdminPermissionController(IMediator mediator) : BaseController(medi
     public Task<IActionResult> Delete([FromForm] DeletePermissionCommand command, CancellationToken cancellationToken) =>
         ExecuteCommand<DeletePermissionCommand, ResponseDto<string>>(command, cancellationToken);
 }
+

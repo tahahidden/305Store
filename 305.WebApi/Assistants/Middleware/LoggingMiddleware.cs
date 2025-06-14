@@ -1,5 +1,6 @@
 ﻿using System.Text;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using _305.BuildingBlocks.Configurations;
 using System.IO;
 
 namespace _305.WebApi.Assistants.Middleware;
@@ -12,11 +13,10 @@ public class LoggingMiddleware
     private readonly RequestDelegate _next;
     private readonly string _logPath;
 
-    public LoggingMiddleware(RequestDelegate next, IConfiguration configuration)
+    public LoggingMiddleware(RequestDelegate next, IOptions<RequestLoggingConfig> options)
     {
         _next = next;
-        _logPath = configuration["RequestLogging:FilePath"] ??
-                    Path.Combine(Directory.GetCurrentDirectory(), "logs", "requests.txt");
+        _logPath = options.Value.FilePath;
         EnsureLogDirectoryExists(_logPath);
     }
 
@@ -51,3 +51,4 @@ public class LoggingMiddleware
         await stream.WriteAsync(logBytes, 0, logBytes.Length);
     }
 }
+

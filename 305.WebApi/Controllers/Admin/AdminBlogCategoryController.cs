@@ -35,3 +35,4 @@ public class AdminBlogCategoryController(IMediator mediator) : BaseController(me
     public Task<IActionResult> Delete([FromForm] DeleteCategoryCommand command, CancellationToken cancellationToken) =>
         ExecuteCommand<DeleteCategoryCommand, ResponseDto<string>>(command, cancellationToken);
 }
+

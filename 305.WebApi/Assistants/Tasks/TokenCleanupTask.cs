@@ -9,8 +9,6 @@ public class TokenCleanupTask
 {
     /// <summary>
     /// اجرای پاک‌سازی توکن‌هایی که تاریخ انقضای آن‌ها گذشته است.
-    // ReSharper disable once InvalidXmlDocComment
-    /// </param>
     /// <param name="unitOfWork">واحد کاری برای دسترسی به ریپازیتوری‌ها و ثبت تغییرات.</param>
     public async Task ExecuteAsync(IUnitOfWork unitOfWork)
     {
@@ -25,3 +23,4 @@ public class TokenCleanupTask
         await unitOfWork.CommitAsync(CancellationToken.None);
     }
 }
+
