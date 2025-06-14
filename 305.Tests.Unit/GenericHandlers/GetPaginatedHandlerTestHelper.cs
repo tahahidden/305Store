@@ -3,6 +3,7 @@ using _305.Application.Filters.Pagination;
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.Domain.Common;
+using _305.Tests.Unit.Assistant;
 using Moq;
 using System.Linq.Expressions;
 
@@ -34,11 +35,8 @@ public static class GetPaginatedHandlerTestHelper
     where TRepository : class, IRepository<TEntity>
     where THandler : class
     {
-        // ساخت موک UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ساخت موک UnitOfWork و Repository و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // ستاپ متد GetPagedResultAsync با includeFunc به عنوان پارامتر
         repoMock.Setup(r =>

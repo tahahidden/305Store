@@ -22,12 +22,8 @@ public static class CreateHandlerTestHelper
     where TRepository : class, IRepository<TEntity>
     where THandler : class
     {
-        // ایجاد mock از UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // وصل کردن Repository mock به UnitOfWork mock
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ایجاد mock از UnitOfWork و Repository و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // اگر مقدار مورد انتظار برای شرط چک موجودیت داده شده، 
         // شرط ExistsAsync را با بررسی ExpressionHelper تنظیم کن
@@ -84,12 +80,8 @@ public static class CreateHandlerTestHelper
        where TRepository : class, IRepository<TEntity>
        where THandler : class
     {
-        // ساخت mock از UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // وصل کردن Repository mock به UnitOfWork mock
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ساخت mock از UnitOfWork و Repository و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // پیش‌فرض: موجودیت مشابه در دیتابیس وجود ندارد (برای کنترل بهتر با setupRepoMock قابل تغییر است)
         repoMock.Setup(r => r.ExistsAsync(It.IsAny<Expression<Func<TEntity, bool>>>())).ReturnsAsync(false);
@@ -138,11 +130,7 @@ public static class CreateHandlerTestHelper
      where THandler : class
     {
         // ایجاد mock برای UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // اتصال Repository mock به UnitOfWork mock
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // اعمال تنظیمات سفارشی در صورت وجود
         setupRepoMock?.Invoke(repoMock);

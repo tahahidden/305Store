@@ -11,7 +11,7 @@ public class GetPermissionBySlugQueryHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnData_WhenPermissionExists()
     {
-        var Permission = PermissionDataProvider.Row(name: "Name", id: 1, slug: "slug");
+        var permission = PermissionDataProvider.Row(name: "Name", id: 1, slug: "slug");
 
 
         await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
@@ -22,7 +22,7 @@ public class GetPermissionBySlugQueryHandlerTests
             uow => new GetPermissionBySlugQueryHandler(uow),
             (handler, token) => handler.Handle(PermissionDataProvider.GetBySlug(slug: "slug"), token),
             uow => uow.PermissionRepository,
-            Permission
+            permission
         );
     }
 

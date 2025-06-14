@@ -4,7 +4,7 @@ using _305.Application.Filters.Pagination;
 using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.DataProvider;
-public class RolePermissionDataProvider
+public static class RolePermissionDataProvider
 {
 
     public static CreateRolePermissionCommand Create(string name = "RolePermission-name",
@@ -62,10 +62,9 @@ public class RolePermissionDataProvider
         };
 
     public static PaginatedList<RolePermission> GetPaginatedList()
-        => new(new List<RolePermission>
-            {
-                new () { id = 1, name = "Tech" },
-                new () { id = 2, name = "Health" }
-            }
-            , count: 2, page: 1, pageSize: 10);
+        => PaginatedListFactory.Create(new List<RolePermission>
+        {
+            new () { id = 1, name = "Tech" },
+            new () { id = 2, name = "Health" }
+        });
 }

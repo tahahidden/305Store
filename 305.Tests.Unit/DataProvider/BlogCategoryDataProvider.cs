@@ -59,10 +59,9 @@ public static class BlogCategoryDataProvider
     };
 
     public static PaginatedList<BlogCategory> GetPaginatedList()
-    => new(new List<BlogCategory>
+        => PaginatedListFactory.Create(new List<BlogCategory>
         {
             new () { id = 1, name = "Tech" },
             new () { id = 2, name = "Health" }
-        }
-    , count: 2, page: 1, pageSize: 10);
+        });
 }

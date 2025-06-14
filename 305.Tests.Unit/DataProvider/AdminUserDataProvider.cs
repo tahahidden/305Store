@@ -78,12 +78,11 @@ public static class AdminUserDataProvider
     };
 
     public static PaginatedList<User> GetPaginatedList()
-    => new(new List<User>
+        => PaginatedListFactory.Create(new List<User>
         {
             Row(name: "Tech", id: 1, slug: "tech"),
             Row(name: "Health", id: 2, slug: "health")
-        }
-    , count: 2, page: 1, pageSize: 10);
+        });
 
 
     public static AdminLoginCommand LoginCommand(string email = "info@304.com", string password = "QAZqaz!@#123")
