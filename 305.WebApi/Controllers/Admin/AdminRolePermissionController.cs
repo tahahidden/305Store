@@ -30,3 +30,4 @@ public class AdminRolePermissionController(IMediator mediator) : BaseController(
     public Task<IActionResult> Delete([FromForm] DeleteRolePermissionCommand command, CancellationToken cancellationToken) =>
         ExecuteCommand<DeleteRolePermissionCommand, ResponseDto<string>>(command, cancellationToken);
 }
+

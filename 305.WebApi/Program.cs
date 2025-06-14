@@ -39,6 +39,8 @@ builder.Services.Configure<LockoutConfig>(
     builder.Configuration.GetSection(LockoutConfig.SectionName));
 builder.Services.Configure<SmsConfig>(
     builder.Configuration.GetSection(SmsConfig.SectionName));
+builder.Services.Configure<RequestLoggingConfig>(
+    builder.Configuration.GetSection(RequestLoggingConfig.SectionName));
 
 // ─────────────── Services and Repositories ───────────────
 builder.Services.AddHttpContextAccessor();
@@ -48,6 +50,10 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<PermissionSeeder>();
 builder.Services.AddScoped<IPermissionChecker, PermissionChecker>();
+if (!builder.Environment.IsEnvironment("Test"))
+{
+    builder.Services.AddHostedService<PermissionSeedHostedService>();
+}
 
 
 // JWT Config
@@ -202,21 +208,5 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-if (!builder.Environment.IsEnvironment("Test"))
-{
-    app.Lifetime.ApplicationStarted.Register(async void () =>
-    {
-        try
-        {
-            using var scope = app.Services.CreateScope();
-            var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
-            await seeder.SyncPermissionsAsync();
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "error during seeding permissions");
-        }
-    });
-}
 app.Run();
+

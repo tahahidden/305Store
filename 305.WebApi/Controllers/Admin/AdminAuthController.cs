@@ -27,3 +27,5 @@ public class AdminAuthController(IMediator mediator) : BaseController(mediator)
     public Task<IActionResult> Profile([FromQuery] GetUserProfileQuery query, CancellationToken cancellationToken) =>
         ExecuteQuery(query, cancellationToken);
 }
+
+
