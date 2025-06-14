@@ -2,6 +2,7 @@
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.Domain.Common;
+using _305.Tests.Unit.Assistant;
 using Moq;
 using System.Linq.Expressions;
 
@@ -33,12 +34,8 @@ public static class GetAllHandlerTestHelper
        where TRepository : class, IRepository<TEntity>
        where THandler : class
     {
-        // ایجاد موک UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // تنظیم UnitOfWork برای بازگرداندن موک ریپازیتوری
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ایجاد موک UnitOfWork و Repository و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // توجه: متد FindListAsync باید لیستی از موجودیت‌ها برگرداند
         repoMock.Setup(r => r.FindListAsync(null, It.IsAny<CancellationToken>()))
@@ -82,15 +79,13 @@ public static class GetAllHandlerTestHelper
         where THandler : class
     {
         // ایجاد موک UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // تنظیم موک ریپازیتوری به گونه‌ای که هنگام فراخوانی FindListAsync استثنا پرتاب کند
         repoMock.Setup(r => r.FindListAsync(null, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
-        // تنظیم UnitOfWork برای بازگرداندن ریپازیتوری موک شده
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // اتصال ریپازیتوری به UnitOfWork انجام شد در CreateFor
 
         // اعمال تنظیمات اضافی در صورت نیاز
         setupRepoMock?.Invoke(repoMock);

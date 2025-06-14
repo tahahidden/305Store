@@ -2,6 +2,7 @@
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.Domain.Common;
+using _305.Tests.Unit.Assistant;
 using Moq;
 using System.Linq.Expressions;
 
@@ -32,12 +33,8 @@ public static class DeleteHandlerTestHelper
         where TRepository : class, IRepository<TEntity>
         where THandler : class
     {
-        // ساخت موک از UnitOfWork و Repository مربوطه
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // تنظیم UnitOfWork برای برگشت ریپازیتوری موک شده هنگام فراخوانی repoSelector
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ساخت موک از UnitOfWork و Repository مربوطه و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // ایجاد یک نمونه موک از موجودیت
         var entity = Mock.Of<TEntity>();
@@ -96,11 +93,7 @@ public static class DeleteHandlerTestHelper
         where THandler : class
     {
         // ساخت موک از UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // تنظیم UnitOfWork برای بازگرداندن ریپازیتوری موک شده
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // تنظیم FindSingle به گونه‌ای که موجودیتی پیدا نشود (برگرداندن null)
         repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>(), null)).ReturnsAsync((TEntity?)null);

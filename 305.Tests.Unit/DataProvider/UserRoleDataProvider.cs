@@ -4,7 +4,7 @@ using _305.Application.Filters.Pagination;
 using _305.Domain.Entity;
 
 namespace _305.Tests.Unit.DataProvider;
-public class UserRoleDataProvider
+public static class UserRoleDataProvider
 {
     public static CreateUserRoleCommand Create(string name = "UserRole-name",
         string slug = "UserRole-slug", long userId = 1, long roleId = 1)
@@ -62,10 +62,9 @@ public class UserRoleDataProvider
         };
 
     public static PaginatedList<UserRole> GetPaginatedList()
-        => new(new List<UserRole>
-            {
-                new () { id = 1, name = "Tech" },
-                new () { id = 2, name = "Health" }
-            }
-            , count: 2, page: 1, pageSize: 10);
+        => PaginatedListFactory.Create(new List<UserRole>
+        {
+            new () { id = 1, name = "Tech" },
+            new () { id = 2, name = "Health" }
+        });
 }

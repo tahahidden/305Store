@@ -27,17 +27,15 @@ public static class TestExpressionEvaluator
     /// <returns>اگر شرط روی فیلد slug باشد و مقدار آن برابر expectedSlug باشد true برمی‌گرداند، در غیر اینصورت false</returns>
     public static bool MatchSlugExpression<TEntity>(Expression<Func<TEntity, bool>> expr, string expectedSlug)
     {
-        // بررسی اینکه بدنه Expression یک BinaryExpression (عملگر دودویی مثل ==) باشد
-        if (expr.Body is not BinaryExpression binary ||
-            // سمت چپ Expression باید یک MemberExpression (فیلد یا پراپرتی) باشد
-            binary.Left is not MemberExpression member ||
-            // نام فیلد سمت چپ باید "slug" باشد (بدون توجه به حروف بزرگ و کوچک)
-            !member.Member.Name.Equals("slug", StringComparison.OrdinalIgnoreCase)) return false;
-        // گرفتن مقدار سمت راست Expression (مقدار مورد مقایسه)
-        var rightValue = GetValueFromExpression(binary.Right);
+        // بررسی ساختار شرط و استخراج مقدار سمت راست در صورت معتبر بودن
+        if (expr.Body is BinaryExpression { Left: MemberExpression { Member.Name: var name }, Right: var right }
+            && name.Equals("slug", StringComparison.OrdinalIgnoreCase))
+        {
+            var rightValue = GetValueFromExpression(right);
+            return rightValue?.ToString() == expectedSlug;
+        }
 
-        // مقایسه مقدار سمت راست با مقدار مورد انتظار
-        return rightValue?.ToString() == expectedSlug;
+        return false;
 
         // اگر شرایط بالا برقرار نبود، false برمی‌گرداند
     }
@@ -48,27 +46,11 @@ public static class TestExpressionEvaluator
     /// </summary>
     /// <param name="expression">عبارت Expression که باید مقدارش استخراج شود</param>
     /// <returns>مقدار استخراج شده از Expression یا null اگر مقدار قابل استخراج نباشد</returns>
-    private static object? GetValueFromExpression(Expression expression)
+    private static object? GetValueFromExpression(Expression expression) => expression switch
     {
-        switch (expression)
-        {
-            // اگر Expression از نوع ثابت باشد، مقدار آن را مستقیما برمی‌گرداند
-            case ConstantExpression constant:
-                return constant.Value;
-            // اگر Expression یک MemberExpression باشد (مثلا فیلدی که مقدارش در حافظه است)
-            case MemberExpression memberExpression:
-                {
-                    // تبدیل MemberExpression به یک Lambda Expression که مقدار را به صورت آبجکت برمی‌گرداند
-                    var objectMember = Expression.Convert(memberExpression, typeof(object));
-                    var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-                    var getter = getterLambda.Compile();
-
-                    // اجرای Lambda برای به دست آوردن مقدار
-                    return getter();
-                }
-            default:
-                // اگر نتوان مقدار را استخراج کرد، null برمی‌گرداند
-                return null;
-        }
-    }
+        ConstantExpression constant => constant.Value,
+        MemberExpression memberExpression =>
+            Expression.Lambda<Func<object>>(Expression.Convert(memberExpression, typeof(object))).Compile().Invoke(),
+        _ => null,
+    };
 }

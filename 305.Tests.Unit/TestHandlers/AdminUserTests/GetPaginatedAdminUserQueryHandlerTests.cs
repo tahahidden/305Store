@@ -34,14 +34,14 @@ public class GetPaginatedAdminUserQueryHandlerTests
     public async Task Handle_ShouldFilterBySearchTerm_WhenSearchTermProvided()
     {
         // Arrange
-        var AdminUser = new List<User>
+        var adminUsers = new List<User>
         {
             AdminUserDataProvider.Row(id: 1, name: "Health"),
             AdminUserDataProvider.Row(id: 1, name: "Tech")
         };
 
         var paginatedList = new PaginatedList<User>(
-            AdminUser.Where(c => c.name.Contains("Tech")).ToList(),
+            adminUsers.Where(c => c.name.Contains("Tech")).ToList(),
             count: 1, page: 1, pageSize: 10
         );
 

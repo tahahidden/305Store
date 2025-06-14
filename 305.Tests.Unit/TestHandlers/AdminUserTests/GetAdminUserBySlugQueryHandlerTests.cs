@@ -11,7 +11,7 @@ public class GetAdminUserBySlugQueryHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnData_WhenAdminUserExists()
     {
-        var AdminUser = AdminUserDataProvider.Row(name: "Name", id: 1, slug: "slug");
+        var adminUser = AdminUserDataProvider.Row(name: "Name", id: 1, slug: "slug");
 
 
         await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
@@ -22,7 +22,7 @@ public class GetAdminUserBySlugQueryHandlerTests
                 uow => new GetAdminUserBySlugQueryHandler(uow),
                 (handler, token) => handler.Handle(AdminUserDataProvider.GetBySlug(slug: "slug"), token),
                 uow => uow.UserRepository,
-                AdminUser
+                adminUser
         );
     }
 

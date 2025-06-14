@@ -11,7 +11,7 @@ public class GetRoleBySlugQueryHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnData_WhenRoleExists()
     {
-        var Role = RoleDataProvider.Row(name: "Name", id: 1, slug: "slug");
+        var role = RoleDataProvider.Row(name: "Name", id: 1, slug: "slug");
 
 
         await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
@@ -22,7 +22,7 @@ public class GetRoleBySlugQueryHandlerTests
             uow => new GetRoleBySlugQueryHandler(uow),
             (handler, token) => handler.Handle(RoleDataProvider.GetBySlug(slug: "slug"), token),
             uow => uow.RoleRepository,
-            Role
+            role
         );
     }
 

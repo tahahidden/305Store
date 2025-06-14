@@ -2,6 +2,7 @@
 using _305.Application.IBaseRepository;
 using _305.Application.IUOW;
 using _305.Domain.Common;
+using _305.Tests.Unit.Assistant;
 using Moq;
 using System.Linq.Expressions;
 
@@ -32,10 +33,8 @@ public static class GetBySlugHandlerTestHelper
     where TRepository : class, IRepository<TEntity>
     where THandler : class
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        // ساخت موک UnitOfWork و Repository و اتصال آن‌ها
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // ignore includeFunc in Moq verification
         repoMock.Setup(r =>
@@ -77,11 +76,7 @@ public static class GetBySlugHandlerTestHelper
         where THandler : class
     {
         // ایجاد موک UnitOfWork و Repository
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var repoMock = new Mock<TRepository>();
-
-        // تنظیم UnitOfWork برای بازگرداندن موک ریپازیتوری
-        unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
+        var (unitOfWorkMock, repoMock) = RepositoryMockFactory.CreateFor(repoSelector);
 
         // تنظیم FindSingle برای بازگرداندن null (موجودیت یافت نشد)
         repoMock.Setup(r => r.FindSingle(It.IsAny<Expression<Func<TEntity, bool>>>(), null)).ReturnsAsync((TEntity?)null);

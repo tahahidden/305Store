@@ -11,7 +11,7 @@ public class GetRolePermissionBySlugQueryHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnData_WhenRolePermissionExists()
     {
-        var RolePermission = RolePermissionDataProvider.Row(name: "Name", id: 1, slug: "slug");
+        var rolePermission = RolePermissionDataProvider.Row(name: "Name", id: 1, slug: "slug");
 
 
         await GetBySlugHandlerTestHelper.TestGetBySlug_Success<
@@ -22,7 +22,7 @@ public class GetRolePermissionBySlugQueryHandlerTests
             uow => new GetRolePermissionBySlugQueryHandler(uow),
             (handler, token) => handler.Handle(RolePermissionDataProvider.GetBySlug(slug: "slug"), token),
             uow => uow.RolePermissionRepository,
-            RolePermission
+            rolePermission
         );
     }
 
