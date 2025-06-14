@@ -5,6 +5,7 @@ using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
 using _305.Application.Helpers;
+using _305.BuildingBlocks.Helper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -23,13 +24,13 @@ public class AdminRefreshCommandHandler(
     {
         try
         {
-            var refreshToken = ReadRefreshToken();
+            var refreshToken = CookieHelper.ReadJwtCookie(httpContextAccessor.HttpContext!.Request);
             if (refreshToken != null)
             {
                 var user = await unitOfWork.UserRepository.FindSingle(x => x.refresh_token == refreshToken);
                 if (user == null || user.refresh_token_expiry_time < DateTime.Now)
                 {
-                    DeleteRefreshTokenCookie();
+                    CookieHelper.DeleteJwtCookie(httpContextAccessor.HttpContext!.Response);
                     return Responses.Fail<LoginResponse>(null, message: "توکن نامعتبر است و یا منقضی شده است", code: 401);
                 }
 
@@ -57,20 +58,5 @@ public class AdminRefreshCommandHandler(
         }
     }
 
-    /// <summary>
-    /// خواندن رفرش توکن از کوکی
-    /// </summary>
-    private string? ReadRefreshToken()
-    {
-        var context = httpContextAccessor.HttpContext;
-        return context.Request.Cookies.TryGetValue("jwt", out var token) ? token : null;
-    }
 
-    /// <summary>
-    /// حذف کوکی مربوط به رفرش توکن
-    /// </summary>
-    private void DeleteRefreshTokenCookie()
-    {
-        httpContextAccessor.HttpContext?.Response.Cookies.Delete("jwt");
-    }
 }

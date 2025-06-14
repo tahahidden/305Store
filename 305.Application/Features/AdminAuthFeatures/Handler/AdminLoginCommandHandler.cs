@@ -6,6 +6,7 @@ using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
 using _305.BuildingBlocks.Security;
 using _305.Application.Helpers;
+using _305.BuildingBlocks.Helper;
 using _305.Domain.Entity;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -54,22 +55,13 @@ public class AdminLoginCommandHandler(
             unitOfWork.UserRepository.Update(user);
             await unitOfWork.CommitAsync(cancellationToken);
 
-            // ذخیره توکن در کوکی
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // موقتا غیر فعال کن برای تست
-                SameSite = SameSiteMode.Lax, // یا None اگر لازم بود
-                Expires = DateTime.Now.AddMinutes(Config.AdminRefreshTokenLifetime.TotalMinutes)
-            };
+            // ذخیره توکن در کوکی به صورت یکسان
             var context = httpContextAccessor.HttpContext;
-            context.Response.Cookies.Append("jwt", refreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // موقتا غیر فعال کن برای تست
-                SameSite = SameSiteMode.Lax, // یا None اگر لازم بود
-                Expires = DateTime.Now.AddMinutes(Config.AdminRefreshTokenLifetime.TotalMinutes)
-            });
+            CookieHelper.SetJwtCookie(
+                context.Response,
+                refreshToken,
+                Config.AdminRefreshTokenLifetime,
+                secure: false);
 
             return Responses.Success(data:
                 new LoginResponse()

@@ -47,7 +47,7 @@ public class AdminLogoutCommandHandler(
                 });
 
                 // حذف کوکی از مرورگر
-                context.Response.Cookies.Delete("jwt");
+                CookieHelper.DeleteJwtCookie(context.Response);
                 user.refresh_token = null;
                 user.refresh_token_expiry_time = DateTime.MinValue;
 
