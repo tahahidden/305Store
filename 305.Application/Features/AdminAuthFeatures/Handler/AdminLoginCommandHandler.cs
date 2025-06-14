@@ -39,7 +39,7 @@ public class AdminLoginCommandHandler(
             // موفقیت در ورود
             user.failed_login_count = 0;
             user.last_login_date_time = DateTime.Now;
-            var role = unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
+            var role = await unitOfWork.UserRoleRepository.FindListAsync(x => x.userid == user.id, cancellationToken: cancellationToken);
             var token = await JwtTokenHelper.GenerateUniqueAccessToken(
                 jwtService,
                 unitOfWork,
@@ -63,13 +63,7 @@ public class AdminLoginCommandHandler(
                 Expires = DateTime.Now.AddMinutes(Config.AdminRefreshTokenLifetime.TotalMinutes)
             };
             var context = httpContextAccessor.HttpContext;
-            context.Response.Cookies.Append("jwt", refreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // موقتا غیر فعال کن برای تست
-                SameSite = SameSiteMode.Lax, // یا None اگر لازم بود
-                Expires = DateTime.Now.AddMinutes(Config.AdminRefreshTokenLifetime.TotalMinutes)
-            });
+            context.Response.Cookies.Append("jwt", refreshToken, cookieOptions);
 
             return Responses.Success(data:
                 new LoginResponse()

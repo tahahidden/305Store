@@ -40,8 +40,9 @@ public static class GetAllHandlerTestHelper
         // تنظیم UnitOfWork برای بازگرداندن موک ریپازیتوری
         unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);
 
-        // توجه: متد FindList باید لیستی از موجودیت‌ها برگرداند (شبیه IQueryable یا List)
-        repoMock.Setup(r => r.FindList(null)).Returns(entities);
+        // توجه: متد FindListAsync باید لیستی از موجودیت‌ها برگرداند
+        repoMock.Setup(r => r.FindListAsync(null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(entities);
 
         // اعمال تنظیمات اضافی در صورت نیاز
         setupRepoMock?.Invoke(repoMock);
@@ -84,9 +85,9 @@ public static class GetAllHandlerTestHelper
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var repoMock = new Mock<TRepository>();
 
-        // تنظیم موک ریپازیتوری به گونه‌ای که هنگام فراخوانی FindList استثنا پرتاب کند
-        repoMock.Setup(r => r.FindList(It.IsAny<Expression<Func<TEntity, bool>>>(), null))
-                .Throws(new Exception("Test exception"));
+        // تنظیم موک ریپازیتوری به گونه‌ای که هنگام فراخوانی FindListAsync استثنا پرتاب کند
+        repoMock.Setup(r => r.FindListAsync(null, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Test exception"));
 
         // تنظیم UnitOfWork برای بازگرداندن ریپازیتوری موک شده
         unitOfWorkMock.Setup(repoSelector).Returns(repoMock.Object);

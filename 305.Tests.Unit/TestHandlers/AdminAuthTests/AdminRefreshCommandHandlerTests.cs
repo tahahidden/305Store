@@ -26,8 +26,8 @@ public class AdminRefreshCommandHandlerTests
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
             .ReturnsAsync(user);
-        unitOfWorkMock.Setup(u => u.UserRoleRepository.FindList(It.IsAny<Expression<Func<UserRole, bool>>>(), null))
-            .Returns(roles);
+        unitOfWorkMock.Setup(u => u.UserRoleRepository.FindListAsync(It.IsAny<Expression<Func<UserRole, bool>>>(), null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(roles);
         unitOfWorkMock.Setup(u => u.TokenBlacklistRepository.ExistsAsync(It.IsAny<Expression<Func<BlacklistedToken, bool>>>()))
             .ReturnsAsync(false);
 

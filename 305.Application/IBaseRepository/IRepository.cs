@@ -30,6 +30,8 @@ public interface IRepository<TEntity> where TEntity : class, IBaseEntity
     Task<TEntity?> FindFirst(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
     List<TEntity> FindList(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
     List<TEntity> FindList(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
+    Task<List<TEntity>> FindListAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null, CancellationToken cancellationToken = default);
+    Task<List<TEntity>> FindListAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null, CancellationToken cancellationToken = default);
 
     Task<TEntity?> FindSingleAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
     Task<TEntity?> FindFirstAsNoTracking(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);

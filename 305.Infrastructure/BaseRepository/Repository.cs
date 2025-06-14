@@ -175,6 +175,20 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
     }
 
     /// <summary>
+    /// یافتن لیست موجودیت‌ها مطابق شرط به صورت ناهمگام
+    /// </summary>
+    public async Task<List<TEntity>> FindListAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = DbContext.Set<TEntity>().AsQueryable();
+        if (includeFunc != null)
+            query = includeFunc(query);
+        return await query.Where(predicate).ToListAsync(cancellationToken);
+    }
+
+    /// <summary>
     /// یافتن همه رکوردها بدون شرط
     /// </summary>
     public List<TEntity> FindList(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
@@ -184,6 +198,19 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         if (includeFunc != null)
             query = includeFunc(query);
         return query.ToList();
+    }
+
+    /// <summary>
+    /// یافتن همه رکوردها بدون شرط به صورت ناهمگام
+    /// </summary>
+    public async Task<List<TEntity>> FindListAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = DbContext.Set<TEntity>().AsQueryable();
+        if (includeFunc != null)
+            query = includeFunc(query);
+        return await query.ToListAsync(cancellationToken);
     }
 
     /// <summary>
