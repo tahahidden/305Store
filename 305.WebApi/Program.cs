@@ -37,6 +37,8 @@ builder.Services.Configure<JwtConfig>(
     builder.Configuration.GetSection(JwtConfig.SectionName));
 builder.Services.Configure<LockoutConfig>(
     builder.Configuration.GetSection(LockoutConfig.SectionName));
+builder.Services.Configure<SmsConfig>(
+    builder.Configuration.GetSection(SmsConfig.SectionName));
 
 // ─────────────── Services and Repositories ───────────────
 builder.Services.AddHttpContextAccessor();
