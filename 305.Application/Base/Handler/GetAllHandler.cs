@@ -44,4 +44,26 @@ public class GetAllHandler
             return ExceptionHandlers.GeneralException<List<TDto>>(ex, _logger);
         }
     }
+
+    /// <summary>
+    /// دریافت لیست موجودیت‌ها به صورت ناهمگام و تبدیل آن‌ها به DTO
+    /// </summary>
+    public async Task<ResponseDto<List<TDto>>> HandleAsync<TEntity, TDto>(Task<List<TEntity>> entitiesTask)
+        where TEntity : class
+        where TDto : class, new()
+    {
+        try
+        {
+            var entities = await entitiesTask;
+            return Handle<TEntity, TDto>(entities);
+        }
+        catch (OperationCanceledException)
+        {
+            return ExceptionHandlers.CancellationException<List<TDto>>(_logger);
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandlers.GeneralException<List<TDto>>(ex, _logger);
+        }
+    }
 }

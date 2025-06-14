@@ -15,11 +15,8 @@ public class GetAllPermissionQueryHandler(IUnitOfWork unitOfWork)
 
     public Task<ResponseDto<List<PermissionResponse>>> Handle(GetAllPermissionQuery request, CancellationToken cancellationToken)
     {
-        var aa = unitOfWork.PermissionRepository.FindList();
-        return Task.FromResult(
-            _handler.Handle<Permission, PermissionResponse>(
-                unitOfWork.PermissionRepository.FindList()
-            )
+        return _handler.HandleAsync<Permission, PermissionResponse>(
+            unitOfWork.PermissionRepository.FindListAsync(cancellationToken: cancellationToken)
         );
     }
 }

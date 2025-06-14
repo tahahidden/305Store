@@ -33,7 +33,7 @@ public class AdminRefreshCommandHandler(
                     return Responses.Fail<LoginResponse>(null, message: "توکن نامعتبر است و یا منقضی شده است", code: 401);
                 }
 
-                var role = unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
+                var role = await unitOfWork.UserRoleRepository.FindListAsync(x => x.userid == user.id, cancellationToken: cancellationToken);
                 var token = await JwtTokenHelper.GenerateUniqueAccessToken(
                     jwtService,
                     unitOfWork,

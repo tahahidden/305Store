@@ -14,10 +14,8 @@ public class GetAllRoleQueryHandler(IUnitOfWork unitOfWork)
 
     public Task<ResponseDto<List<RoleResponse>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(
-            _handler.Handle<Role, RoleResponse>(
-                unitOfWork.RoleRepository.FindList()
-            )
+        return _handler.HandleAsync<Role, RoleResponse>(
+            unitOfWork.RoleRepository.FindListAsync(cancellationToken: cancellationToken)
         );
     }
 }
