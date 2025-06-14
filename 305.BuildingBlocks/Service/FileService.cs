@@ -8,10 +8,21 @@ namespace _305.BuildingBlocks.Service;
 /// سرویس فایل برای بارگذاری و حذف تصاویر.
 /// وابسته به HttpContext برای دسترسی به اطلاعات درخواست (مانند آدرس Base).
 /// </summary>
-public class FileService(IHttpContextAccessor contextAccessor, IFileManager fileManager) : IFileService
+public class FileService : IFileService
 {
-    private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
-    private readonly IFileManager _fileManager = fileManager;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IFileManager _fileManager;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileService"/> class.
+    /// </summary>
+    /// <param name="contextAccessor">Provides access to the current HTTP context.</param>
+    /// <param name="fileManager">Handles file operations such as upload and delete.</param>
+    public FileService(IHttpContextAccessor contextAccessor, IFileManager fileManager)
+    {
+        _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
+        _fileManager = fileManager ?? throw new ArgumentNullException(nameof(fileManager));
+    }
 
     /// <summary>
     /// حذف فایل از مسیر مشخص‌شده در URL
@@ -19,7 +30,6 @@ public class FileService(IHttpContextAccessor contextAccessor, IFileManager file
     /// <param name="imageUrl">آدرس نسبی فایل که باید حذف شود</param>
     public void DeleteFile(string imageUrl)
     {
-        // استفاده از کلاس FileManager برای حذف امن فایل
         _fileManager.DeleteFile(imageUrl);
     }
 

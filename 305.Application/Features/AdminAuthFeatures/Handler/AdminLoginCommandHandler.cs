@@ -40,7 +40,7 @@ public class AdminLoginCommandHandler(
             // موفقیت در ورود
             user.failed_login_count = 0;
             user.last_login_date_time = DateTime.Now;
-            var role = unitOfWork.UserRoleRepository.FindList(x => x.userid == user.id);
+            var role = await unitOfWork.UserRoleRepository.FindListAsync(x => x.userid == user.id, cancellationToken: cancellationToken);
             var token = await JwtTokenHelper.GenerateUniqueAccessToken(
                 jwtService,
                 unitOfWork,
@@ -57,11 +57,13 @@ public class AdminLoginCommandHandler(
 
             // ذخیره توکن در کوکی به صورت یکسان
             var context = httpContextAccessor.HttpContext;
+
             CookieHelper.SetJwtCookie(
                 context.Response,
                 refreshToken,
                 Config.AdminRefreshTokenLifetime,
                 secure: false);
+
 
             return Responses.Success(data:
                 new LoginResponse()

@@ -15,10 +15,8 @@ public class GetAllCategoryQueryHandler(IUnitOfWork unitOfWork)
 
     public Task<ResponseDto<List<BlogCategoryResponse>>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(
-            _handler.Handle<BlogCategory, BlogCategoryResponse>(
-                unitOfWork.BlogCategoryRepository.FindList()
-            )
+        return _handler.HandleAsync<BlogCategory, BlogCategoryResponse>(
+            unitOfWork.BlogCategoryRepository.FindListAsync(cancellationToken: cancellationToken)
         );
     }
 }
