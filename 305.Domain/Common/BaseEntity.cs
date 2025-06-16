@@ -1,4 +1,5 @@
 // حذف وابستگی به EF Core برای رعایت اصل SRP
+using System.Collections.Generic;
 
 namespace _305.Domain.Common;
 
@@ -34,6 +35,12 @@ public class BaseEntity : IBaseEntity
     public string slug { get; set; } = null!;
 
     /// <summary>
+    /// رویدادهای دامنه مرتبط با این موجودیت
+    /// </summary>
+    private readonly List<IDomainEvent> _domainEvents = new();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    /// <summary>
     /// سازنده پیش‌فرض که تاریخ‌های ایجاد و به‌روزرسانی را تنظیم می‌کند
     /// </summary>
     public BaseEntity()
@@ -52,4 +59,9 @@ public class BaseEntity : IBaseEntity
         this.name = name;
         this.slug = slug;
     }
+
+    /// <summary>
+    /// افزودن رویداد دامنه به لیست رویدادها
+    /// </summary>
+    public void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 }

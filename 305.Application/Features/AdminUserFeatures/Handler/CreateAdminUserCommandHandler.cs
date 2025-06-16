@@ -6,6 +6,8 @@ using _305.Application.IUOW;
 using _305.BuildingBlocks.Helper;
 using _305.BuildingBlocks.Security;
 using _305.Domain.Entity;
+using _305.Domain.Events;
+using Serilog;
 using MediatR;
 
 namespace _305.Application.Features.AdminUserFeatures.Handler;
@@ -64,6 +66,8 @@ public class CreateAdminUserCommandHandler(IUnitOfWork unitOfWork)
                    slug = slug,
                };
                await unitOfWork.UserRepository.AddAsync(entity);
+               entity.AddDomainEvent(new UserCreatedDomainEvent(entity));
+               Log.Information("کاربر جدید با نامک {Slug} ایجاد شد", slug);
                return slug;
            },
            successMessage: null,
