@@ -26,6 +26,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -243,13 +244,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(opts => opts.Level =
 
 // ─────────────── SignalR, CORS ───────────────
 builder.Services.AddSignalR();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecific", policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommand>());
 
 var app = builder.Build();
@@ -307,25 +302,30 @@ app.UseAuthentication();
 app.UseAuthorization();
 // ________________ OutPut Caching Middleware ________________
 app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = async (context, report) =>
-    {
-        context.Response.ContentType = "application/json";
-        var response = new
-        {
-            status = report.Status.ToString(),
-            checks = report.Entries.Select(e => new
-            {
-                name = e.Key,
-                status = e.Value.Status.ToString(),
-                description = e.Value.Description
-            }),
-            totalDuration = report.TotalDuration.TotalSeconds
-        };
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-    }
-});
+app.MapGet("/health", async (HttpContext context, HealthCheckService healthCheckService) =>
+	{
+		var report = await healthCheckService.CheckHealthAsync();
+
+		context.Response.ContentType = "application/json";
+		var response = new
+		{
+			status = report.Status.ToString(),
+			checks = report.Entries.Select(e => new
+			{
+				name = e.Key,
+				status = e.Value.Status.ToString(),
+				description = e.Value.Description
+			}),
+			totalDuration = report.TotalDuration.TotalSeconds
+		};
+
+		await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+	})
+	.RequireAuthorization(policyBuilder =>
+	{
+		policyBuilder.RequireRole("Admin", "AdminGod");
+	});
+
 app.MapControllers();
 app.Run();
 
