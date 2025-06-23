@@ -1,4 +1,5 @@
-﻿using _305.Application.Features.BlogCategoryFeatures.Command;
+﻿using System.IO.Compression;
+using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.IService;
 using _305.BuildingBlocks.Configurations;
 using _305.BuildingBlocks.IService;
@@ -20,6 +21,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -205,6 +207,22 @@ builder.Services.AddRateLimiter(options =>
 	}));
 });
 
+// ______________________ OutPut Caching ______________________
+builder.Services.AddOutputCache();
+
+// ____________________Response Compression____________________
+//builder.Services.AddResponseCompression(); // ( Default Gzip/Brotli)
+builder.Services.AddResponseCompression(options =>
+{
+	options.EnableForHttps = true; // یاهتساوخرد یارب یتح یزاسلاعف HTTPS (طایتحا اب)
+	options.Providers.Add<BrotliCompressionProvider>();
+	options.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(opts => opts.Level
+	= CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(opts => opts.Level =
+	CompressionLevel.SmallestSize);
+
 // ─────────────── SignalR, CORS ───────────────
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
@@ -218,6 +236,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Cr
 
 var app = builder.Build();
 
+// ________________ OutPut Caching Middleware ________________
+app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
+
 // ─────────────── Middlewares ───────────────
 if (!app.Environment.IsDevelopment())
 {
@@ -227,12 +248,14 @@ else
 {
 	app.UseCors();
 }
-
+app.UseResponseCompression();
 if (!app.Environment.IsDevelopment())
 {
 	app.UseMiddleware<ApiKeyMiddleware>();
 	app.UseRateLimiter();
-	app.UseHttpsRedirection(); 
+	app.UseHttpsRedirection();
+	// Global Error Handler
+	app.UseMiddleware<ExceptionHandlingMiddleware>();
 }
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
