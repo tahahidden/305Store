@@ -103,9 +103,15 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "305 .Net",
-        Version = "v1"
+        Version = "v1",
+        Description = "This is a sample API for 305 .Net project. Developed By Bamdad Tabari",
+		Contact = new OpenApiContact
+		{
+			Name = "Team GeekUps",
+			Email = "bamdadtabari@gmail.com"
+		}
     });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
@@ -236,9 +242,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Cr
 
 var app = builder.Build();
 
-// ________________ OutPut Caching Middleware ________________
-app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
-
 // ─────────────── Middlewares ───────────────
 if (!app.Environment.IsDevelopment())
 {
@@ -290,6 +293,8 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+// ________________ OutPut Caching Middleware ________________
+app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
 app.MapControllers();
 app.Run();
 
