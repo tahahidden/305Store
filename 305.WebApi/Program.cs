@@ -19,6 +19,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,6 +128,37 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// _______________________________ Cors __________________________________
+if (!builder.Environment.IsDevelopment())
+{
+	builder.Services.AddCors(options =>
+	{
+		options.AddPolicy("FinalPolicy", policy =>
+		{
+			policy
+				.WithOrigins(
+					"https://your-domain.com"
+				)
+				.AllowAnyHeader()
+				.AllowAnyMethod()
+				.AllowCredentials(); // ⬅️ برای ارسال و دریافت کوکی
+		});
+	});
+}
+else
+{
+	builder.Services.AddCors(options =>
+	{
+		options.AddDefaultPolicy(policy =>
+		{
+			policy
+				.SetIsOriginAllowed(_ => true)
+				.AllowAnyHeader()
+				.AllowAnyMethod()
+				.AllowCredentials();
+		});
+	});
+}
 // ─────────────── JWT Auth ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -157,6 +189,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+//─────────────── Rate Limiting ───────────────
+builder.Services.AddRateLimiter(options =>
+{
+	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,
+		string>(httpContext =>
+		RateLimitPartition.GetFixedWindowLimiter(
+			partitionKey: httpContext.User.Identity?.Name ??
+			              httpContext.Request.Headers.Host.ToString(),
+	factory: _ => new FixedWindowRateLimiterOptions
+	{
+		PermitLimit = 120,
+		Window = TimeSpan.FromMinutes(1),
+		QueueLimit = 0
+	}));
+});
+
 // ─────────────── SignalR, CORS ───────────────
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
@@ -173,7 +221,18 @@ var app = builder.Build();
 // ─────────────── Middlewares ───────────────
 if (!app.Environment.IsDevelopment())
 {
+	app.UseCors("FinalPolicy");
+}
+else
+{
+	app.UseCors();
+}
+
+if (!app.Environment.IsDevelopment())
+{
 	app.UseMiddleware<ApiKeyMiddleware>();
+	app.UseRateLimiter();
+	app.UseHttpsRedirection(); 
 }
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
@@ -195,9 +254,6 @@ if (!app.Environment.IsEnvironment("Test"))
         Authorization = [new HangfireAuthorizationFilter("Admin", "MainAdmin")]
     });
 }
-
-app.UseCors("AllowSpecific");
-// app.UseHttpsRedirection(); // فعال‌سازی اگر نیاز بود
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions

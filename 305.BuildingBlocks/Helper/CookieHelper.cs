@@ -19,14 +19,16 @@ public static class CookieHelper
     /// <param name="token">رفرش توکن</param>
     /// <param name="lifetime">مدت زمان اعتبار کوکی</param>
     /// <param name="secure">استفاده از HTTPS</param>
-    public static void SetJwtCookie(HttpResponse response, string token, TimeSpan lifetime, bool secure = false)
+    public static void SetJwtCookie(HttpResponse response, string token, TimeSpan lifetime, 
+	    bool secure = false, string? domain = null, SameSiteMode sameSiteMode = SameSiteMode.Lax)
     {
         response.Cookies.Append(JwtCookieName, token, new CookieOptions
         {
             HttpOnly = true,
             Secure = secure,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.Add(lifetime)
+            SameSite = sameSiteMode,
+            Expires = DateTime.UtcNow.Add(lifetime),
+            Domain = domain,
         });
     }
 

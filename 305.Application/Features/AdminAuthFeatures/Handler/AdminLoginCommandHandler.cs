@@ -1,15 +1,17 @@
 ﻿using _305.Application.Base.Response;
 using _305.Application.Features.AdminAuthFeatures.Command;
 using _305.Application.Features.AdminAuthFeatures.Response;
+using _305.Application.Helpers;
 using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.BuildingBlocks.Configurations;
-using _305.BuildingBlocks.Security;
-using _305.Application.Helpers;
 using _305.BuildingBlocks.Helper;
+using _305.BuildingBlocks.Security;
 using _305.Domain.Entity;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace _305.Application.Features.AdminAuthFeatures.Handler;
@@ -17,7 +19,7 @@ namespace _305.Application.Features.AdminAuthFeatures.Handler;
 public class AdminLoginCommandHandler(
     IUnitOfWork unitOfWork,
     IJwtService jwtService,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env
 ) : IRequestHandler<AdminLoginCommand, ResponseDto<LoginResponse>>
 {
     public static readonly JwtConfig Config = new();
@@ -55,14 +57,17 @@ public class AdminLoginCommandHandler(
             unitOfWork.UserRepository.Update(user);
             await unitOfWork.CommitAsync(cancellationToken);
 
-            // ذخیره توکن در کوکی به صورت یکسان
-            var context = httpContextAccessor.HttpContext;
+            var isDevelopment = env.IsDevelopment();
+			// ذخیره توکن در کوکی به صورت یکسان
+			var context = httpContextAccessor.HttpContext;
 
             CookieHelper.SetJwtCookie(
                 context.Response,
                 refreshToken,
                 Config.AdminRefreshTokenLifetime,
-                secure: false);
+                secure: !isDevelopment,
+                domain:isDevelopment? null : "https://your-front-domain.com",
+                sameSiteMode: isDevelopment? SameSiteMode.Lax: SameSiteMode.None);
 
 
             return Responses.Success(data:
