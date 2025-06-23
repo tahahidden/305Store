@@ -47,10 +47,10 @@ builder.Services.Configure<RequestLoggingConfig>(
 
 // ─────────────── Services and Repositories ───────────────
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IFileManager, FileManager>();
-builder.Services.AddScoped<ISmsService, SmsService>();
-builder.Services.AddScoped<IFileService, FileService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<IFileManager, FileManager>();
+builder.Services.AddSingleton<ISmsService, SmsService>();
+builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<PermissionSeeder>();
 builder.Services.AddScoped<IPermissionChecker, PermissionChecker>();
 if (!builder.Environment.IsEnvironment("Test"))
@@ -64,6 +64,7 @@ var jwtSection = builder.Configuration.GetSection("JWT");
 var jwtConfig = jwtSection.Get<JwtConfig>();
 
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
