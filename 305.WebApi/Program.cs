@@ -1,4 +1,8 @@
+using System.IO;
 ﻿using System.IO.Compression;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using _305.WebApi.HealthChecks;
+using System.Linq;
 using _305.Application.Features.BlogCategoryFeatures.Command;
 using _305.Application.IService;
 using _305.BuildingBlocks.Configurations;
@@ -81,6 +85,13 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+
+// ─────────────── Health Checks ───────────────
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("Database")
+    .AddCheck<MemoryHealthCheck>("Memory")
+    .AddCheck<CpuHealthCheck>("CPU")
+    .AddCheck("Disk", new DiskSpaceHealthCheck(Path.GetPathRoot(Environment.CurrentDirectory)!));
 
 // ─────────────── Environment-specific DB setup ───────────────
 if (!builder.Environment.IsEnvironment("Test")) // این شرط بسیار مهم است
@@ -296,6 +307,25 @@ app.UseAuthentication();
 app.UseAuthorization();
 // ________________ OutPut Caching Middleware ________________
 app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var response = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            }),
+            totalDuration = report.TotalDuration.TotalSeconds
+        };
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    }
+});
 app.MapControllers();
 app.Run();
 
