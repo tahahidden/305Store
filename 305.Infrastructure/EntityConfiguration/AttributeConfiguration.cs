@@ -11,9 +11,7 @@ namespace _305.Infrastructure.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Domain.Entity.Attribute> builder)
         {
-            builder.HasOne(o => o.product)
-                .WithMany(o => o.attributes)
-                .HasForeignKey(o => o.productId);
+           
         }
     }
 }

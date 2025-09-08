@@ -19,6 +19,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     private readonly Lazy<IRepository<Role>> _roleRepository;
     private readonly Lazy<IRepository<User>> _userRepository;
     private readonly Lazy<IRepository<UserRole>> _userRoleRepository;
+    private readonly Lazy<IRepository<ProductCategory>> _productCategoryRepository;
+
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -32,6 +34,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
         _roleRepository = new Lazy<IRepository<Role>>(() => new Repository<Role>(_context));
         _userRepository = new Lazy<IRepository<User>>(() => new Repository<User>(_context));
         _userRoleRepository = new Lazy<IRepository<UserRole>>(() => new Repository<UserRole>(_context));
+        _productCategoryRepository = new Lazy<IRepository<ProductCategory>>(() => new Repository<ProductCategory>(_context));
+
     }
 
     // Properties که فقط مقدار Lazy.Value رو برمی‌گردونن
@@ -43,6 +47,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IRepository<Role> RoleRepository => _roleRepository.Value;
     public IRepository<User> UserRepository => _userRepository.Value;
     public IRepository<UserRole> UserRoleRepository => _userRoleRepository.Value;
+    public IRepository<ProductCategory> ProductCategoryRepository => _productCategoryRepository.Value;
+
 
     /// <summary>
     /// تلاش برای ذخیره‌سازی تمامی تغییرات در پایگاه داده در قالب یک تراکنش.

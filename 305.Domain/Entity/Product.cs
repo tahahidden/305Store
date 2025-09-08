@@ -13,8 +13,9 @@ namespace _305.Domain.Entity
         public decimal? price { get; set; }
 
 
-        public ICollection<Attribute>? attributes { get; set; }
         public ProductCategory? productCategory { get; set; }
+        public ICollection<ProductAttribute>? productAttributes { get; set; }
+        public ICollection<CategoryProductRelation>? categoryProductRelations { get; set; }
 
 
         /// <summary>

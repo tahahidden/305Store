@@ -45,8 +45,8 @@ public class BaseEntity : IBaseEntity
     /// </summary>
     public BaseEntity()
     {
-        created_at = DateTime.UtcNow;
-        updated_at = DateTime.UtcNow;
+        created_at = DateTime.Now;
+        updated_at = DateTime.Now;
     }
 
     /// <summary>

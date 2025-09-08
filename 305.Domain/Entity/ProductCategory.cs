@@ -14,6 +14,8 @@ namespace _305.Domain.Entity
         public ProductCategory? productCategory { get; set; }
         public ICollection<ProductCategory>? productCategories { get; set; }
         public ICollection<Product>? products { get; set; }
+        public ICollection<CategoryProductRelation>? categoryProductRelations { get; set; }
+
 
 
 
