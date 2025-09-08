@@ -7,20 +7,20 @@ namespace _305.WebApi.Assistants.Permission;
 /// <summary>
 /// Hosted service برای همگام‌سازی مجوزها هنگام راه‌اندازی برنامه.
 /// </summary>
-public class PermissionSeedHostedService(IServiceProvider serviceProvider) : IHostedService
+public class PermissionSeedHostedService : IHostedService
 {
+    private readonly IServiceProvider _serviceProvider;
+
+    public PermissionSeedHostedService(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            using var scope = serviceProvider.CreateScope();
-            var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
-            await seeder.SyncPermissionsAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "error during seeding permissions");
-        }
+        using var scope = _serviceProvider.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<PermissionSeeder>();
+        await seeder.SyncPermissionsAsync();
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

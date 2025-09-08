@@ -1,15 +1,22 @@
 ﻿using _305.Application.IUOW;
 using Serilog;
 
-namespace _305.WebApi.Assistants.Middleware;
-
-/// <summary>
-/// Middleware برای جلوگیری از استفاده توکن‌هایی که در لیست سیاه قرار گرفته‌اند.
-/// </summary>
-public class TokenBlacklistMiddleware(RequestDelegate next, IUnitOfWork unitOfWork)
+public class TokenBlacklistMiddleware
 {
+    private readonly RequestDelegate _next;
+    private readonly IServiceProvider _serviceProvider;
+
+    public TokenBlacklistMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
+    {
+        _next = next;
+        _serviceProvider = serviceProvider;
+    }
+
     public async Task InvokeAsync(HttpContext context)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
         var token = ExtractBearerToken(context);
 
         if (!string.IsNullOrWhiteSpace(token))
@@ -26,12 +33,9 @@ public class TokenBlacklistMiddleware(RequestDelegate next, IUnitOfWork unitOfWo
             }
         }
 
-        await next(context);
+        await _next(context);
     }
 
-    /// <summary>
-    /// استخراج توکن Bearer از هدر Authorization.
-    /// </summary>
     private static string? ExtractBearerToken(HttpContext context)
     {
         var authHeader = context.Request.Headers["Authorization"].ToString();

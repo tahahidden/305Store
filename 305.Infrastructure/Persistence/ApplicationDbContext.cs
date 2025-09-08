@@ -26,8 +26,21 @@ namespace _305.Infrastructure.Persistence
             ApplyEntityConfigurations(modelBuilder);
             SeedInitialData(modelBuilder);
 
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetColumnType("timestamp without time zone");
+                    }
+                }
+            }
+
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
+
 
         /// <summary>
         /// اعمال تمام پیکربندی‌های موجود در اسمبلی فعلی که از IEntityTypeConfiguration پیروی می‌کنند.

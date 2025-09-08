@@ -4,11 +4,14 @@ using _305.Application.IService;
 using _305.Application.IUOW;
 using _305.Domain.Entity;
 using _305.Tests.Unit.DataProvider;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Linq.Expressions;
 
 namespace _305.Tests.Unit.TestHandlers.AdminAuthTests;
+
 public class AdminLoginCommandHandlerTests
 {
     [Fact]
@@ -60,8 +63,12 @@ public class AdminLoginCommandHandlerTests
         var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         httpContextAccessorMock.Setup(h => h.HttpContext).Returns(httpContextMock.Object);
 
+        var envMock = new Mock<IWebHostEnvironment>();
+        envMock.Setup(e => e.IsDevelopment()).Returns(true);
+
+
         // Handler
-        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, tokenServiceMock.Object, httpContextAccessorMock.Object);
+        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, tokenServiceMock.Object, httpContextAccessorMock.Object, envMock.Object);
 
         var command = AdminUserDataProvider.LoginCommand();
 
@@ -84,7 +91,10 @@ public class AdminLoginCommandHandlerTests
         unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
             .ReturnsAsync((User)null);
 
-        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
+        var envMock = new Mock<IWebHostEnvironment>();
+        envMock.Setup(e => e.IsDevelopment()).Returns(true);
+
+        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>(), envMock.Object);
 
         var command = AdminUserDataProvider.LoginCommand(email: "notFound@305.com");
 
@@ -107,7 +117,10 @@ public class AdminLoginCommandHandlerTests
         unitOfWorkMock.Setup(u => u.UserRepository.FindSingle(It.IsAny<Expression<Func<User, bool>>>(), null))
             .ReturnsAsync(user);
 
-        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
+        var envMock = new Mock<IWebHostEnvironment>();
+        envMock.Setup(e => e.IsDevelopment()).Returns(true);
+
+        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>(), envMock.Object);
 
         var command = AdminUserDataProvider.LoginCommand();
         // Act
@@ -133,7 +146,10 @@ public class AdminLoginCommandHandlerTests
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
-        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
+        var envMock = new Mock<IWebHostEnvironment>();
+        envMock.Setup(e => e.IsDevelopment()).Returns(true);
+
+        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>(), envMock.Object);
         var command = AdminUserDataProvider.LoginCommand(password: "wrongPassword");
 
         // Act
@@ -162,7 +178,10 @@ public class AdminLoginCommandHandlerTests
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
-        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>());
+        var envMock = new Mock<IWebHostEnvironment>();
+        envMock.Setup(e => e.IsDevelopment()).Returns(true);
+
+        var handler = new AdminLoginCommandHandler(unitOfWorkMock.Object, Mock.Of<IJwtService>(), Mock.Of<IHttpContextAccessor>(), envMock.Object);
 
         var command = AdminUserDataProvider.LoginCommand(password: "wrongPassword");
 

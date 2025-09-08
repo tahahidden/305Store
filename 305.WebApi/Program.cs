@@ -1,5 +1,5 @@
 using System.IO;
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using _305.WebApi.HealthChecks;
 using System.Linq;
@@ -27,6 +27,11 @@ using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using _305.Application.IUOW;
+using _305.Infrastructure.UnitOfWork;
+using _305.Application.IBaseRepository;
+using _305.Infrastructure.BaseRepository;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,13 +56,19 @@ builder.Services.Configure<RequestLoggingConfig>(
     builder.Configuration.GetSection(RequestLoggingConfig.SectionName));
 
 // ─────────────── Services and Repositories ───────────────
+builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IFileManager, FileManager>();
 builder.Services.AddSingleton<ISmsService, SmsService>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<PermissionSeeder>();
 builder.Services.AddScoped<IPermissionChecker, PermissionChecker>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+
 if (!builder.Environment.IsEnvironment("Test"))
 {
     builder.Services.AddHostedService<PermissionSeedHostedService>();
@@ -98,14 +109,18 @@ builder.Services.AddHealthChecks()
 if (!builder.Environment.IsEnvironment("Test")) // این شرط بسیار مهم است
 {
     var connectionString = builder.Environment.IsDevelopment()
-    ? builder.Configuration.GetConnectionString("ServerDbConnection")
+    ? builder.Configuration.GetConnectionString("PostgresDbContext")
     : builder.Configuration.GetConnectionString("ProductionDbConnection");
 
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString).EnableDetailedErrors());
+    // builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    //     options.UseSqlServer(connectionString).EnableDetailedErrors());
+    builder.Services.AddDbContext<ApplicationDbContext>(option =>
+        option.UseNpgsql(connectionString));
 
     // Hangfire (هم به SQL نیاز داره)
-    builder.Services.AddHangfire(config => config.UseSqlServerStorage(connectionString));
+    //builder.Services.AddHangfire(config => config.UseSqlServerStorage(connectionString));
+    builder.Services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(connectionString));
     builder.Services.AddHangfireServer();
 }
 
@@ -118,13 +133,13 @@ builder.Services.AddSwaggerGen(c =>
         Title = "305 .Net",
         Version = "v1",
         Description = "This is a sample API for 305 .Net project. Developed By Bamdad Tabari",
-		Contact = new OpenApiContact
-		{
-			Name = "Team GeekUps",
-			Email = "bamdadtabari@gmail.com"
-		}
+        Contact = new OpenApiContact
+        {
+            Name = "Team GeekUps",
+            Email = "bamdadtabari@gmail.com"
+        }
     });
-	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
@@ -152,33 +167,33 @@ builder.Services.AddSwaggerGen(c =>
 // _______________________________ Cors __________________________________
 if (!builder.Environment.IsDevelopment())
 {
-	builder.Services.AddCors(options =>
-	{
-		options.AddPolicy("FinalPolicy", policy =>
-		{
-			policy
-				.WithOrigins(
-					"https://your-domain.com"
-				)
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-				.AllowCredentials(); // ⬅️ برای ارسال و دریافت کوکی
-		});
-	});
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("FinalPolicy", policy =>
+        {
+            policy
+                .WithOrigins(
+                    "https://your-domain.com"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials(); // ⬅️ برای ارسال و دریافت کوکی
+        });
+    });
 }
 else
 {
-	builder.Services.AddCors(options =>
-	{
-		options.AddDefaultPolicy(policy =>
-		{
-			policy
-				.SetIsOriginAllowed(_ => true)
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-				.AllowCredentials();
-		});
-	});
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy
+                .SetIsOriginAllowed(_ => true)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
 }
 // ─────────────── JWT Auth ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -213,17 +228,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //─────────────── Rate Limiting ───────────────
 builder.Services.AddRateLimiter(options =>
 {
-	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,
-		string>(httpContext =>
-		RateLimitPartition.GetFixedWindowLimiter(
-			partitionKey: httpContext.User.Identity?.Name ??
-			              httpContext.Request.Headers.Host.ToString(),
-	factory: _ => new FixedWindowRateLimiterOptions
-	{
-		PermitLimit = 120,
-		Window = TimeSpan.FromMinutes(1),
-		QueueLimit = 0
-	}));
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,
+        string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ??
+                          httpContext.Request.Headers.Host.ToString(),
+    factory: _ => new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 120,
+        Window = TimeSpan.FromMinutes(1),
+        QueueLimit = 0
+    }));
 });
 
 // ______________________ OutPut Caching ______________________
@@ -233,14 +248,14 @@ builder.Services.AddOutputCache();
 //builder.Services.AddResponseCompression(); // ( Default Gzip/Brotli)
 builder.Services.AddResponseCompression(options =>
 {
-	options.EnableForHttps = true; // یاهتساوخرد یارب یتح یزاسلاعف HTTPS (طایتحا اب)
-	options.Providers.Add<BrotliCompressionProvider>();
-	options.Providers.Add<GzipCompressionProvider>();
+    options.EnableForHttps = true; // یاهتساوخرد یارب یتح یزاسلاعف HTTPS (طایتحا اب)
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
 });
 builder.Services.Configure<BrotliCompressionProviderOptions>(opts => opts.Level
-	= CompressionLevel.Fastest);
+    = CompressionLevel.Fastest);
 builder.Services.Configure<GzipCompressionProviderOptions>(opts => opts.Level =
-	CompressionLevel.SmallestSize);
+    CompressionLevel.SmallestSize);
 
 // ─────────────── SignalR, CORS ───────────────
 builder.Services.AddSignalR();
@@ -252,20 +267,20 @@ var app = builder.Build();
 // ─────────────── Middlewares ───────────────
 if (!app.Environment.IsDevelopment())
 {
-	app.UseCors("FinalPolicy");
+    app.UseCors("FinalPolicy");
 }
 else
 {
-	app.UseCors();
+    app.UseCors();
 }
 app.UseResponseCompression();
 if (!app.Environment.IsDevelopment())
 {
-	app.UseMiddleware<ApiKeyMiddleware>();
-	app.UseRateLimiter();
-	app.UseHttpsRedirection();
-	// Global Error Handler
-	app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.UseMiddleware<ApiKeyMiddleware>();
+    app.UseRateLimiter();
+    app.UseHttpsRedirection();
+    // Global Error Handler
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 }
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
@@ -303,29 +318,30 @@ app.UseAuthorization();
 // ________________ OutPut Caching Middleware ________________
 app.UseOutputCache(); // usage sample : on top of controller add this => [OutputCache(Duration = 60)]
 app.MapGet("/health", async (HttpContext context, HealthCheckService healthCheckService) =>
-	{
-		var report = await healthCheckService.CheckHealthAsync();
+    {
+        var report = await healthCheckService.CheckHealthAsync();
 
-		context.Response.ContentType = "application/json";
-		var response = new
-		{
-			status = report.Status.ToString(),
-			checks = report.Entries.Select(e => new
-			{
-				name = e.Key,
-				status = e.Value.Status.ToString(),
-				description = e.Value.Description
-			}),
-			totalDuration = report.TotalDuration.TotalSeconds
-		};
+        context.Response.ContentType = "application/json";
+        var response = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            }),
+            totalDuration = report.TotalDuration.TotalSeconds
+        };
 
-		await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-	})
-	.RequireAuthorization(policyBuilder =>
-	{
-		policyBuilder.RequireRole("Admin", "AdminGod");
-	});
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    })
+    .RequireAuthorization(policyBuilder =>
+    {
+        policyBuilder.RequireRole("Admin", "AdminGod");
+    });
 
 app.MapControllers();
+
 app.Run();
 
