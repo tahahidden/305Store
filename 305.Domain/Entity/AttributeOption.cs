@@ -12,6 +12,7 @@ namespace _305.Domain.Entity
         public required string value { get; set; }
 
         public Attribute? attribute { get; set; }
+        public ICollection<ProductAttributeOptionValue>? productAttributeOptionValues { get; set; }
 
 
 
