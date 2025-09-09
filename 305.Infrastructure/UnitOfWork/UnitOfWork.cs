@@ -21,6 +21,11 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     private readonly Lazy<IRepository<UserRole>> _userRoleRepository;
     private readonly Lazy<IRepository<ProductCategory>> _productCategoryRepository;
     private readonly Lazy<IRepository<Product>> _productRepository;
+    private readonly Lazy<IRepository<Domain.Entity.Attribute>> _attributeRepository;
+    private readonly Lazy<IRepository<AttributeOption>> _attributeOptionRepository;
+    private readonly Lazy<IRepository<ProductAttributeOptionValue>> _productAttributeOptionValueRepository;
+
+
 
 
 
@@ -38,6 +43,10 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
         _userRoleRepository = new Lazy<IRepository<UserRole>>(() => new Repository<UserRole>(_context));
         _productCategoryRepository = new Lazy<IRepository<ProductCategory>>(() => new Repository<ProductCategory>(_context));
         _productRepository = new Lazy<IRepository<Product>>(() => new Repository<Product>(_context));
+        _attributeRepository = new Lazy<IRepository<Domain.Entity.Attribute>>(() => new Repository<Domain.Entity.Attribute>(_context));
+        _attributeOptionRepository = new Lazy<IRepository<AttributeOption>>(() => new Repository<AttributeOption>(_context));
+        _productAttributeOptionValueRepository = new Lazy<IRepository<ProductAttributeOptionValue>>(() => new Repository<ProductAttributeOptionValue>(_context));
+
 
 
     }
@@ -53,6 +62,10 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IRepository<UserRole> UserRoleRepository => _userRoleRepository.Value;
     public IRepository<ProductCategory> ProductCategoryRepository => _productCategoryRepository.Value;
     public IRepository<Product> ProductRepository => _productRepository.Value;
+    public IRepository<Domain.Entity.Attribute> AttributeRepository => _attributeRepository.Value;
+    public IRepository<AttributeOption> AttributeOptionRepository => _attributeOptionRepository.Value;
+    public IRepository<ProductAttributeOptionValue> ProductAttributeOptionValueRepository => _productAttributeOptionValueRepository.Value;
+
 
 
 

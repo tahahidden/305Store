@@ -9,7 +9,7 @@ namespace _305.Domain.Entity
     public class AttributeOption : BaseEntity
     {
         public long attributeId { get; set; }
-        public required string value { get; set; }
+        public string value { get; set; } = String.Empty;
 
         public Attribute? attribute { get; set; }
         public ICollection<ProductAttributeOptionValue>? productAttributeOptionValues { get; set; }

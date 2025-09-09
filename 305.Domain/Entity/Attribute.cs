@@ -12,7 +12,7 @@ namespace _305.Domain.Entity
         public DataTypeEnum dataType { get; set; }
 
 
-        public Product? product { get; set; }
+
         public ICollection<AttributeOption>? attributeOptions { get; set; }
         public ICollection<ProductAttribute>? productAttributes { get; set; }
 
