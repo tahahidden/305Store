@@ -8,6 +8,8 @@ namespace _305.Application.Features.ProductFeatures.Command
 {
     public class CreateProductCommand : CreateCommand<string>
     {
-        
+        public long productCategoryId { get; set; }
+        public string? description { get; set; }
+        public decimal? price { get; set; }
     }
 }

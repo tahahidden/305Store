@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace _305.WebApi.Controllers.Product
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/product/attribute")]
     public class AttributeController : ControllerBase
     {
         

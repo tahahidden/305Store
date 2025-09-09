@@ -20,6 +20,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     private readonly Lazy<IRepository<User>> _userRepository;
     private readonly Lazy<IRepository<UserRole>> _userRoleRepository;
     private readonly Lazy<IRepository<ProductCategory>> _productCategoryRepository;
+    private readonly Lazy<IRepository<Product>> _productRepository;
+
 
 
     public UnitOfWork(ApplicationDbContext context)
@@ -35,6 +37,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
         _userRepository = new Lazy<IRepository<User>>(() => new Repository<User>(_context));
         _userRoleRepository = new Lazy<IRepository<UserRole>>(() => new Repository<UserRole>(_context));
         _productCategoryRepository = new Lazy<IRepository<ProductCategory>>(() => new Repository<ProductCategory>(_context));
+        _productRepository = new Lazy<IRepository<Product>>(() => new Repository<Product>(_context));
+
 
     }
 
@@ -48,6 +52,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IRepository<User> UserRepository => _userRepository.Value;
     public IRepository<UserRole> UserRoleRepository => _userRoleRepository.Value;
     public IRepository<ProductCategory> ProductCategoryRepository => _productCategoryRepository.Value;
+    public IRepository<Product> ProductRepository => _productRepository.Value;
+
 
 
     /// <summary>

@@ -13,6 +13,8 @@ public interface IUnitOfWork : IAsyncDisposable, IDisposable
     IRepository<User> UserRepository { get; }
     IRepository<UserRole> UserRoleRepository { get; }
     IRepository<ProductCategory> ProductCategoryRepository { get; }
+    IRepository<Product> ProductRepository { get; }
+
 
     Task<bool> CommitAsync(CancellationToken cancellationToken);
 }
