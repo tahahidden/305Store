@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using _305.Application.Base.Response;
 using _305.Application.Features.ProductCategoryFeatures.Command;
+using _305.Application.Features.ProductCategoryFeatures.Query;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,10 @@ namespace _305.WebApi.Controllers.Product
         [HttpPost("create")]
         public Task<IActionResult> Create([FromForm] CreateProductCategoryCommand command, CancellationToken cancellationToken) =>
        ExecuteCommand<CreateProductCategoryCommand, ResponseDto<string>>(command, cancellationToken);
+
+        [HttpGet("all")]
+        public Task<IActionResult> GetAll([FromQuery] GetAllProductCategoryQuery query, CancellationToken cancellationToken) =>
+       ExecuteQuery(query, cancellationToken);
 
     }
 }
