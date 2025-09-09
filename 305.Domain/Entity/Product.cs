@@ -18,9 +18,7 @@ namespace _305.Domain.Entity
         public ICollection<CategoryProductRelation>? categoryProductRelations { get; set; }
 
 
-        /// <summary>
-        /// سازنده برای ایجاد دسته‌بندی وبلاگ با مقادیر اولیه
-        /// </summary>
+
         public Product(string name, string slug, long productCategoryId, string? description = null, decimal? price = null) : base(name, slug)
         {
             this.description = description;

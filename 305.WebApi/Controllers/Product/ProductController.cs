@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using _305.Application.Base.Response;
 using _305.Application.Features.ProductFeatures.Command;
 using _305.Application.Features.ProductFeatures.Query;
+using _305.Application.Features.ProductFeatures.Response;
 using _305.WebApi.Base;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,5 +26,9 @@ namespace _305.WebApi.Controllers.Product
         [HttpGet("all")]
         public Task<IActionResult> GetAll([FromQuery] GetAllProductQuery query, CancellationToken cancellationToken) =>
        ExecuteQuery(query, cancellationToken);
+
+        [HttpPost("get-by-category")]
+        public Task<IActionResult> GetByCategory([FromForm] GetProductsByCategoryIdQuery query, CancellationToken cancellationToken) =>
+        ExecuteCommand<GetProductsByCategoryIdQuery, ResponseDto<List<ProductResponse>>>(query, cancellationToken);
     }
 }

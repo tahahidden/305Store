@@ -19,10 +19,6 @@ namespace _305.Domain.Entity
 
 
 
-
-        /// <summary>
-        /// سازنده برای ایجاد دسته‌بندی وبلاگ با مقادیر اولیه
-        /// </summary>
         public ProductCategory(string name, string slug, string? description = null, long? parentId = null) : base(name, slug)
         {
             this.description = description;
