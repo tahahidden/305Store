@@ -24,6 +24,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     private readonly Lazy<IRepository<Domain.Entity.Attribute>> _attributeRepository;
     private readonly Lazy<IRepository<AttributeOption>> _attributeOptionRepository;
     private readonly Lazy<IRepository<ProductAttributeOptionValue>> _productAttributeOptionValueRepository;
+    private readonly Lazy<IRepository<CategoryProductRelation>> _categoryProductRelationRepository;
+
 
 
 
@@ -46,6 +48,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
         _attributeRepository = new Lazy<IRepository<Domain.Entity.Attribute>>(() => new Repository<Domain.Entity.Attribute>(_context));
         _attributeOptionRepository = new Lazy<IRepository<AttributeOption>>(() => new Repository<AttributeOption>(_context));
         _productAttributeOptionValueRepository = new Lazy<IRepository<ProductAttributeOptionValue>>(() => new Repository<ProductAttributeOptionValue>(_context));
+        _categoryProductRelationRepository = new Lazy<IRepository<CategoryProductRelation>>(() => new Repository<CategoryProductRelation>(_context));
+
 
 
 
@@ -65,6 +69,8 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IRepository<Domain.Entity.Attribute> AttributeRepository => _attributeRepository.Value;
     public IRepository<AttributeOption> AttributeOptionRepository => _attributeOptionRepository.Value;
     public IRepository<ProductAttributeOptionValue> ProductAttributeOptionValueRepository => _productAttributeOptionValueRepository.Value;
+    public IRepository<CategoryProductRelation> CategoryProductRelationRepository => _categoryProductRelationRepository.Value;
+
 
 
 

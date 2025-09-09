@@ -2,6 +2,7 @@
 using _305.Domain.Entity;
 
 namespace _305.Application.IUOW;
+
 public interface IUnitOfWork : IAsyncDisposable, IDisposable
 {
     IRepository<BlogCategory> BlogCategoryRepository { get; }
@@ -17,7 +18,7 @@ public interface IUnitOfWork : IAsyncDisposable, IDisposable
     IRepository<Domain.Entity.Attribute> AttributeRepository { get; }
     IRepository<AttributeOption> AttributeOptionRepository { get; }
     IRepository<ProductAttributeOptionValue> ProductAttributeOptionValueRepository { get; }
-
+    IRepository<CategoryProductRelation> CategoryProductRelationRepository { get; }
 
 
     Task<bool> CommitAsync(CancellationToken cancellationToken);
